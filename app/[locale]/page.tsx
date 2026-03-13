@@ -99,7 +99,7 @@ export default async function Home() {
                 <ArrowRight className="size-4" />
               </Link>
               <a
-                href="https://github.com"
+                href="https://github.com/AdanSerrano/started-template"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-foreground inline-flex h-12 items-center gap-2 rounded-lg border px-6 text-base font-medium transition-colors"
