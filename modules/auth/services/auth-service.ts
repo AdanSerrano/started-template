@@ -1,5 +1,4 @@
-import { auth } from '@/lib/auth'
-import { headers } from 'next/headers'
+import { getServerSession } from '@/lib/auth-server'
 import { redirect } from 'next/navigation'
 import { DEFAULT_LOGOUT_REDIRECT } from '@/routes'
 import { UnauthorizedError, ForbiddenError } from '@/lib/errors'
@@ -13,9 +12,7 @@ export const authService = {
    * Use in Server Components and Server Actions.
    */
   async getSession(): Promise<AuthSession | null> {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    })
+    const session = await getServerSession()
 
     return session as AuthSession | null
   },

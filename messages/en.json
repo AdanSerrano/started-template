@@ -19,7 +19,8 @@
     "showPassword": "Show password",
     "hidePassword": "Hide password",
     "close": "Close",
-    "toggleSidebar": "Toggle sidebar"
+    "toggleSidebar": "Toggle sidebar",
+    "skipToContent": "Skip to content"
   },
   "landing": {
     "hero": {
@@ -244,7 +245,14 @@
     "emailInvalid": "Invalid email",
     "codeLength": "Code must be 6 digits",
     "codePattern": "Numbers only",
-    "passwordsDoNotMatch": "Passwords do not match"
+    "passwordsDoNotMatch": "Passwords do not match",
+    "firstNameRequired": "First name required",
+    "lastNameRequired": "Last name required",
+    "streetRequired": "Address required",
+    "cityRequired": "City required",
+    "postalCodeRequired": "Postal code required",
+    "currentPasswordRequired": "Current password required",
+    "confirmPasswordRequired": "Confirm your password"
   },
   "errors": {
     "notFoundTitle": "Page not found",

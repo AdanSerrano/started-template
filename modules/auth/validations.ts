@@ -50,7 +50,7 @@ export function createResetPasswordSchema(t: T) {
       confirmPassword: z.string(),
     })
     .refine((data) => data.password === data.confirmPassword, {
-      message: t('passwordsDoNotMatch'),
+      error: t('passwordsDoNotMatch'),
       path: ['confirmPassword'],
     })
 }

@@ -2,404 +2,412 @@
 // See: https://next-intl.dev/docs/workflows/typescript#messages-arguments
 
 declare const messages: {
-  "metadata": {
-    "title": "Starter App — Plantilla de Proyecto",
-    "titleTemplate": "%s | Starter App",
-    "description": "Plantilla de proyecto con Next.js 16, React 19, TypeScript, Tailwind CSS 4, shadcn/ui, Drizzle ORM, Better Auth y mas."
-  },
-  "common": {
-    "appName": "Starter App",
-    "login": "Iniciar sesion",
-    "register": "Crear cuenta",
-    "logout": "Cerrar sesion",
-    "myAccount": "Mi Cuenta",
-    "settings": "Configuracion",
-    "profile": "Perfil",
-    "openMenu": "Abrir menu",
-    "backToTop": "Volver al inicio",
-    "previous": "Anterior",
-    "next": "Siguiente",
-    "showPassword": "Mostrar contrasena",
-    "hidePassword": "Ocultar contrasena",
-    "close": "Cerrar",
-    "toggleSidebar": "Alternar barra lateral"
-  },
-  "landing": {
-    "hero": {
-      "badge": "Plantilla de proyecto",
-      "titleStart": "Construye tu proxima app",
-      "titleHighlight": "mas rapido",
-      "description": "Plantilla full-stack con autenticacion, base de datos, i18n, emails, temas y mas. Lista para produccion.",
-      "cta": "Comenzar gratis"
-    },
-    "features": {
-      "title": "Todo lo que necesitas",
-      "subtitle": "Infraestructura lista para produccion desde el dia uno.",
-      "auth": {
-        "title": "Autenticacion completa",
-        "desc": "Login, registro, OAuth, magic links, 2FA, roles y sesiones con Better Auth."
-      },
-      "database": {
-        "title": "Base de datos",
-        "desc": "PostgreSQL serverless con Neon y Drizzle ORM. Migraciones, schemas tipados."
-      },
-      "i18n": {
-        "title": "Multi-idioma",
-        "desc": "Soporte para ES, EN y CA con next-intl. Rutas localizadas y traducciones tipadas."
-      },
-      "email": {
-        "title": "Emails transaccionales",
-        "desc": "Plantillas React Email con Resend. Verificacion, reset de password, magic links."
-      },
-      "theme": {
-        "title": "Dark/Light mode",
-        "desc": "Tema oscuro y claro con next-themes. Respeta la preferencia del sistema."
-      },
-      "security": {
-        "title": "Seguridad",
-        "desc": "Headers de seguridad, CSP, rate limiting, audit logs y validacion con Zod."
+  metadata: {
+    title: 'Starter App — Plantilla de Proyecto'
+    titleTemplate: '%s | Starter App'
+    description: 'Plantilla de proyecto con Next.js 16, React 19, TypeScript, Tailwind CSS 4, shadcn/ui, Drizzle ORM, Better Auth y mas.'
+  }
+  common: {
+    appName: 'Starter App'
+    login: 'Iniciar sesion'
+    register: 'Crear cuenta'
+    logout: 'Cerrar sesion'
+    myAccount: 'Mi Cuenta'
+    settings: 'Configuracion'
+    profile: 'Perfil'
+    openMenu: 'Abrir menu'
+    backToTop: 'Volver al inicio'
+    previous: 'Anterior'
+    next: 'Siguiente'
+    showPassword: 'Mostrar contrasena'
+    hidePassword: 'Ocultar contrasena'
+    close: 'Cerrar'
+    toggleSidebar: 'Alternar barra lateral'
+    skipToContent: 'Ir al contenido'
+  }
+  landing: {
+    hero: {
+      badge: 'Plantilla de proyecto'
+      titleStart: 'Construye tu proxima app'
+      titleHighlight: 'mas rapido'
+      description: 'Plantilla full-stack con autenticacion, base de datos, i18n, emails, temas y mas. Lista para produccion.'
+      cta: 'Comenzar gratis'
+    }
+    features: {
+      title: 'Todo lo que necesitas'
+      subtitle: 'Infraestructura lista para produccion desde el dia uno.'
+      auth: {
+        title: 'Autenticacion completa'
+        desc: 'Login, registro, OAuth, magic links, 2FA, roles y sesiones con Better Auth.'
       }
-    },
-    "stack": {
-      "title": "Stack moderno",
-      "subtitle": "Las mejores herramientas del ecosistema."
-    },
-    "footer": {
-      "copyright": "Starter App. Todos los derechos reservados."
-    }
-  },
-  "auth": {
-    "login": {
-      "title": "Iniciar sesion",
-      "description": "Ingresa tus credenciales para acceder",
-      "noAccount": "No tienes cuenta?",
-      "registerLink": "Crear cuenta",
-      "metaTitle": "Iniciar sesion",
-      "metaDescription": "Inicia sesion en tu cuenta.",
-      "identifierLabel": "Email o usuario",
-      "identifierPlaceholder": "tu@email.com o tu_usuario",
-      "passwordLabel": "Contrasena",
-      "forgotPasswordLink": "Olvidaste tu contrasena?",
-      "verifiedMessage": "Email verificado. Inicia sesion para continuar.",
-      "resetMessage": "Contrasena actualizada. Inicia sesion con tu nueva contrasena.",
-      "emailNotVerifiedMessage": "Tu email no esta verificado. Reenviamos el enlace de verificacion. Revisa tu bandeja de entrada.",
-      "submitButton": "Iniciar sesion",
-      "orContinueWith": "O continuar con",
-      "error": "Error al iniciar sesion",
-      "accountLocked": "Cuenta bloqueada temporalmente por demasiados intentos fallidos.",
-      "magicLink": {
-        "title": "Iniciar sesion sin contrasena",
-        "description": "Te enviaremos un enlace magico a tu email",
-        "emailLabel": "Email",
-        "emailPlaceholder": "tu@email.com",
-        "submitButton": "Enviar enlace magico",
-        "successTitle": "Revisa tu email",
-        "successDesc": "Te enviamos un enlace para acceder a tu cuenta. Revisa tu bandeja de entrada.",
-        "error": "Error al enviar el enlace",
-        "backToPassword": "Iniciar sesion con contrasena",
-        "useMagicLink": "Iniciar sesion sin contrasena"
+      database: {
+        title: 'Base de datos'
+        desc: 'PostgreSQL serverless con Neon y Drizzle ORM. Migraciones, schemas tipados.'
       }
-    },
-    "register": {
-      "title": "Crear cuenta",
-      "description": "Completa el formulario para crear tu cuenta",
-      "hasAccount": "Ya tienes cuenta?",
-      "loginLink": "Iniciar sesion",
-      "metaTitle": "Crear cuenta",
-      "metaDescription": "Crea tu cuenta gratuita.",
-      "nameLabel": "Nombre",
-      "namePlaceholder": "Tu nombre",
-      "usernameLabel": "Usuario",
-      "usernamePlaceholder": "tu_usuario",
-      "emailLabel": "Email",
-      "emailPlaceholder": "tu@email.com",
-      "passwordLabel": "Contrasena",
-      "submitButton": "Crear cuenta",
-      "orContinueWith": "O continuar con",
-      "error": "Error al crear la cuenta",
-      "checkEmailTitle": "Revisa tu email",
-      "checkEmailDesc": "Te enviamos un enlace de verificacion. Revisa tu bandeja de entrada (y spam) para activar tu cuenta.",
-      "goToLogin": "Ir a iniciar sesion"
-    },
-    "forgotPassword": {
-      "title": "Restablecer contrasena",
-      "description": "Ingresa tu email y te enviaremos un enlace para restablecer tu contrasena",
-      "backToLogin": "Volver a iniciar sesion",
-      "metaTitle": "Restablecer contrasena",
-      "metaDescription": "Solicita un enlace para restablecer tu contrasena.",
-      "emailLabel": "Email",
-      "emailPlaceholder": "tu@email.com",
-      "submitButton": "Enviar enlace",
-      "checkEmailTitle": "Revisa tu email",
-      "checkEmailDesc": "Si existe una cuenta con ese email, recibiras un enlace para restablecer tu contrasena."
-    },
-    "resetPassword": {
-      "title": "Nueva contrasena",
-      "description": "Ingresa tu nueva contrasena",
-      "metaTitle": "Nueva contrasena",
-      "metaDescription": "Establece una nueva contrasena para tu cuenta.",
-      "newPasswordLabel": "Nueva contrasena",
-      "confirmPasswordLabel": "Confirmar contrasena",
-      "submitButton": "Restablecer contrasena",
-      "error": "Error al restablecer la contrasena",
-      "invalidLinkTitle": "Enlace invalido o expirado",
-      "invalidLinkDesc": "El enlace para restablecer la contrasena ya no es valido. Solicita uno nuevo.",
-      "requestNewLink": "Solicitar nuevo enlace"
-    },
-    "verifyEmail": {
-      "metaTitle": "Verificar email",
-      "metaDescription": "Verifica tu email para activar tu cuenta.",
-      "invalidLinkTitle": "Enlace invalido o expirado",
-      "invalidLinkDesc": "El enlace de verificacion ya no es valido. Inicia sesion para solicitar uno nuevo.",
-      "goToLogin": "Ir a iniciar sesion",
-      "verifiedTitle": "Email verificado",
-      "verifiedDesc": "Tu cuenta ha sido activada correctamente. Redirigiendo al inicio de sesion..."
-    },
-    "twoFactor": {
-      "title": "Verificacion 2FA",
-      "description": "Ingresa el codigo de tu app de autenticacion",
-      "metaTitle": "Verificacion 2FA",
-      "metaDescription": "Verifica tu identidad con autenticacion de dos factores.",
-      "codeLabel": "Codigo de verificacion",
-      "codeHint": "Ingresa el codigo de 6 digitos de tu app de autenticacion",
-      "submitButton": "Verificar",
-      "error": "Codigo invalido"
-    },
-    "userNav": {
-      "settings": "Configuracion",
-      "profile": "Perfil",
-      "logout": "Cerrar sesion"
+      i18n: {
+        title: 'Multi-idioma'
+        desc: 'Soporte para ES, EN y CA con next-intl. Rutas localizadas y traducciones tipadas.'
+      }
+      email: {
+        title: 'Emails transaccionales'
+        desc: 'Plantillas React Email con Resend. Verificacion, reset de password, magic links.'
+      }
+      theme: {
+        title: 'Dark/Light mode'
+        desc: 'Tema oscuro y claro con next-themes. Respeta la preferencia del sistema.'
+      }
+      security: {
+        title: 'Seguridad'
+        desc: 'Headers de seguridad, CSP, rate limiting, audit logs y validacion con Zod.'
+      }
     }
-  },
-  "authLayout": {
-    "platformTitle": "Tu proxima app",
-    "platformTitleLine2": "empieza",
-    "platformTitleLine3": "aqui",
-    "platformDesc": "Plantilla full-stack con autenticacion, base de datos, i18n y mas.",
-    "featureQr": "Autenticacion completa con Better Auth",
-    "featurePayments": "Base de datos PostgreSQL con Neon",
-    "featureWallet": "Multi-idioma con next-intl",
-    "testimonial": "Starter Template — Listo para produccion."
-  },
-  "account": {
-    "nav": {
-      "profile": "Mi Cuenta",
-      "addresses": "Mis Direcciones"
-    },
-    "profile": {
-      "title": "Mi Cuenta",
-      "subtitle": "Gestiona tu informacion personal.",
-      "personalInfo": "Informacion personal",
-      "emailLabel": "Email",
-      "nameLabel": "Nombre",
-      "namePlaceholder": "Tu nombre",
-      "phoneLabel": "Telefono",
-      "phonePlaceholder": "+34 600 000 000",
-      "saveBtn": "Guardar cambios",
-      "updated": "Perfil actualizado",
-      "avatarLabel": "Foto de perfil",
-      "avatarHint": "Haz clic para cambiar tu foto"
-    },
-    "password": {
-      "title": "Cambiar contrasena",
-      "subtitle": "Actualiza tu contrasena de acceso.",
-      "currentPassword": "Contrasena actual",
-      "newPassword": "Nueva contrasena",
-      "confirmPassword": "Confirmar contrasena",
-      "saveBtn": "Cambiar contrasena",
-      "updated": "Contrasena actualizada",
-      "error": "Error al cambiar contrasena"
-    },
-    "addresses": {
-      "title": "Mis Direcciones",
-      "subtitle": "Gestiona tus direcciones.",
-      "empty": "No tienes direcciones guardadas.",
-      "addBtn": "Anadir direccion",
-      "addTitle": "Nueva direccion",
-      "editTitle": "Editar direccion",
-      "firstName": "Nombre",
-      "lastName": "Apellido",
-      "street": "Direccion",
-      "city": "Ciudad",
-      "province": "Provincia",
-      "postalCode": "Codigo postal",
-      "phone": "Telefono",
-      "cancel": "Cancelar",
-      "createBtn": "Crear direccion",
-      "updateBtn": "Actualizar direccion",
-      "created": "Direccion creada",
-      "updated": "Direccion actualizada",
-      "deleted": "Direccion eliminada",
-      "default": "Predeterminada",
-      "setDefault": "Establecer como predeterminada",
-      "defaultSet": "Direccion predeterminada actualizada",
-      "edit": "Editar",
-      "delete": "Eliminar"
+    stack: {
+      title: 'Stack moderno'
+      subtitle: 'Las mejores herramientas del ecosistema.'
     }
-  },
-  "validation": {
-    "identifierMin": "Ingresa tu email o usuario",
-    "passwordMin": "La contrasena debe tener al menos 8 caracteres",
-    "nameMin": "El nombre debe tener al menos 2 caracteres",
-    "usernameMin": "El usuario debe tener al menos 3 caracteres",
-    "usernameMax": "El usuario no puede superar 30 caracteres",
-    "usernamePattern": "Solo letras, numeros, puntos y guiones bajos",
-    "emailInvalid": "Email invalido",
-    "codeLength": "El codigo debe tener 6 digitos",
-    "codePattern": "Solo numeros",
-    "passwordsDoNotMatch": "Las contrasenas no coinciden"
-  },
-  "errors": {
-    "notFoundTitle": "Pagina no encontrada",
-    "notFound": "La pagina que buscas no existe o ha sido movida.",
-    "serverError": "Algo salio mal. Estamos trabajando en solucionarlo.",
-    "tryAgain": "Intentar de nuevo",
-    "backHome": "Volver al inicio"
-  },
-  "twoFactorSettings": {
-    "title": "Autenticacion de dos factores",
-    "enabledDesc": "2FA esta habilitado en tu cuenta",
-    "disabledDesc": "Anade una capa extra de seguridad",
-    "enable": "Habilitar",
-    "disable": "Deshabilitar",
-    "enableTitle": "Habilitar autenticacion de dos factores",
-    "enableDesc": "Ingresa tu contrasena para generar el codigo QR",
-    "password": "Contrasena",
-    "cancel": "Cancelar",
-    "continue": "Continuar",
-    "scanTitle": "Escanea el codigo QR",
-    "scanDesc": "Escanea este codigo con tu app de autenticacion (Google Authenticator, Authy, etc.)",
-    "qrAlt": "Codigo QR para 2FA",
-    "backupCodes": "Codigos de respaldo",
-    "copied": "Copiado",
-    "copy": "Copiar",
-    "backupWarning": "Guarda estos codigos en un lugar seguro. Los necesitaras si pierdes acceso a tu app de autenticacion.",
-    "verificationCode": "Codigo de verificacion",
-    "verifyAndActivate": "Verificar y activar",
-    "disableTitle": "Deshabilitar autenticacion de dos factores",
-    "disableDesc": "Ingresa tu contrasena para deshabilitar 2FA",
-    "disableButton": "Deshabilitar 2FA",
-    "enableError": "Error al habilitar 2FA",
-    "invalidCode": "Codigo invalido",
-    "disableError": "Error al deshabilitar 2FA"
-  },
-  "activeSessions": {
-    "title": "Sesiones activas",
-    "sessionCount": "{count, plural, one {# sesion activa} other {# sesiones activas}}",
-    "revokeOthers": "Cerrar otras sesiones",
-    "current": "Actual",
-    "unknown": "Desconocido",
-    "mobile": "Movil",
-    "desktop": "Escritorio"
-  },
-  "themeSwitcher": {
-    "label": "Tema",
-    "light": "Claro",
-    "dark": "Oscuro",
-    "system": "Sistema"
-  },
-  "languageSwitcher": {
-    "label": "Idioma",
-    "es": "Espanol",
-    "en": "English",
-    "ca": "Catala"
-  },
-  "passwordStrength": {
-    "weak": "Debil",
-    "medium": "Media",
-    "strong": "Fuerte",
-    "veryStrong": "Muy fuerte"
-  },
-  "emails": {
-    "common": {
-      "fallbackLink": "Si el boton no funciona, copia y pega este enlace en tu navegador:"
-    },
-    "layout": {
-      "tagline": "Tu plantilla de proyecto",
-      "supportEmail": "soporte@tuapp.com",
-      "website": "Sitio web",
-      "support": "Soporte",
-      "copyright": "Todos los derechos reservados.",
-      "location": "Tu ubicacion"
-    },
-    "magicLink": {
-      "subject": "Tu enlace de acceso",
-      "preview": "Tu enlace de acceso",
-      "heading": "Accede a tu cuenta",
-      "subheading": "Haz clic en el enlace para iniciar sesion",
-      "paragraph": "Recibimos una solicitud para acceder a tu cuenta. Haz clic en el boton de abajo para iniciar sesion de forma segura sin contrasena:",
-      "button": "Acceder a mi cuenta",
-      "infoBox": "Este enlace expira en <strong>10 minutos</strong> y solo puede usarse una vez. Si no solicitaste este acceso, puedes ignorar este email.",
-      "whyMagicLink": "Por que Magic Link?",
-      "featureSecure": "Acceso seguro sin contrasena",
-      "featureOneClick": "Inicio de sesion con un clic",
-      "featureTemporary": "Enlace temporal de un solo uso"
-    },
-    "verification": {
-      "subject": "Verifica tu email",
-      "preview": "Verifica tu email para activar tu cuenta",
-      "heading": "Verifica tu email",
-      "subheading": "Solo un paso mas para activar tu cuenta",
-      "greeting": "Hola {name},",
-      "paragraph": "Gracias por unirte. Para activar tu cuenta, verifica tu direccion de email:",
-      "button": "Verificar mi email",
-      "infoBox": "Este enlace expira en <strong>1 hora</strong>. Si no creaste una cuenta, puedes ignorar este email.",
-      "whatYouCanDo": "Lo que puedes hacer",
-      "featureQr": "Acceso completo a la plataforma",
-      "featureEvents": "Gestiona tu perfil y configuracion",
-      "featurePayments": "Funcionalidades avanzadas",
-      "featureWallet": "Soporte multi-idioma"
-    },
-    "resetPassword": {
-      "subject": "Restablece tu contrasena",
-      "preview": "Solicitud para restablecer tu contrasena",
-      "heading": "Restablecer contrasena",
-      "subheading": "Recibimos tu solicitud para cambiar tu contrasena",
-      "greeting": "Hola {name},",
-      "paragraph": "Alguien solicito restablecer la contrasena de tu cuenta. Si fuiste tu, haz clic en el boton de abajo para crear una nueva contrasena:",
-      "button": "Crear nueva contrasena",
-      "warningBox": "Este enlace expira en <strong>1 hora</strong>. Si no solicitaste este cambio, ignora este email. Tu contrasena actual no sera modificada.",
-      "securityTips": "Consejos de seguridad",
-      "tipStrong": "Usa una contrasena de al menos 8 caracteres con letras, numeros y simbolos.",
-      "tipUnique": "No reutilices contrasenas de otros servicios.",
-      "tipTwoFactor": "Habilita la verificacion en dos pasos para mayor proteccion."
-    }
-  },
-  "DataTable": {
-    "toolbar": {
-      "search": "Buscar...",
-      "clearSearch": "Limpiar busqueda",
-      "refresh": "Actualizar",
-      "density": "Densidad",
-      "densityRows": "Densidad de filas",
-      "densityCompact": "Compacta",
-      "densityDefault": "Normal",
-      "densityComfortable": "Comoda",
-      "columns": "Columnas",
-      "showHideColumns": "Mostrar/ocultar columnas",
-      "visibleColumns": "Columnas visibles",
-      "export": "Exportar",
-      "exportFormat": "Formato de exportacion",
-      "selected": "seleccionado",
-      "selectedPlural": "seleccionados",
-      "clearSelection": "Limpiar seleccion",
-      "fullscreen": "Pantalla completa",
-      "exitFullscreen": "Salir de pantalla completa",
-      "copy": "Copiar",
-      "print": "Imprimir"
-    },
-    "pagination": {
-      "ariaLabel": "Paginacion de tabla",
-      "showing": "Mostrando {start} a {end} de {total}",
-      "rowsPerPage": "Filas por pagina",
-      "selectRowsPerPage": "Seleccionar filas por pagina",
-      "firstPage": "Primera pagina",
-      "previousPage": "Pagina anterior",
-      "nextPage": "Pagina siguiente",
-      "lastPage": "Ultima pagina",
-      "pages": "Paginas",
-      "goToPage": "Ir a pagina {page}"
+    footer: {
+      copyright: 'Starter App. Todos los derechos reservados.'
     }
   }
-};
-export default messages;
+  auth: {
+    login: {
+      title: 'Iniciar sesion'
+      description: 'Ingresa tus credenciales para acceder'
+      noAccount: 'No tienes cuenta?'
+      registerLink: 'Crear cuenta'
+      metaTitle: 'Iniciar sesion'
+      metaDescription: 'Inicia sesion en tu cuenta.'
+      identifierLabel: 'Email o usuario'
+      identifierPlaceholder: 'tu@email.com o tu_usuario'
+      passwordLabel: 'Contrasena'
+      forgotPasswordLink: 'Olvidaste tu contrasena?'
+      verifiedMessage: 'Email verificado. Inicia sesion para continuar.'
+      resetMessage: 'Contrasena actualizada. Inicia sesion con tu nueva contrasena.'
+      emailNotVerifiedMessage: 'Tu email no esta verificado. Reenviamos el enlace de verificacion. Revisa tu bandeja de entrada.'
+      submitButton: 'Iniciar sesion'
+      orContinueWith: 'O continuar con'
+      error: 'Error al iniciar sesion'
+      accountLocked: 'Cuenta bloqueada temporalmente por demasiados intentos fallidos.'
+      magicLink: {
+        title: 'Iniciar sesion sin contrasena'
+        description: 'Te enviaremos un enlace magico a tu email'
+        emailLabel: 'Email'
+        emailPlaceholder: 'tu@email.com'
+        submitButton: 'Enviar enlace magico'
+        successTitle: 'Revisa tu email'
+        successDesc: 'Te enviamos un enlace para acceder a tu cuenta. Revisa tu bandeja de entrada.'
+        error: 'Error al enviar el enlace'
+        backToPassword: 'Iniciar sesion con contrasena'
+        useMagicLink: 'Iniciar sesion sin contrasena'
+      }
+    }
+    register: {
+      title: 'Crear cuenta'
+      description: 'Completa el formulario para crear tu cuenta'
+      hasAccount: 'Ya tienes cuenta?'
+      loginLink: 'Iniciar sesion'
+      metaTitle: 'Crear cuenta'
+      metaDescription: 'Crea tu cuenta gratuita.'
+      nameLabel: 'Nombre'
+      namePlaceholder: 'Tu nombre'
+      usernameLabel: 'Usuario'
+      usernamePlaceholder: 'tu_usuario'
+      emailLabel: 'Email'
+      emailPlaceholder: 'tu@email.com'
+      passwordLabel: 'Contrasena'
+      submitButton: 'Crear cuenta'
+      orContinueWith: 'O continuar con'
+      error: 'Error al crear la cuenta'
+      checkEmailTitle: 'Revisa tu email'
+      checkEmailDesc: 'Te enviamos un enlace de verificacion. Revisa tu bandeja de entrada (y spam) para activar tu cuenta.'
+      goToLogin: 'Ir a iniciar sesion'
+    }
+    forgotPassword: {
+      title: 'Restablecer contrasena'
+      description: 'Ingresa tu email y te enviaremos un enlace para restablecer tu contrasena'
+      backToLogin: 'Volver a iniciar sesion'
+      metaTitle: 'Restablecer contrasena'
+      metaDescription: 'Solicita un enlace para restablecer tu contrasena.'
+      emailLabel: 'Email'
+      emailPlaceholder: 'tu@email.com'
+      submitButton: 'Enviar enlace'
+      checkEmailTitle: 'Revisa tu email'
+      checkEmailDesc: 'Si existe una cuenta con ese email, recibiras un enlace para restablecer tu contrasena.'
+    }
+    resetPassword: {
+      title: 'Nueva contrasena'
+      description: 'Ingresa tu nueva contrasena'
+      metaTitle: 'Nueva contrasena'
+      metaDescription: 'Establece una nueva contrasena para tu cuenta.'
+      newPasswordLabel: 'Nueva contrasena'
+      confirmPasswordLabel: 'Confirmar contrasena'
+      submitButton: 'Restablecer contrasena'
+      error: 'Error al restablecer la contrasena'
+      invalidLinkTitle: 'Enlace invalido o expirado'
+      invalidLinkDesc: 'El enlace para restablecer la contrasena ya no es valido. Solicita uno nuevo.'
+      requestNewLink: 'Solicitar nuevo enlace'
+    }
+    verifyEmail: {
+      metaTitle: 'Verificar email'
+      metaDescription: 'Verifica tu email para activar tu cuenta.'
+      invalidLinkTitle: 'Enlace invalido o expirado'
+      invalidLinkDesc: 'El enlace de verificacion ya no es valido. Inicia sesion para solicitar uno nuevo.'
+      goToLogin: 'Ir a iniciar sesion'
+      verifiedTitle: 'Email verificado'
+      verifiedDesc: 'Tu cuenta ha sido activada correctamente. Redirigiendo al inicio de sesion...'
+    }
+    twoFactor: {
+      title: 'Verificacion 2FA'
+      description: 'Ingresa el codigo de tu app de autenticacion'
+      metaTitle: 'Verificacion 2FA'
+      metaDescription: 'Verifica tu identidad con autenticacion de dos factores.'
+      codeLabel: 'Codigo de verificacion'
+      codeHint: 'Ingresa el codigo de 6 digitos de tu app de autenticacion'
+      submitButton: 'Verificar'
+      error: 'Codigo invalido'
+    }
+    userNav: {
+      settings: 'Configuracion'
+      profile: 'Perfil'
+      logout: 'Cerrar sesion'
+    }
+  }
+  authLayout: {
+    platformTitle: 'Tu proxima app'
+    platformTitleLine2: 'empieza'
+    platformTitleLine3: 'aqui'
+    platformDesc: 'Plantilla full-stack con autenticacion, base de datos, i18n y mas.'
+    featureQr: 'Autenticacion completa con Better Auth'
+    featurePayments: 'Base de datos PostgreSQL con Neon'
+    featureWallet: 'Multi-idioma con next-intl'
+    testimonial: 'Starter Template — Listo para produccion.'
+  }
+  account: {
+    nav: {
+      profile: 'Mi Cuenta'
+      addresses: 'Mis Direcciones'
+    }
+    profile: {
+      title: 'Mi Cuenta'
+      subtitle: 'Gestiona tu informacion personal.'
+      personalInfo: 'Informacion personal'
+      emailLabel: 'Email'
+      nameLabel: 'Nombre'
+      namePlaceholder: 'Tu nombre'
+      phoneLabel: 'Telefono'
+      phonePlaceholder: '+34 600 000 000'
+      saveBtn: 'Guardar cambios'
+      updated: 'Perfil actualizado'
+      avatarLabel: 'Foto de perfil'
+      avatarHint: 'Haz clic para cambiar tu foto'
+    }
+    password: {
+      title: 'Cambiar contrasena'
+      subtitle: 'Actualiza tu contrasena de acceso.'
+      currentPassword: 'Contrasena actual'
+      newPassword: 'Nueva contrasena'
+      confirmPassword: 'Confirmar contrasena'
+      saveBtn: 'Cambiar contrasena'
+      updated: 'Contrasena actualizada'
+      error: 'Error al cambiar contrasena'
+    }
+    addresses: {
+      title: 'Mis Direcciones'
+      subtitle: 'Gestiona tus direcciones.'
+      empty: 'No tienes direcciones guardadas.'
+      addBtn: 'Anadir direccion'
+      addTitle: 'Nueva direccion'
+      editTitle: 'Editar direccion'
+      firstName: 'Nombre'
+      lastName: 'Apellido'
+      street: 'Direccion'
+      city: 'Ciudad'
+      province: 'Provincia'
+      postalCode: 'Codigo postal'
+      phone: 'Telefono'
+      cancel: 'Cancelar'
+      createBtn: 'Crear direccion'
+      updateBtn: 'Actualizar direccion'
+      created: 'Direccion creada'
+      updated: 'Direccion actualizada'
+      deleted: 'Direccion eliminada'
+      default: 'Predeterminada'
+      setDefault: 'Establecer como predeterminada'
+      defaultSet: 'Direccion predeterminada actualizada'
+      edit: 'Editar'
+      delete: 'Eliminar'
+    }
+  }
+  validation: {
+    identifierMin: 'Ingresa tu email o usuario'
+    passwordMin: 'La contrasena debe tener al menos 8 caracteres'
+    nameMin: 'El nombre debe tener al menos 2 caracteres'
+    usernameMin: 'El usuario debe tener al menos 3 caracteres'
+    usernameMax: 'El usuario no puede superar 30 caracteres'
+    usernamePattern: 'Solo letras, numeros, puntos y guiones bajos'
+    emailInvalid: 'Email invalido'
+    codeLength: 'El codigo debe tener 6 digitos'
+    codePattern: 'Solo numeros'
+    passwordsDoNotMatch: 'Las contrasenas no coinciden'
+    firstNameRequired: 'Nombre requerido'
+    lastNameRequired: 'Apellido requerido'
+    streetRequired: 'Direccion requerida'
+    cityRequired: 'Ciudad requerida'
+    postalCodeRequired: 'Codigo postal requerido'
+    currentPasswordRequired: 'Contrasena actual requerida'
+    confirmPasswordRequired: 'Confirma tu contrasena'
+  }
+  errors: {
+    notFoundTitle: 'Pagina no encontrada'
+    notFound: 'La pagina que buscas no existe o ha sido movida.'
+    serverError: 'Algo salio mal. Estamos trabajando en solucionarlo.'
+    tryAgain: 'Intentar de nuevo'
+    backHome: 'Volver al inicio'
+  }
+  twoFactorSettings: {
+    title: 'Autenticacion de dos factores'
+    enabledDesc: '2FA esta habilitado en tu cuenta'
+    disabledDesc: 'Anade una capa extra de seguridad'
+    enable: 'Habilitar'
+    disable: 'Deshabilitar'
+    enableTitle: 'Habilitar autenticacion de dos factores'
+    enableDesc: 'Ingresa tu contrasena para generar el codigo QR'
+    password: 'Contrasena'
+    cancel: 'Cancelar'
+    continue: 'Continuar'
+    scanTitle: 'Escanea el codigo QR'
+    scanDesc: 'Escanea este codigo con tu app de autenticacion (Google Authenticator, Authy, etc.)'
+    qrAlt: 'Codigo QR para 2FA'
+    backupCodes: 'Codigos de respaldo'
+    copied: 'Copiado'
+    copy: 'Copiar'
+    backupWarning: 'Guarda estos codigos en un lugar seguro. Los necesitaras si pierdes acceso a tu app de autenticacion.'
+    verificationCode: 'Codigo de verificacion'
+    verifyAndActivate: 'Verificar y activar'
+    disableTitle: 'Deshabilitar autenticacion de dos factores'
+    disableDesc: 'Ingresa tu contrasena para deshabilitar 2FA'
+    disableButton: 'Deshabilitar 2FA'
+    enableError: 'Error al habilitar 2FA'
+    invalidCode: 'Codigo invalido'
+    disableError: 'Error al deshabilitar 2FA'
+  }
+  activeSessions: {
+    title: 'Sesiones activas'
+    sessionCount: '{count, plural, one {# sesion activa} other {# sesiones activas}}'
+    revokeOthers: 'Cerrar otras sesiones'
+    current: 'Actual'
+    unknown: 'Desconocido'
+    mobile: 'Movil'
+    desktop: 'Escritorio'
+  }
+  themeSwitcher: {
+    label: 'Tema'
+    light: 'Claro'
+    dark: 'Oscuro'
+    system: 'Sistema'
+  }
+  languageSwitcher: {
+    label: 'Idioma'
+    es: 'Espanol'
+    en: 'English'
+    ca: 'Catala'
+  }
+  passwordStrength: {
+    weak: 'Debil'
+    medium: 'Media'
+    strong: 'Fuerte'
+    veryStrong: 'Muy fuerte'
+  }
+  emails: {
+    common: {
+      fallbackLink: 'Si el boton no funciona, copia y pega este enlace en tu navegador:'
+    }
+    layout: {
+      tagline: 'Tu plantilla de proyecto'
+      supportEmail: 'soporte@tuapp.com'
+      website: 'Sitio web'
+      support: 'Soporte'
+      copyright: 'Todos los derechos reservados.'
+      location: 'Tu ubicacion'
+    }
+    magicLink: {
+      subject: 'Tu enlace de acceso'
+      preview: 'Tu enlace de acceso'
+      heading: 'Accede a tu cuenta'
+      subheading: 'Haz clic en el enlace para iniciar sesion'
+      paragraph: 'Recibimos una solicitud para acceder a tu cuenta. Haz clic en el boton de abajo para iniciar sesion de forma segura sin contrasena:'
+      button: 'Acceder a mi cuenta'
+      infoBox: 'Este enlace expira en <strong>10 minutos</strong> y solo puede usarse una vez. Si no solicitaste este acceso, puedes ignorar este email.'
+      whyMagicLink: 'Por que Magic Link?'
+      featureSecure: 'Acceso seguro sin contrasena'
+      featureOneClick: 'Inicio de sesion con un clic'
+      featureTemporary: 'Enlace temporal de un solo uso'
+    }
+    verification: {
+      subject: 'Verifica tu email'
+      preview: 'Verifica tu email para activar tu cuenta'
+      heading: 'Verifica tu email'
+      subheading: 'Solo un paso mas para activar tu cuenta'
+      greeting: 'Hola {name},'
+      paragraph: 'Gracias por unirte. Para activar tu cuenta, verifica tu direccion de email:'
+      button: 'Verificar mi email'
+      infoBox: 'Este enlace expira en <strong>1 hora</strong>. Si no creaste una cuenta, puedes ignorar este email.'
+      whatYouCanDo: 'Lo que puedes hacer'
+      featureQr: 'Acceso completo a la plataforma'
+      featureEvents: 'Gestiona tu perfil y configuracion'
+      featurePayments: 'Funcionalidades avanzadas'
+      featureWallet: 'Soporte multi-idioma'
+    }
+    resetPassword: {
+      subject: 'Restablece tu contrasena'
+      preview: 'Solicitud para restablecer tu contrasena'
+      heading: 'Restablecer contrasena'
+      subheading: 'Recibimos tu solicitud para cambiar tu contrasena'
+      greeting: 'Hola {name},'
+      paragraph: 'Alguien solicito restablecer la contrasena de tu cuenta. Si fuiste tu, haz clic en el boton de abajo para crear una nueva contrasena:'
+      button: 'Crear nueva contrasena'
+      warningBox: 'Este enlace expira en <strong>1 hora</strong>. Si no solicitaste este cambio, ignora este email. Tu contrasena actual no sera modificada.'
+      securityTips: 'Consejos de seguridad'
+      tipStrong: 'Usa una contrasena de al menos 8 caracteres con letras, numeros y simbolos.'
+      tipUnique: 'No reutilices contrasenas de otros servicios.'
+      tipTwoFactor: 'Habilita la verificacion en dos pasos para mayor proteccion.'
+    }
+  }
+  DataTable: {
+    toolbar: {
+      search: 'Buscar...'
+      clearSearch: 'Limpiar busqueda'
+      refresh: 'Actualizar'
+      density: 'Densidad'
+      densityRows: 'Densidad de filas'
+      densityCompact: 'Compacta'
+      densityDefault: 'Normal'
+      densityComfortable: 'Comoda'
+      columns: 'Columnas'
+      showHideColumns: 'Mostrar/ocultar columnas'
+      visibleColumns: 'Columnas visibles'
+      export: 'Exportar'
+      exportFormat: 'Formato de exportacion'
+      selected: 'seleccionado'
+      selectedPlural: 'seleccionados'
+      clearSelection: 'Limpiar seleccion'
+      fullscreen: 'Pantalla completa'
+      exitFullscreen: 'Salir de pantalla completa'
+      copy: 'Copiar'
+      print: 'Imprimir'
+    }
+    pagination: {
+      ariaLabel: 'Paginacion de tabla'
+      showing: 'Mostrando {start} a {end} de {total}'
+      rowsPerPage: 'Filas por pagina'
+      selectRowsPerPage: 'Seleccionar filas por pagina'
+      firstPage: 'Primera pagina'
+      previousPage: 'Pagina anterior'
+      nextPage: 'Pagina siguiente'
+      lastPage: 'Ultima pagina'
+      pages: 'Paginas'
+      goToPage: 'Ir a pagina {page}'
+    }
+  }
+}
+export default messages

@@ -9,14 +9,18 @@ import { Form } from '@/components/ui/form'
 import { FormTextField } from '@/components/forms/form-text-field'
 import { FormSubmitButton } from '@/components/forms/form-submit-button'
 import { authClient } from '@/lib/auth-client'
-import { changePasswordSchema, type ChangePasswordInput } from '../validations'
+import {
+  createChangePasswordSchema,
+  type ChangePasswordInput,
+} from '../validations'
 
 export function ChangePasswordForm() {
   const [isPending, startTransition] = useTransition()
   const t = useTranslations('account.password')
+  const tv = useTranslations('validation')
 
   const form = useForm<ChangePasswordInput>({
-    resolver: zodResolver(changePasswordSchema),
+    resolver: zodResolver(createChangePasswordSchema(tv)),
     mode: 'onTouched',
     defaultValues: {
       currentPassword: '',

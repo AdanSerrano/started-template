@@ -1,11 +1,5 @@
 import { Heading, Hr, Link, Text } from '@react-email/components'
-import {
-  EmailLayout,
-  FeatureRow,
-  InfoBox,
-  PrimaryButton,
-  styles,
-} from './components'
+import { EmailLayout, InfoBox, PrimaryButton, styles } from './components'
 import { getEmailTranslations, parseSimpleHtml, type EmailLocale } from './i18n'
 
 interface MagicLinkEmailProps {
@@ -32,9 +26,13 @@ export function MagicLinkEmail({ url, locale = 'es' }: MagicLinkEmailProps) {
 
       <Text style={styles.label}>{m.whyMagicLink}</Text>
 
-      <FeatureRow emoji="&#128274;" text={m.featureSecure} />
-      <FeatureRow emoji="&#9889;" text={m.featureOneClick} />
-      <FeatureRow emoji="&#128737;" text={m.featureTemporary} />
+      <Text style={styles.paragraph}>
+        &#8226;&nbsp;&nbsp;{m.featureSecure}
+        <br />
+        &#8226;&nbsp;&nbsp;{m.featureOneClick}
+        <br />
+        &#8226;&nbsp;&nbsp;{m.featureTemporary}
+      </Text>
 
       <Hr style={styles.divider} />
 

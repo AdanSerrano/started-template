@@ -8,7 +8,8 @@ import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import type { Locale } from '@/i18n/routing'
@@ -26,9 +27,9 @@ export function LanguageSwitcher() {
   const t = useTranslations('languageSwitcher')
   const [isPending, startTransition] = useTransition()
 
-  function handleLocaleChange(newLocale: Locale) {
+  function handleLocaleChange(newLocale: string) {
     startTransition(() => {
-      router.replace(pathname, { locale: newLocale })
+      router.replace(pathname, { locale: newLocale as Locale })
     })
   }
 
@@ -45,15 +46,16 @@ export function LanguageSwitcher() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        {locales.map((l) => (
-          <DropdownMenuItem
-            key={l.value}
-            onClick={() => handleLocaleChange(l.value)}
-            className={locale === l.value ? 'bg-accent' : ''}
-          >
-            {l.label}
-          </DropdownMenuItem>
-        ))}
+        <DropdownMenuRadioGroup
+          value={locale}
+          onValueChange={handleLocaleChange}
+        >
+          {locales.map((l) => (
+            <DropdownMenuRadioItem key={l.value} value={l.value}>
+              {l.label}
+            </DropdownMenuRadioItem>
+          ))}
+        </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   )

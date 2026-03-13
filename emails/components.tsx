@@ -14,7 +14,6 @@ import {
 import type { ReactNode } from 'react'
 import { getEmailTranslations, type EmailLocale } from './i18n'
 import {
-  BRAND,
   body,
   accentBar,
   container,
@@ -24,16 +23,10 @@ import {
   buttonSection,
   buttonTd,
   buttonLink,
-  iconBadgeCell,
-  iconBadgeEmoji,
   infoBoxStyle,
   infoBoxText,
   warningBoxStyle,
   warningBoxText,
-  featureIconCell,
-  featureIcon,
-  featureTextCell,
-  featureText,
   footerSectionStyle,
   footerDivider,
   footerTagline,
@@ -136,24 +129,6 @@ export function PrimaryButton({
   )
 }
 
-export function IconBadge({
-  emoji,
-  color = BRAND.primary,
-}: {
-  emoji: string
-  color?: string
-}) {
-  return (
-    <table cellPadding="0" cellSpacing="0" style={{ margin: '0 auto 24px' }}>
-      <tr>
-        <td style={{ ...iconBadgeCell, backgroundColor: `${color}12` }}>
-          <Text style={iconBadgeEmoji}>{emoji}</Text>
-        </td>
-      </tr>
-    </table>
-  )
-}
-
 export function InfoBox({ children }: { children: ReactNode }) {
   return (
     <Section style={infoBoxStyle}>
@@ -167,24 +142,5 @@ export function WarningBox({ children }: { children: ReactNode }) {
     <Section style={warningBoxStyle}>
       <Text style={warningBoxText}>{children}</Text>
     </Section>
-  )
-}
-
-export function FeatureRow({ emoji, text }: { emoji: string; text: string }) {
-  return (
-    <table
-      cellPadding="0"
-      cellSpacing="0"
-      style={{ width: '100%', marginBottom: '12px' }}
-    >
-      <tr>
-        <td style={featureIconCell}>
-          <Text style={featureIcon}>{emoji}</Text>
-        </td>
-        <td style={featureTextCell}>
-          <Text style={featureText}>{text}</Text>
-        </td>
-      </tr>
-    </table>
   )
 }

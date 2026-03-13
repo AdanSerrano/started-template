@@ -4,7 +4,14 @@ import { z } from 'zod/v4'
 import { requireAuth } from '@/lib/auth-server'
 import { createAuditLog } from '@/lib/audit'
 import * as accountService from '../services/account-service'
-import { profileUpdateSchema, addressFormSchema } from '../validations'
+import {
+  createProfileUpdateSchema,
+  createAddressFormSchema,
+} from '../validations'
+
+const passthrough = (key: string) => key
+const profileUpdateSchema = createProfileUpdateSchema(passthrough)
+const addressFormSchema = createAddressFormSchema(passthrough)
 
 export type ActionResult = {
   success: boolean

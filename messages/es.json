@@ -19,7 +19,8 @@
     "showPassword": "Mostrar contrasena",
     "hidePassword": "Ocultar contrasena",
     "close": "Cerrar",
-    "toggleSidebar": "Alternar barra lateral"
+    "toggleSidebar": "Alternar barra lateral",
+    "skipToContent": "Ir al contenido"
   },
   "landing": {
     "hero": {
@@ -244,7 +245,14 @@
     "emailInvalid": "Email invalido",
     "codeLength": "El codigo debe tener 6 digitos",
     "codePattern": "Solo numeros",
-    "passwordsDoNotMatch": "Las contrasenas no coinciden"
+    "passwordsDoNotMatch": "Las contrasenas no coinciden",
+    "firstNameRequired": "Nombre requerido",
+    "lastNameRequired": "Apellido requerido",
+    "streetRequired": "Direccion requerida",
+    "cityRequired": "Ciudad requerida",
+    "postalCodeRequired": "Codigo postal requerido",
+    "currentPasswordRequired": "Contrasena actual requerida",
+    "confirmPasswordRequired": "Confirma tu contrasena"
   },
   "errors": {
     "notFoundTitle": "Pagina no encontrada",

@@ -12,7 +12,10 @@ import { Form } from '@/components/ui/form'
 import { FormTextField } from '@/components/forms/form-text-field'
 import { FormSubmitButton } from '@/components/forms/form-submit-button'
 import { Badge } from '@/components/ui/badge'
-import { profileUpdateSchema, type ProfileUpdateInput } from '../validations'
+import {
+  createProfileUpdateSchema,
+  type ProfileUpdateInput,
+} from '../validations'
 import { updateProfileAction } from '../actions/account-actions'
 import { uploadAvatar } from '../utils/upload-avatar'
 
@@ -33,12 +36,13 @@ export function ProfileForm({
   const [isPending, startTransition] = useTransition()
   const [pendingFile, setPendingFile] = useState<File | null>(null)
   const t = useTranslations('account.profile')
+  const tv = useTranslations('validation')
   const ti = useTranslations('admin.images')
   const router = useRouter()
   const inputRef = useRef<HTMLInputElement>(null)
 
   const form = useForm<ProfileUpdateInput>({
-    resolver: zodResolver(profileUpdateSchema),
+    resolver: zodResolver(createProfileUpdateSchema(tv)),
     mode: 'onTouched',
     defaultValues,
   })

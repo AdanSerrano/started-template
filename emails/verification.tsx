@@ -1,11 +1,5 @@
 import { Heading, Hr, Link, Text } from '@react-email/components'
-import {
-  EmailLayout,
-  FeatureRow,
-  InfoBox,
-  PrimaryButton,
-  styles,
-} from './components'
+import { EmailLayout, InfoBox, PrimaryButton, styles } from './components'
 import {
   getEmailTranslations,
   interpolate,
@@ -44,10 +38,15 @@ export function VerificationEmail({
 
       <Text style={styles.label}>{m.whatYouCanDo}</Text>
 
-      <FeatureRow emoji="&#127910;" text={m.featureQr} />
-      <FeatureRow emoji="&#127912;" text={m.featureEvents} />
-      <FeatureRow emoji="&#128230;" text={m.featurePayments} />
-      <FeatureRow emoji="&#11088;" text={m.featureWallet} />
+      <Text style={styles.paragraph}>
+        &#8226;&nbsp;&nbsp;{m.featureQr}
+        <br />
+        &#8226;&nbsp;&nbsp;{m.featureEvents}
+        <br />
+        &#8226;&nbsp;&nbsp;{m.featurePayments}
+        <br />
+        &#8226;&nbsp;&nbsp;{m.featureWallet}
+      </Text>
 
       <Hr style={styles.divider} />
 

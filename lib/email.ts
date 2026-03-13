@@ -8,7 +8,7 @@ import type { ReactElement } from 'react'
 import { getEmailService } from '@/lib/providers'
 import type { EmailLocale } from '@/emails/i18n'
 
-const FROM =
+const DEFAULT_FROM =
   process.env.EMAIL_FROM ?? 'Starter App <no-reply@your-domain.com>'
 
 interface SendEmailParams {
@@ -17,6 +17,8 @@ interface SendEmailParams {
   text?: string
   react?: ReactElement
   locale?: EmailLocale
+  idempotencyKey?: string
+  tags?: { name: string; value: string }[]
 }
 
 /**
@@ -28,14 +30,18 @@ export async function sendEmail({
   subject,
   text,
   react,
+  idempotencyKey,
+  tags,
 }: SendEmailParams): Promise<void> {
   const emailService = getEmailService()
 
   await emailService.send({
-    from: FROM,
+    from: DEFAULT_FROM,
     to,
     subject,
     ...(react ? { react } : { text: text ?? '' }),
+    ...(idempotencyKey && { idempotencyKey }),
+    ...(tags && { tags }),
   })
 }
 

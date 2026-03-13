@@ -56,11 +56,10 @@ const nextConfig: NextConfig = {
     'papaparse',
   ],
   experimental: {
+    turbopackFileSystemCacheForBuild: true,
     optimizePackageImports: [
-      'lucide-react',
       '@react-email/components',
       'recharts',
-      'date-fns',
       'radix-ui',
       'zod',
       'drizzle-orm',

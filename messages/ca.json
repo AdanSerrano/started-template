@@ -19,7 +19,8 @@
     "showPassword": "Mostrar contrasenya",
     "hidePassword": "Amagar contrasenya",
     "close": "Tancar",
-    "toggleSidebar": "Alternar barra lateral"
+    "toggleSidebar": "Alternar barra lateral",
+    "skipToContent": "Anar al contingut"
   },
   "landing": {
     "hero": {
@@ -244,7 +245,14 @@
     "emailInvalid": "Email invalid",
     "codeLength": "El codi ha de tenir 6 digits",
     "codePattern": "Nomes numeros",
-    "passwordsDoNotMatch": "Les contrasenyes no coincideixen"
+    "passwordsDoNotMatch": "Les contrasenyes no coincideixen",
+    "firstNameRequired": "Nom requerit",
+    "lastNameRequired": "Cognom requerit",
+    "streetRequired": "Adreca requerida",
+    "cityRequired": "Ciutat requerida",
+    "postalCodeRequired": "Codi postal requerit",
+    "currentPasswordRequired": "Contrasenya actual requerida",
+    "confirmPasswordRequired": "Confirma la teva contrasenya"
   },
   "errors": {
     "notFoundTitle": "Pagina no trobada",

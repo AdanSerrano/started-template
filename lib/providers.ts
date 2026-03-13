@@ -18,6 +18,7 @@ import type {
   IHttpClient,
   IErrorMonitoringService,
   IAnalyticsService,
+  ICache,
 } from '@/lib/interfaces'
 
 import {
@@ -31,6 +32,7 @@ import {
   AxiosHttpClient,
   SentryMonitoringAdapter,
   GA4AnalyticsService,
+  MemoryCacheService,
 } from '@/lib/adapters'
 
 // ────────────────────────────────────────────────────────────
@@ -47,6 +49,7 @@ let jobsInstance: IJobsService | null = null
 let httpClientInstance: IHttpClient | null = null
 let errorMonitoringInstance: IErrorMonitoringService | null = null
 let analyticsInstance: IAnalyticsService | null = null
+let cacheInstance: ICache | null = null
 
 // ────────────────────────────────────────────────────────────
 // Email
@@ -158,6 +161,17 @@ export function getAnalytics(): IAnalyticsService {
 }
 
 // ────────────────────────────────────────────────────────────
+// Cache
+// ────────────────────────────────────────────────────────────
+
+export function getCacheService(): ICache {
+  if (!cacheInstance) {
+    cacheInstance = new MemoryCacheService()
+  }
+  return cacheInstance
+}
+
+// ────────────────────────────────────────────────────────────
 // Testing — permite inyectar mocks
 // ────────────────────────────────────────────────────────────
 
@@ -190,8 +204,13 @@ export function resetProviders(): void {
   httpClientInstance = null
   errorMonitoringInstance = null
   analyticsInstance = null
+  cacheInstance = null
 }
 
 export function setAnalyticsInstance(analytics: IAnalyticsService): void {
   analyticsInstance = analytics
+}
+
+export function setCacheInstance(cache: ICache): void {
+  cacheInstance = cache
 }

@@ -13,6 +13,8 @@ export interface SendEmailParams {
   replyTo?: string
   cc?: string | string[]
   bcc?: string | string[]
+  idempotencyKey?: string | undefined
+  tags?: { name: string; value: string }[] | undefined
 }
 
 /**

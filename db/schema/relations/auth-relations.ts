@@ -34,3 +34,10 @@ export const twoFactorsRelations = relations(twoFactors, ({ one }) => ({
     references: [users.id],
   }),
 }))
+
+export const addressesRelations = relations(addresses, ({ one }) => ({
+  user: one(users, {
+    fields: [addresses.userId],
+    references: [users.id],
+  }),
+}))

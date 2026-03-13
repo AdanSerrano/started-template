@@ -21,5 +21,8 @@ export const verifications = pgTable(
       .defaultNow()
       .notNull(),
   },
-  (table) => [index('verification_identifier_idx').on(table.identifier)],
+  (table) => [
+    index('verification_identifier_idx').on(table.identifier),
+    index('verification_expires_idx').on(table.expiresAt),
+  ],
 )

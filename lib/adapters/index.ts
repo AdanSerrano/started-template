@@ -23,3 +23,6 @@ export { SentryMonitoringAdapter } from './sentry-monitoring'
 
 // Analytics
 export { GA4AnalyticsService } from './ga4-analytics'
+
+// Cache
+export { MemoryCacheService } from './memory-cache'

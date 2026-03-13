@@ -1,6 +1,38 @@
 import { db } from '@/lib/db'
 import * as schema from '@/db/schema'
-import { eq } from 'drizzle-orm'
+import { eq, sql } from 'drizzle-orm'
+
+// ────────────────────────────────────────────────────────────
+// Prepared statements — queries reutilizadas con parametros
+// ────────────────────────────────────────────────────────────
+
+const findIdByEmailQuery = db
+  .select({ id: schema.users.id })
+  .from(schema.users)
+  .where(eq(schema.users.email, sql.placeholder('email')))
+  .prepare('find_id_by_email')
+
+const findIdByUsernameQuery = db
+  .select({ id: schema.users.id })
+  .from(schema.users)
+  .where(eq(schema.users.username, sql.placeholder('username')))
+  .prepare('find_id_by_username')
+
+const getFailedLoginAttemptsQuery = db
+  .select({ failedLoginAttempts: schema.users.failedLoginAttempts })
+  .from(schema.users)
+  .where(eq(schema.users.id, sql.placeholder('userId')))
+  .prepare('get_failed_login_attempts')
+
+const getLockedUntilQuery = db
+  .select({ lockedUntil: schema.users.lockedUntil })
+  .from(schema.users)
+  .where(eq(schema.users.id, sql.placeholder('userId')))
+  .prepare('get_locked_until')
+
+// ────────────────────────────────────────────────────────────
+// Repository
+// ────────────────────────────────────────────────────────────
 
 export interface IUserRepository {
   findIdByEmail(email: string): Promise<string | null>
@@ -19,30 +51,23 @@ export interface IUserRepository {
 
 export const userRepository: IUserRepository = {
   async findIdByEmail(email: string): Promise<string | null> {
-    const [user] = await db
-      .select({ id: schema.users.id })
-      .from(schema.users)
-      .where(eq(schema.users.email, email.toLowerCase().trim()))
+    const [user] = await findIdByEmailQuery.execute({
+      email: email.toLowerCase().trim(),
+    })
 
     return user?.id ?? null
   },
 
   async findIdByUsername(username: string): Promise<string | null> {
-    const [user] = await db
-      .select({ id: schema.users.id })
-      .from(schema.users)
-      .where(eq(schema.users.username, username.toLowerCase().trim()))
+    const [user] = await findIdByUsernameQuery.execute({
+      username: username.toLowerCase().trim(),
+    })
 
     return user?.id ?? null
   },
 
   async getFailedLoginAttempts(userId: string): Promise<number | null> {
-    const [user] = await db
-      .select({
-        failedLoginAttempts: schema.users.failedLoginAttempts,
-      })
-      .from(schema.users)
-      .where(eq(schema.users.id, userId))
+    const [user] = await getFailedLoginAttemptsQuery.execute({ userId })
 
     return user?.failedLoginAttempts ?? null
   },
@@ -80,12 +105,7 @@ export const userRepository: IUserRepository = {
   },
 
   async getLockedUntil(userId: string): Promise<Date | null> {
-    const [user] = await db
-      .select({
-        lockedUntil: schema.users.lockedUntil,
-      })
-      .from(schema.users)
-      .where(eq(schema.users.id, userId))
+    const [user] = await getLockedUntilQuery.execute({ userId })
 
     return user?.lockedUntil ?? null
   },

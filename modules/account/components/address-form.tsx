@@ -13,7 +13,7 @@ import {
   FormCancelButton,
   FormButtonGroup,
 } from '@/components/forms/form-submit-button'
-import { addressFormSchema, type AddressFormInput } from '../validations'
+import { createAddressFormSchema, type AddressFormInput } from '../validations'
 import {
   createAddressAction,
   updateAddressAction,
@@ -32,11 +32,12 @@ export function AddressForm({
 }: AddressFormProps) {
   const [isPending, startTransition] = useTransition()
   const t = useTranslations('account.addresses')
+  const tv = useTranslations('validation')
   const router = useRouter()
   const isEditing = !!defaultValues?.id
 
   const form = useForm<AddressFormInput>({
-    resolver: zodResolver(addressFormSchema),
+    resolver: zodResolver(createAddressFormSchema(tv)),
     mode: 'onTouched',
     defaultValues: defaultValues ?? {
       id: '',
