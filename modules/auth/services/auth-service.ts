@@ -41,7 +41,7 @@ export const authService = {
     const session = await this.requireAuth()
 
     if (!roles.includes(session.user.role)) {
-      throw new ForbiddenError('No tienes permisos para realizar esta accion')
+      throw new ForbiddenError('Forbidden: insufficient permissions')
     }
 
     return session

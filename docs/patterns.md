@@ -6,25 +6,27 @@
 
 ## Matriz de Decision
 
-| Problema                         | Patron                      | Ejemplo                              |
-| -------------------------------- | --------------------------- | ------------------------------------ |
-| Crear objetos sin exponer logica | **Factory**                 | `getEmailProvider()`                 |
-| Una sola instancia global        | **Singleton**               | Cliente DB, Resend                   |
-| Construir objetos complejos      | **Builder**                 | Emails con muchas opciones           |
-| Adaptar interfaz incompatible    | **Adapter**                 | Drizzle->IRepository, R2->IStorage   |
-| Simplificar API compleja         | **Facade**                  | `userService.processAction()`        |
-| Agregar comportamiento           | **Decorator**               | Logging, caching, retry              |
-| Algoritmos intercambiables       | **Strategy**                | Notification channels, exports       |
-| Notificar cambios                | **Observer**                | Eventos del sistema, webhooks        |
-| Objeto con estados               | **State**                   | Entidad con workflow de estados      |
-| Validacion en capas              | **Chain of Responsibility** | Validacion multi-paso                |
-| Acciones reversibles             | **Command**                 | Operaciones con audit log            |
+| Problema                         | Patron                      | Ejemplo                            |
+| -------------------------------- | --------------------------- | ---------------------------------- |
+| Crear objetos sin exponer logica | **Factory**                 | `getEmailProvider()`               |
+| Una sola instancia global        | **Singleton**               | Cliente DB, Resend                 |
+| Construir objetos complejos      | **Builder**                 | Emails con muchas opciones         |
+| Adaptar interfaz incompatible    | **Adapter**                 | Drizzle->IRepository, R2->IStorage |
+| Simplificar API compleja         | **Facade**                  | `userService.processAction()`      |
+| Agregar comportamiento           | **Decorator**               | Logging, caching, retry            |
+| Algoritmos intercambiables       | **Strategy**                | Notification channels, exports     |
+| Notificar cambios                | **Observer**                | Eventos del sistema, webhooks      |
+| Objeto con estados               | **State**                   | Entidad con workflow de estados    |
+| Validacion en capas              | **Chain of Responsibility** | Validacion multi-paso              |
+| Acciones reversibles             | **Command**                 | Operaciones con audit log          |
 
 ---
 
 ## Patrones Creacionales
 
 ### Factory Pattern
+
+> **Estado:** Planned — Este ejemplo (NotificationFactory) aun no esta implementado. El patron Factory SI se usa en `lib/providers.ts`.
 
 ```typescript
 // lib/factories/notification-factory.ts
@@ -64,6 +66,8 @@ export const db = getDb()
 ```
 
 ### Builder Pattern
+
+> **Estado:** Planned — Este patron (EmailBuilder) aun no esta implementado en el codebase.
 
 ```typescript
 // lib/builders/email-builder.ts
@@ -189,9 +193,7 @@ export class ExcelExportStrategy implements IExportStrategy {
 
 // Uso
 const strategy =
-  format === 'excel'
-    ? new ExcelExportStrategy()
-    : new CSVExportStrategy()
+  format === 'excel' ? new ExcelExportStrategy() : new CSVExportStrategy()
 const buffer = await strategy.export(data)
 ```
 
@@ -250,7 +252,9 @@ export abstract class BaseValidationHandler implements IValidationHandler {
     return result
   }
 
-  protected abstract validate(request: ValidationRequest): Promise<ValidationResult>
+  protected abstract validate(
+    request: ValidationRequest,
+  ): Promise<ValidationResult>
 }
 
 // Encadenar validadores
@@ -265,6 +269,8 @@ function createValidationChain(): IValidationHandler {
 ```
 
 ### Observer Pattern
+
+> **Estado:** Planned — Este patron (EventBus) aun no esta implementado en el codebase.
 
 ```typescript
 // lib/events/event-emitter.ts

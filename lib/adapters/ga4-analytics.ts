@@ -80,10 +80,12 @@ export class GA4AnalyticsService implements IAnalyticsService {
     })
   }
 
+  // Feature flags: stub — usar un servicio dedicado (LaunchDarkly, Flagsmith, etc.)
   isFeatureEnabled(): boolean {
     return false
   }
 
+  // Feature flags: stub — usar un servicio dedicado (LaunchDarkly, Flagsmith, etc.)
   getFeatureFlag<T>(): T | undefined {
     return undefined
   }

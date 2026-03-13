@@ -26,6 +26,7 @@ import {
   Quote,
   Minus,
 } from 'lucide-react'
+import DOMPurify from 'dompurify'
 import { cn } from '@/lib/utils'
 import type { BaseFormFieldProps } from './form-field.types'
 
@@ -118,7 +119,7 @@ const MarkdownPreview = memo(function MarkdownPreview({
       .replace(/^\- (.*$)/gim, '<li>$1</li>')
       .replace(/^\d+\. (.*$)/gim, '<li>$1</li>')
       .replace(/\n/gim, '<br />')
-    return result
+    return DOMPurify.sanitize(result)
   }, [content])
 
   return (

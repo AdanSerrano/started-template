@@ -10,7 +10,8 @@ import {
   useState,
 } from 'react'
 import { useStore, type StoreApi } from 'zustand'
-import { useSearchParams, usePathname } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
+import { usePathname } from '@/i18n/navigation'
 import { CustomDataTable } from './custom-datatable'
 import { DataTableStoreContext } from './store/datatable-context'
 import { createDataTableStore } from './store/create-datatable-store'

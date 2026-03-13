@@ -69,10 +69,32 @@ export async function uploadAvatarAction(
     return { success: false, error: 'Archivo requerido' }
   }
 
+  const ALLOWED_MIME_TYPES = [
+    'image/jpeg',
+    'image/png',
+    'image/webp',
+    'image/gif',
+  ]
+  const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
+  const MIME_TO_EXT: Record<string, string> = {
+    'image/jpeg': 'jpg',
+    'image/png': 'png',
+    'image/webp': 'webp',
+    'image/gif': 'gif',
+  }
+
+  if (!ALLOWED_MIME_TYPES.includes(file.type)) {
+    return { success: false, error: 'Tipo de archivo no permitido' }
+  }
+
+  if (file.size > MAX_FILE_SIZE) {
+    return { success: false, error: 'El archivo excede 5MB' }
+  }
+
   const { getStorageService } = await import('@/lib/providers')
   const storage = getStorageService()
 
-  const extension = file.name.split('.').pop() || 'jpg'
+  const extension = MIME_TO_EXT[file.type] || 'jpg'
   const uniqueId = crypto.randomUUID().slice(0, 8)
   const key = `public/avatars/${session.user.id}/${uniqueId}.${extension}`
 

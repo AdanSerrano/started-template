@@ -17,9 +17,10 @@ export { TriggerJobsService } from './trigger-jobs'
 
 // HTTP
 export { AxiosHttpClient } from './axios-http'
+export { FetchHttpClient } from './fetch-http'
 
 // Error Monitoring
-export { SentryMonitoringAdapter } from './sentry-monitoring'
+export { ConsoleMonitoringAdapter } from './sentry-monitoring'
 
 // Analytics
 export { GA4AnalyticsService } from './ga4-analytics'

@@ -6,38 +6,36 @@
 
 ## Stack Principal
 
-| Capa            | Tecnologia                   | Funcion                                |
-| --------------- | ---------------------------- | -------------------------------------- |
-| Framework       | Next.js 16 (App Router)      | UI, SSR, Server Components             |
-| UI              | React 19.2                   | Componentes, hooks                     |
-| Lenguaje        | TypeScript 5.x (strict)      | Type-safety en todo el stack           |
-| Estilos         | Tailwind CSS 4 + shadcn/ui   | Design system utility-first            |
-| Base de Datos   | PostgreSQL (Neon serverless)  | Datos relacionales                     |
-| ORM             | Drizzle ORM                  | Queries type-safe, migraciones SQL     |
-| HTTP Client     | Axios (via adapter)          | Requests HTTP a APIs externas          |
-| Auth            | Better Auth                  | Magic links, OAuth, 2FA, roles         |
-| Email           | Resend + React Email         | Transaccional + invitaciones           |
-| Storage         | Cloudflare R2                | Archivos, imagenes ($0 egress)         |
-| Background Jobs | Trigger.dev                  | Emails, tareas asincronas, crons       |
-| Validacion      | Zod 4                        | Schemas, forms, API, webhooks          |
-| Estado Cliente  | Zustand 5                    | UI state compartido                    |
-| Forms           | react-hook-form              | Forms performantes con Zod             |
-| Tablas          | @tanstack/react-table        | Sorting, filtering, paginacion         |
-| Graficas        | recharts                     | Visualizaciones del dashboard          |
-| Animaciones     | motion                       | Transiciones, modales                  |
-| Toasts          | sonner                       | Notificaciones toast                   |
-| Command         | cmdk                         | Paleta de comandos                     |
-| URL State       | nuqs                         | Query params type-safe                 |
-| Temas           | next-themes                  | Dark/light mode                        |
-| i18n            | next-intl                    | Internacionalizacion ES/EN/CA          |
-| Excel           | xlsx (SheetJS)               | Importar/exportar Excel                |
-| CSV             | papaparse                    | Parsear CSV                            |
-| PDF             | @react-pdf/renderer          | Reportes PDF                           |
-| Iconos          | lucide-react                 | Iconos SVG tree-shakeable              |
-| Analytics       | Google Analytics 4           | Tracking (via adapter)                 |
-| Rate Limiting   | In-memory sliding window     | Proteccion auth (sin Redis)            |
-| CI/CD           | GitHub Actions + bun         | type-check + lint + build              |
-| Deploy          | Vercel                       | Hosting, edge                          |
+| Capa            | Tecnologia                   | Funcion                            |
+| --------------- | ---------------------------- | ---------------------------------- |
+| Framework       | Next.js 16 (App Router)      | UI, SSR, Server Components         |
+| UI              | React 19.2                   | Componentes, hooks                 |
+| Lenguaje        | TypeScript 5.x (strict)      | Type-safety en todo el stack       |
+| Estilos         | Tailwind CSS 4 + shadcn/ui   | Design system utility-first        |
+| Base de Datos   | PostgreSQL (Neon serverless) | Datos relacionales                 |
+| ORM             | Drizzle ORM                  | Queries type-safe, migraciones SQL |
+| HTTP Client     | Axios (via adapter)          | Requests HTTP a APIs externas      |
+| Auth            | Better Auth                  | Magic links, OAuth, 2FA, roles     |
+| Email           | Resend + React Email         | Transaccional + invitaciones       |
+| Storage         | Cloudflare R2                | Archivos, imagenes ($0 egress)     |
+| Background Jobs | Trigger.dev                  | Emails, tareas asincronas, crons   |
+| Validacion      | Zod 4                        | Schemas, forms, API, webhooks      |
+| Estado Cliente  | Zustand 5                    | UI state compartido                |
+| Forms           | react-hook-form              | Forms performantes con Zod         |
+| Tablas          | @tanstack/react-table        | Sorting, filtering, paginacion     |
+| Graficas        | recharts                     | Visualizaciones del dashboard      |
+| Toasts          | sonner                       | Notificaciones toast               |
+| Command         | cmdk                         | Paleta de comandos                 |
+| Temas           | next-themes                  | Dark/light mode                    |
+| i18n            | next-intl                    | Internacionalizacion ES/EN/CA      |
+| Excel           | ExcelJS                      | Importar/exportar Excel            |
+| CSV             | papaparse                    | Parsear CSV                        |
+| PDF             | @react-pdf/renderer          | Reportes PDF                       |
+| Iconos          | lucide-react                 | Iconos SVG tree-shakeable          |
+| Analytics       | Google Analytics 4           | Tracking (via adapter)             |
+| Rate Limiting   | In-memory sliding window     | Proteccion auth (sin Redis)        |
+| CI/CD           | GitHub Actions + bun         | type-check + lint + build          |
+| Deploy          | Vercel                       | Hosting, edge                      |
 
 ---
 

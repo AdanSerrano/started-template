@@ -30,7 +30,8 @@ import {
   PapaParseCSVImportService,
   TriggerJobsService,
   AxiosHttpClient,
-  SentryMonitoringAdapter,
+  FetchHttpClient,
+  ConsoleMonitoringAdapter,
   GA4AnalyticsService,
   MemoryCacheService,
 } from '@/lib/adapters'
@@ -126,7 +127,7 @@ export function getJobsService(): IJobsService {
 
 export function getHttpClient(): IHttpClient {
   if (!httpClientInstance) {
-    httpClientInstance = new AxiosHttpClient()
+    httpClientInstance = new FetchHttpClient()
   }
   return httpClientInstance
 }
@@ -144,7 +145,7 @@ export function createHttpClient(
 
 export function getErrorMonitoring(): IErrorMonitoringService {
   if (!errorMonitoringInstance) {
-    errorMonitoringInstance = new SentryMonitoringAdapter()
+    errorMonitoringInstance = new ConsoleMonitoringAdapter()
   }
   return errorMonitoringInstance
 }

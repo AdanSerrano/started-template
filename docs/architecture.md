@@ -117,19 +117,19 @@ app/pages → modules/actions + modules/components
 
 ### Interfaces disponibles
 
-| Interface                 | Adapter actual              | Alternativas futuras |
-| ------------------------- | --------------------------- | -------------------- |
-| `IHttpClient`             | `AxiosHttpClient`           | FetchHttpClient      |
-| `IEmailService`           | `ResendEmailService`        | SendGridEmailService |
-| `IStorageService`         | `R2StorageService`          | S3StorageService     |
-| `IExcelExportService`     | `XLSXExportService`         | ExcelJSExportService |
-| `IExcelImportService`     | `XLSXImportService`         | --                   |
-| `ICSVImportService`       | `PapaParseCSVImportService` | --                   |
-| `IPDFExportService`       | `ReactPDFExportService`     | PuppeteerPDF         |
-| `IJobsService`            | `TriggerJobsService`        | BullMQJobsService    |
-| `IAnalyticsService`       | `GA4AnalyticsService`       | PostHog, Mixpanel    |
-| `IErrorMonitoringService` | `SentryMonitoringAdapter`   | Real Sentry SDK      |
-| `IRateLimitResult`        | In-memory sliding window    | Redis-based          |
+| Interface                 | Adapter actual              | Alternativas futuras                        |
+| ------------------------- | --------------------------- | ------------------------------------------- |
+| `IHttpClient`             | `AxiosHttpClient`           | FetchHttpClient                             |
+| `IEmailService`           | `ResendEmailService`        | SendGridEmailService                        |
+| `IStorageService`         | `R2StorageService`          | S3StorageService                            |
+| `IExcelExportService`     | `XLSXExportService`         | ExcelJSExportService                        |
+| `IExcelImportService`     | `XLSXImportService`         | --                                          |
+| `ICSVImportService`       | `PapaParseCSVImportService` | --                                          |
+| `IPDFExportService`       | `ReactPDFExportService`     | PuppeteerPDF                                |
+| `IJobsService`            | `TriggerJobsService`        | BullMQJobsService                           |
+| `IAnalyticsService`       | `GA4AnalyticsService`       | PostHog, Mixpanel                           |
+| `IErrorMonitoringService` | `ConsoleMonitoringAdapter`  | Reemplazar con @sentry/nextjs en produccion |
+| `IRateLimitResult`        | In-memory sliding window    | Redis-based                                 |
 
 ### Uso correcto
 
@@ -153,10 +153,10 @@ import axios from 'axios'        // NUNCA fuera de lib/adapters/
 
 Componentes en `components/seo/`:
 
-| Componente         | Schema.org Type | Usado en      |
-| ------------------ | --------------- | ------------- |
-| `BreadcrumbJsonLd` | BreadcrumbList  | Paginas       |
-| `JsonLdScripts`    | Organization    | Landing page  |
+| Componente         | Schema.org Type | Usado en     |
+| ------------------ | --------------- | ------------ |
+| `BreadcrumbJsonLd` | BreadcrumbList  | Paginas      |
+| `JsonLdScripts`    | Organization    | Landing page |
 
 Cada pagina publica incluye: canonical URL, hreflang alternates (es/en/ca), OG images.
 

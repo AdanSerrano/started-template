@@ -38,7 +38,7 @@ session: {
 plugins: [
   username(),
   twoFactor({ issuer: 'Starter App' }),
-  admin({ ac, roles, defaultRole: 'org_admin' }),
+  admin({ ac, roles, defaultRole: 'user' }),
   magicLink({ ... }),
   nextCookies(), // DEBE ser el ULTIMO plugin
 ]
@@ -80,7 +80,7 @@ export async function requireAuth(redirectTo = '/login') {
 
 // Requerir rol especifico
 export async function requireRole(
-  allowedRoles: ('super_admin' | 'org_admin' | 'org_staff')[],
+  allowedRoles: ('super_admin' | 'admin' | 'user')[],
   redirectTo = '/dashboard',
 ) {
   const session = await requireAuth()
@@ -175,7 +175,7 @@ Client Component recibe session como prop
 // db/schema/users.ts
 (table) => [
   index('user_email_idx').on(table.email),
-  index('user_org_idx').on(table.organizationId),
+  index('user_role_idx').on(table.role),
 ]
 ```
 
@@ -183,11 +183,11 @@ Client Component recibe session como prop
 
 ## Roles y Permisos
 
-| Rol           | Acceso                        | Asignacion            |
-| ------------- | ----------------------------- | --------------------- |
-| `super_admin` | Todo el sistema               | Hardcoded fundadores  |
-| `org_admin`   | CRUD su org, config           | Al crear organizacion |
-| `org_staff`   | Ver recursos, gestionar datos | Invitado por admin    |
+| Rol           | Acceso                          | Asignacion               |
+| ------------- | ------------------------------- | ------------------------ |
+| `super_admin` | Todo el sistema                 | Hardcoded fundadores     |
+| `admin`       | Gestion de usuarios y config    | Asignado por super_admin |
+| `user`        | Operaciones basicas del sistema | Registro por defecto     |
 
 ---
 
@@ -215,9 +215,9 @@ export default async function AdminPage() {
 
 ---
 
-## Multi-tenancy — REGLA ABSOLUTA
+## Multi-tenancy — Planned / Futuro
 
-> **NUNCA una query sin filtrar por `organizationId`.**
+> **Nota:** Multi-tenancy aun no esta implementado. Las siguientes son pautas para cuando se implemente.
 
 ```typescript
 // SIEMPRE
@@ -225,7 +225,7 @@ const session = await requireAuth()
 await db
   .select()
   .from(resources)
-  .where(eq(resources.organizationId, session.user.organizationId))
+  .where(eq(resources.organizationId, session.user.organizationId)) // futuro
 
 // NUNCA
 await db.select().from(resources)

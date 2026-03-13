@@ -83,7 +83,7 @@ export async function applyRateLimit(
       allowed: false,
       response: NextResponse.json(
         {
-          error: 'Too many attempts. Please wait before trying again.',
+          error: 'RATE_LIMIT_EXCEEDED',
           retryAfter,
           code: 'RATE_LIMIT_EXCEEDED',
         },

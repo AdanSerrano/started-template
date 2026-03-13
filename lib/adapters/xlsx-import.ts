@@ -1,4 +1,4 @@
-import * as XLSX from 'xlsx'
+import ExcelJS from 'exceljs'
 import type {
   IExcelImportService,
   ParseResult,
@@ -6,56 +6,64 @@ import type {
 } from '@/lib/interfaces'
 
 /**
- * Implementacion de IExcelImportService usando xlsx (SheetJS).
- * Para cambiar a ExcelJS, crear nuevo adapter.
+ * Implementacion de IExcelImportService usando ExcelJS.
  */
 export class XLSXImportService implements IExcelImportService {
   async parse<T extends Record<string, unknown>>(
     file: Buffer,
     options?: ExcelParseOptions,
   ): Promise<ParseResult<T>> {
-    const workbook = XLSX.read(file, { type: 'buffer' })
+    const workbook = new ExcelJS.Workbook()
+    await workbook.xlsx.load(file as unknown as ExcelJS.Buffer)
 
-    // Seleccionar hoja
-    let sheetName: string
-    if (options?.sheetName) {
-      sheetName = options.sheetName
-    } else if (options?.sheetIndex !== undefined) {
-      sheetName =
-        workbook.SheetNames[options.sheetIndex] ?? workbook.SheetNames[0]!
-    } else {
-      sheetName = workbook.SheetNames[0]!
-    }
-
-    const worksheet = workbook.Sheets[sheetName]
+    const worksheet = this.getWorksheet(workbook, options)
     if (!worksheet) {
       return {
         data: [],
-        errors: [{ row: 0, message: `Hoja "${sheetName}" no encontrada` }],
+        errors: [{ row: 0, message: 'Hoja no encontrada' }],
         meta: { totalRows: 0, successfulRows: 0, failedRows: 0 },
       }
     }
 
-    // Convertir a JSON
-    const jsonOptions: XLSX.Sheet2JSONOpts = {
-      defval: null,
-      blankrows: options?.skipEmptyRows !== false,
-    }
-    // Solo agregar header si necesitamos cambiar el default
-    if (options?.hasHeader === false) {
-      jsonOptions.header = 1
-    }
-    const jsonData = XLSX.utils.sheet_to_json<T>(worksheet, jsonOptions)
-
     const data: T[] = []
     const errors: Array<{ row: number; message: string }> = []
+    let headers: string[] = []
 
-    jsonData.forEach((row, index) => {
+    worksheet.eachRow((row, rowNumber) => {
+      if (rowNumber === 1 && options?.hasHeader !== false) {
+        headers = row.values
+          ? (row.values as unknown[]).slice(1).map((v) => String(v ?? ''))
+          : []
+        return
+      }
+
       try {
-        data.push(row)
+        const values = row.values
+          ? (row.values as unknown[]).slice(1).map((v) => this.getCellValue(v))
+          : []
+
+        if (
+          options?.skipEmptyRows !== false &&
+          values.every((v) => v == null)
+        ) {
+          return
+        }
+
+        const record: Record<string, unknown> = {}
+        if (headers.length > 0) {
+          headers.forEach((header, index) => {
+            record[header] = values[index] ?? null
+          })
+        } else {
+          values.forEach((value, index) => {
+            record[String(index)] = value
+          })
+        }
+
+        data.push(record as T)
       } catch (error) {
         errors.push({
-          row: index + 2, // +2 porque Excel empieza en 1 y tiene header
+          row: rowNumber,
           message: error instanceof Error ? error.message : 'Error desconocido',
         })
       }
@@ -65,7 +73,7 @@ export class XLSXImportService implements IExcelImportService {
       data,
       errors,
       meta: {
-        totalRows: jsonData.length,
+        totalRows: data.length + errors.length,
         successfulRows: data.length,
         failedRows: errors.length,
       },
@@ -73,8 +81,9 @@ export class XLSXImportService implements IExcelImportService {
   }
 
   async getSheetNames(file: Buffer): Promise<string[]> {
-    const workbook = XLSX.read(file, { type: 'buffer' })
-    return workbook.SheetNames
+    const workbook = new ExcelJS.Workbook()
+    await workbook.xlsx.load(file as unknown as ExcelJS.Buffer)
+    return workbook.worksheets.map((ws) => ws.name)
   }
 
   async parseWithSchema<T>(
@@ -116,5 +125,39 @@ export class XLSXImportService implements IExcelImportService {
         failedRows: errors.length,
       },
     }
+  }
+
+  private getWorksheet(
+    workbook: ExcelJS.Workbook,
+    options?: ExcelParseOptions,
+  ): ExcelJS.Worksheet | undefined {
+    if (options?.sheetName) {
+      return workbook.getWorksheet(options.sheetName)
+    }
+    if (options?.sheetIndex !== undefined) {
+      return workbook.worksheets[options.sheetIndex]
+    }
+    return workbook.worksheets[0]
+  }
+
+  private getCellValue(value: unknown): unknown {
+    if (value == null) return null
+    if (typeof value === 'object' && value !== null) {
+      // ExcelJS rich text
+      if ('richText' in value) {
+        return (value as { richText: { text: string }[] }).richText
+          .map((r) => r.text)
+          .join('')
+      }
+      // ExcelJS formula result
+      if ('result' in value) {
+        return (value as { result: unknown }).result
+      }
+      // ExcelJS hyperlink
+      if ('text' in value) {
+        return (value as { text: string }).text
+      }
+    }
+    return value
   }
 }

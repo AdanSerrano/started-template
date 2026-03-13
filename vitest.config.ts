@@ -10,5 +10,10 @@ export default defineConfig({
     setupFiles: ['./tests/setup.ts'],
     include: ['**/*.test.{ts,tsx}'],
     exclude: ['node_modules', '.next', 'e2e'],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'lcov'],
+      exclude: ['node_modules/', '.next/', 'tests/', '*.config.*'],
+    },
   },
 })

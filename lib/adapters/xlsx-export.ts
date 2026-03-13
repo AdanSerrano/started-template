@@ -1,9 +1,8 @@
-import * as XLSX from 'xlsx'
+import ExcelJS from 'exceljs'
 import type { IExcelExportService, ExcelExportOptions } from '@/lib/interfaces'
 
 /**
- * Implementacion de IExcelExportService usando xlsx (SheetJS).
- * Para cambiar a ExcelJS, crear nuevo adapter.
+ * Implementacion de IExcelExportService usando ExcelJS.
  */
 export class XLSXExportService implements IExcelExportService {
   async generate<T extends Record<string, unknown>>(
@@ -11,32 +10,29 @@ export class XLSXExportService implements IExcelExportService {
     columns: { key: keyof T; header: string; width?: number }[],
     options?: ExcelExportOptions,
   ): Promise<Buffer> {
-    // Preparar datos con headers
-    const headers = columns.map((c) => c.header)
-    const rows = data.map((row) => columns.map((c) => row[c.key]))
+    const workbook = new ExcelJS.Workbook()
+    const worksheet = workbook.addWorksheet(options?.sheetName ?? 'Sheet1')
 
-    // Crear worksheet
-    const worksheet = XLSX.utils.aoa_to_sheet(
-      options?.includeHeaders !== false ? [headers, ...rows] : rows,
-    )
-
-    // Aplicar anchos de columna
-    worksheet['!cols'] = columns.map((c) => ({ wch: c.width ?? 15 }))
-
-    // Crear workbook
-    const workbook = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(
-      workbook,
-      worksheet,
-      options?.sheetName ?? 'Sheet1',
-    )
-
-    // Generar buffer
-    const buffer = XLSX.write(workbook, {
-      type: 'buffer',
-      bookType: 'xlsx',
+    worksheet.columns = columns.map((c) => {
+      const col: Partial<ExcelJS.Column> = {
+        key: String(c.key),
+        width: c.width ?? 15,
+      }
+      if (options?.includeHeaders !== false) col.header = c.header
+      return col
     })
 
+    if (options?.includeHeaders === false) {
+      // Remove auto-generated header row
+      worksheet.spliceRows(1, 1)
+    }
+
+    for (const row of data) {
+      const values = columns.map((c) => row[c.key])
+      worksheet.addRow(values)
+    }
+
+    const buffer = await workbook.xlsx.writeBuffer()
     return Buffer.from(buffer)
   }
 
@@ -48,26 +44,31 @@ export class XLSXExportService implements IExcelExportService {
     }>,
     options?: ExcelExportOptions,
   ): Promise<Buffer> {
-    const workbook = XLSX.utils.book_new()
+    const workbook = new ExcelJS.Workbook()
 
     for (const sheet of sheets) {
-      const headers = sheet.columns.map((c) => c.header)
-      const rows = sheet.data.map((row) => sheet.columns.map((c) => row[c.key]))
+      const worksheet = workbook.addWorksheet(sheet.name)
 
-      const worksheet = XLSX.utils.aoa_to_sheet(
-        options?.includeHeaders !== false ? [headers, ...rows] : rows,
-      )
+      worksheet.columns = sheet.columns.map((c) => {
+        const col: Partial<ExcelJS.Column> = {
+          key: c.key,
+          width: c.width ?? 15,
+        }
+        if (options?.includeHeaders !== false) col.header = c.header
+        return col
+      })
 
-      worksheet['!cols'] = sheet.columns.map((c) => ({ wch: c.width ?? 15 }))
+      if (options?.includeHeaders === false) {
+        worksheet.spliceRows(1, 1)
+      }
 
-      XLSX.utils.book_append_sheet(workbook, worksheet, sheet.name)
+      for (const row of sheet.data) {
+        const values = sheet.columns.map((c) => row[c.key])
+        worksheet.addRow(values)
+      }
     }
 
-    const buffer = XLSX.write(workbook, {
-      type: 'buffer',
-      bookType: 'xlsx',
-    })
-
+    const buffer = await workbook.xlsx.writeBuffer()
     return Buffer.from(buffer)
   }
 }
