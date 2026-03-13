@@ -1,0 +1,401 @@
+{
+  "metadata": {
+    "title": "Starter App — Project Template",
+    "titleTemplate": "%s | Starter App",
+    "description": "Project template with Next.js 16, React 19, TypeScript, Tailwind CSS 4, shadcn/ui, Drizzle ORM, Better Auth and more."
+  },
+  "common": {
+    "appName": "Starter App",
+    "login": "Sign in",
+    "register": "Get started free",
+    "logout": "Sign out",
+    "myAccount": "My Account",
+    "settings": "Settings",
+    "profile": "Profile",
+    "openMenu": "Open menu",
+    "backToTop": "Back to top",
+    "previous": "Previous",
+    "next": "Next",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "close": "Close",
+    "toggleSidebar": "Toggle sidebar"
+  },
+  "landing": {
+    "hero": {
+      "badge": "Project template",
+      "titleStart": "Build your next app",
+      "titleHighlight": "faster",
+      "description": "Full-stack template with auth, database, i18n, emails, theming and more. Production-ready.",
+      "cta": "Get started free"
+    },
+    "features": {
+      "title": "Everything you need",
+      "subtitle": "Production-ready infrastructure from day one.",
+      "auth": {
+        "title": "Complete authentication",
+        "desc": "Login, registration, OAuth, magic links, 2FA, roles and sessions with Better Auth."
+      },
+      "database": {
+        "title": "Database",
+        "desc": "Serverless PostgreSQL with Neon and Drizzle ORM. Migrations, typed schemas."
+      },
+      "i18n": {
+        "title": "Multi-language",
+        "desc": "Support for ES, EN and CA with next-intl. Localized routes and typed translations."
+      },
+      "email": {
+        "title": "Transactional emails",
+        "desc": "React Email templates with Resend. Verification, password reset, magic links."
+      },
+      "theme": {
+        "title": "Dark/Light mode",
+        "desc": "Dark and light theme with next-themes. Respects system preference."
+      },
+      "security": {
+        "title": "Security",
+        "desc": "Security headers, CSP, rate limiting, audit logs and Zod validation."
+      }
+    },
+    "stack": {
+      "title": "Modern stack",
+      "subtitle": "The best tools in the ecosystem."
+    },
+    "footer": {
+      "copyright": "Starter App. All rights reserved."
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Sign in",
+      "description": "Enter your credentials to access your account",
+      "noAccount": "Don't have an account?",
+      "registerLink": "Sign up",
+      "metaTitle": "Sign in",
+      "metaDescription": "Sign in to your account.",
+      "identifierLabel": "Email or username",
+      "identifierPlaceholder": "you@email.com or your_username",
+      "passwordLabel": "Password",
+      "forgotPasswordLink": "Forgot your password?",
+      "verifiedMessage": "Email verified. Sign in to continue.",
+      "resetMessage": "Password updated. Sign in with your new password.",
+      "emailNotVerifiedMessage": "Your email is not verified. We resent the verification link. Check your inbox.",
+      "submitButton": "Sign in",
+      "orContinueWith": "Or continue with",
+      "error": "Failed to sign in",
+      "accountLocked": "Account temporarily locked due to too many failed attempts.",
+      "magicLink": {
+        "title": "Sign in without password",
+        "description": "We'll send you a magic link to your email",
+        "emailLabel": "Email",
+        "emailPlaceholder": "you@email.com",
+        "submitButton": "Send magic link",
+        "successTitle": "Check your email",
+        "successDesc": "We sent you a link to access your account. Check your inbox.",
+        "error": "Failed to send the link",
+        "backToPassword": "Sign in with password",
+        "useMagicLink": "Sign in without password"
+      }
+    },
+    "register": {
+      "title": "Create account",
+      "description": "Fill out the form to create your account",
+      "hasAccount": "Already have an account?",
+      "loginLink": "Sign in",
+      "metaTitle": "Create account",
+      "metaDescription": "Create your free account.",
+      "nameLabel": "Name",
+      "namePlaceholder": "Your name",
+      "usernameLabel": "Username",
+      "usernamePlaceholder": "your_username",
+      "emailLabel": "Email",
+      "emailPlaceholder": "you@email.com",
+      "passwordLabel": "Password",
+      "submitButton": "Create account",
+      "orContinueWith": "Or continue with",
+      "error": "Failed to create account",
+      "checkEmailTitle": "Check your email",
+      "checkEmailDesc": "We sent you a verification link. Check your inbox (and spam folder) to activate your account.",
+      "goToLogin": "Go to sign in"
+    },
+    "forgotPassword": {
+      "title": "Reset password",
+      "description": "Enter your email and we'll send you a link to reset your password",
+      "backToLogin": "Back to sign in",
+      "metaTitle": "Reset password",
+      "metaDescription": "Request a link to reset your password.",
+      "emailLabel": "Email",
+      "emailPlaceholder": "you@email.com",
+      "submitButton": "Send link",
+      "checkEmailTitle": "Check your email",
+      "checkEmailDesc": "If an account with that email exists, you'll receive a link to reset your password."
+    },
+    "resetPassword": {
+      "title": "New password",
+      "description": "Enter your new password",
+      "metaTitle": "New password",
+      "metaDescription": "Set a new password for your account.",
+      "newPasswordLabel": "New password",
+      "confirmPasswordLabel": "Confirm password",
+      "submitButton": "Reset password",
+      "error": "Failed to reset password",
+      "invalidLinkTitle": "Invalid or expired link",
+      "invalidLinkDesc": "The password reset link is no longer valid. Request a new one.",
+      "requestNewLink": "Request new link"
+    },
+    "verifyEmail": {
+      "metaTitle": "Verify email",
+      "metaDescription": "Verify your email address to activate your account.",
+      "invalidLinkTitle": "Invalid or expired link",
+      "invalidLinkDesc": "The verification link is no longer valid. Sign in to request a new one.",
+      "goToLogin": "Go to sign in",
+      "verifiedTitle": "Email verified",
+      "verifiedDesc": "Your account has been activated successfully. Redirecting to sign in..."
+    },
+    "twoFactor": {
+      "title": "2FA Verification",
+      "description": "Enter the code from your authenticator app",
+      "metaTitle": "2FA Verification",
+      "metaDescription": "Verify your identity with two-factor authentication.",
+      "codeLabel": "Verification code",
+      "codeHint": "Enter the 6-digit code from your authenticator app",
+      "submitButton": "Verify",
+      "error": "Invalid code"
+    },
+    "userNav": {
+      "settings": "Settings",
+      "profile": "Profile",
+      "logout": "Sign out"
+    }
+  },
+  "authLayout": {
+    "platformTitle": "Your next app",
+    "platformTitleLine2": "starts",
+    "platformTitleLine3": "here",
+    "platformDesc": "Full-stack template with auth, database, i18n and more.",
+    "featureQr": "Complete authentication with Better Auth",
+    "featurePayments": "PostgreSQL database with Neon",
+    "featureWallet": "Multi-language with next-intl",
+    "testimonial": "Starter Template — Production-ready."
+  },
+  "account": {
+    "nav": {
+      "profile": "My Account",
+      "addresses": "My Addresses"
+    },
+    "profile": {
+      "title": "My Account",
+      "subtitle": "Manage your personal information.",
+      "personalInfo": "Personal information",
+      "emailLabel": "Email",
+      "nameLabel": "Name",
+      "namePlaceholder": "Your name",
+      "phoneLabel": "Phone",
+      "phonePlaceholder": "+34 600 000 000",
+      "saveBtn": "Save changes",
+      "updated": "Profile updated",
+      "avatarLabel": "Profile photo",
+      "avatarHint": "Click to change your photo"
+    },
+    "password": {
+      "title": "Change password",
+      "subtitle": "Update your login password.",
+      "currentPassword": "Current password",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm password",
+      "saveBtn": "Change password",
+      "updated": "Password updated",
+      "error": "Error changing password"
+    },
+    "addresses": {
+      "title": "My Addresses",
+      "subtitle": "Manage your addresses.",
+      "empty": "You don't have any saved addresses.",
+      "addBtn": "Add address",
+      "addTitle": "New address",
+      "editTitle": "Edit address",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "street": "Address",
+      "city": "City",
+      "province": "Province",
+      "postalCode": "Postal code",
+      "phone": "Phone",
+      "cancel": "Cancel",
+      "createBtn": "Create address",
+      "updateBtn": "Update address",
+      "created": "Address created",
+      "updated": "Address updated",
+      "deleted": "Address deleted",
+      "default": "Default",
+      "setDefault": "Set as default",
+      "defaultSet": "Default address updated",
+      "edit": "Edit",
+      "delete": "Delete"
+    }
+  },
+  "validation": {
+    "identifierMin": "Enter your email or username",
+    "passwordMin": "Password must be at least 8 characters",
+    "nameMin": "Name must be at least 2 characters",
+    "usernameMin": "Username must be at least 3 characters",
+    "usernameMax": "Username cannot exceed 30 characters",
+    "usernamePattern": "Only letters, numbers, dots and underscores",
+    "emailInvalid": "Invalid email",
+    "codeLength": "Code must be 6 digits",
+    "codePattern": "Numbers only",
+    "passwordsDoNotMatch": "Passwords do not match"
+  },
+  "errors": {
+    "notFoundTitle": "Page not found",
+    "notFound": "The page you're looking for doesn't exist or has been moved.",
+    "serverError": "Something went wrong. We're working on fixing it.",
+    "tryAgain": "Try again",
+    "backHome": "Back to home"
+  },
+  "twoFactorSettings": {
+    "title": "Two-factor authentication",
+    "enabledDesc": "2FA is enabled on your account",
+    "disabledDesc": "Add an extra layer of security",
+    "enable": "Enable",
+    "disable": "Disable",
+    "enableTitle": "Enable two-factor authentication",
+    "enableDesc": "Enter your password to generate the QR code",
+    "password": "Password",
+    "cancel": "Cancel",
+    "continue": "Continue",
+    "scanTitle": "Scan the QR code",
+    "scanDesc": "Scan this code with your authenticator app (Google Authenticator, Authy, etc.)",
+    "qrAlt": "QR code for 2FA",
+    "backupCodes": "Backup codes",
+    "copied": "Copied",
+    "copy": "Copy",
+    "backupWarning": "Save these codes in a safe place. You will need them if you lose access to your authenticator app.",
+    "verificationCode": "Verification code",
+    "verifyAndActivate": "Verify and activate",
+    "disableTitle": "Disable two-factor authentication",
+    "disableDesc": "Enter your password to disable 2FA",
+    "disableButton": "Disable 2FA",
+    "enableError": "Error enabling 2FA",
+    "invalidCode": "Invalid code",
+    "disableError": "Error disabling 2FA"
+  },
+  "activeSessions": {
+    "title": "Active sessions",
+    "sessionCount": "{count, plural, one {# active session} other {# active sessions}}",
+    "revokeOthers": "Close other sessions",
+    "current": "Current",
+    "unknown": "Unknown",
+    "mobile": "Mobile",
+    "desktop": "Desktop"
+  },
+  "themeSwitcher": {
+    "label": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "languageSwitcher": {
+    "label": "Language",
+    "es": "Espanol",
+    "en": "English",
+    "ca": "Catala"
+  },
+  "passwordStrength": {
+    "weak": "Weak",
+    "medium": "Medium",
+    "strong": "Strong",
+    "veryStrong": "Very strong"
+  },
+  "emails": {
+    "common": {
+      "fallbackLink": "If the button doesn't work, copy and paste this link in your browser:"
+    },
+    "layout": {
+      "tagline": "Your project template",
+      "supportEmail": "support@myapp.com",
+      "website": "Website",
+      "support": "Support",
+      "copyright": "All rights reserved.",
+      "location": "Your location"
+    },
+    "magicLink": {
+      "subject": "Your access link",
+      "preview": "Your access link",
+      "heading": "Access your account",
+      "subheading": "Click the link to sign in",
+      "paragraph": "We received a request to access your account. Click the button below to sign in securely without a password:",
+      "button": "Access my account",
+      "infoBox": "This link expires in <strong>10 minutes</strong> and can only be used once. If you did not request this access, you can ignore this email.",
+      "whyMagicLink": "Why Magic Link?",
+      "featureSecure": "Secure access without a password",
+      "featureOneClick": "One-click sign in",
+      "featureTemporary": "Single-use temporary link"
+    },
+    "verification": {
+      "subject": "Verify your email",
+      "preview": "Verify your email to activate your account",
+      "heading": "Verify your email",
+      "subheading": "Just one more step to activate your account",
+      "greeting": "Hi {name},",
+      "paragraph": "Thanks for joining. To activate your account, verify your email address:",
+      "button": "Verify my email",
+      "infoBox": "This link expires in <strong>1 hour</strong>. If you did not create an account, you can safely ignore this email.",
+      "whatYouCanDo": "What you can do",
+      "featureQr": "Full platform access",
+      "featureEvents": "Manage your profile and settings",
+      "featurePayments": "Advanced features",
+      "featureWallet": "Multi-language support"
+    },
+    "resetPassword": {
+      "subject": "Reset your password",
+      "preview": "Request to reset your password",
+      "heading": "Reset password",
+      "subheading": "We received your request to change your password",
+      "greeting": "Hi {name},",
+      "paragraph": "Someone requested to reset the password for your account. If it was you, click the button below to create a new password:",
+      "button": "Create new password",
+      "warningBox": "This link expires in <strong>1 hour</strong>. If you did not request this change, ignore this email. Your current password will not be changed.",
+      "securityTips": "Security tips",
+      "tipStrong": "Use a password of at least 8 characters with letters, numbers, and symbols.",
+      "tipUnique": "Do not reuse passwords from other services.",
+      "tipTwoFactor": "Enable two-factor verification for greater protection."
+    }
+  },
+  "DataTable": {
+    "toolbar": {
+      "search": "Search...",
+      "clearSearch": "Clear search",
+      "refresh": "Refresh",
+      "density": "Density",
+      "densityRows": "Row density",
+      "densityCompact": "Compact",
+      "densityDefault": "Default",
+      "densityComfortable": "Comfortable",
+      "columns": "Columns",
+      "showHideColumns": "Show/hide columns",
+      "visibleColumns": "Visible columns",
+      "export": "Export",
+      "exportFormat": "Export format",
+      "selected": "selected",
+      "selectedPlural": "selected",
+      "clearSelection": "Clear selection",
+      "fullscreen": "Fullscreen",
+      "exitFullscreen": "Exit fullscreen",
+      "copy": "Copy",
+      "print": "Print"
+    },
+    "pagination": {
+      "ariaLabel": "Table pagination",
+      "showing": "Showing {start} to {end} of {total}",
+      "rowsPerPage": "Rows per page",
+      "selectRowsPerPage": "Select rows per page",
+      "firstPage": "First page",
+      "previousPage": "Previous page",
+      "nextPage": "Next page",
+      "lastPage": "Last page",
+      "pages": "Pages",
+      "goToPage": "Go to page {page}"
+    }
+  }
+}

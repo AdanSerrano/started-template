@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Lightning bolt icon — generic starter template -->
+  <rect width="512" height="512" rx="102" fill="#3B82F6"/>
+  <path d="M288 48L176 272h80l-48 192 160-240h-96z" fill="white"/>
+</svg>

@@ -1,0 +1,401 @@
+{
+  "metadata": {
+    "title": "Starter App — Plantilla de Projecte",
+    "titleTemplate": "%s | Starter App",
+    "description": "Plantilla de projecte amb Next.js 16, React 19, TypeScript, Tailwind CSS 4, shadcn/ui, Drizzle ORM, Better Auth i mes."
+  },
+  "common": {
+    "appName": "Starter App",
+    "login": "Iniciar sessio",
+    "register": "Crear compte",
+    "logout": "Tancar sessio",
+    "myAccount": "El Meu Compte",
+    "settings": "Configuracio",
+    "profile": "Perfil",
+    "openMenu": "Obrir menu",
+    "backToTop": "Tornar a dalt",
+    "previous": "Anterior",
+    "next": "Seguent",
+    "showPassword": "Mostrar contrasenya",
+    "hidePassword": "Amagar contrasenya",
+    "close": "Tancar",
+    "toggleSidebar": "Alternar barra lateral"
+  },
+  "landing": {
+    "hero": {
+      "badge": "Plantilla de projecte",
+      "titleStart": "Construeix la teva propera app",
+      "titleHighlight": "mes rapid",
+      "description": "Plantilla full-stack amb autenticacio, base de dades, i18n, correus, temes i mes. Llesta per produccio.",
+      "cta": "Comencar gratis"
+    },
+    "features": {
+      "title": "Tot el que necessites",
+      "subtitle": "Infraestructura llesta per produccio des del primer dia.",
+      "auth": {
+        "title": "Autenticacio completa",
+        "desc": "Login, registre, OAuth, magic links, 2FA, rols i sessions amb Better Auth."
+      },
+      "database": {
+        "title": "Base de dades",
+        "desc": "PostgreSQL serverless amb Neon i Drizzle ORM. Migracions, schemas tipats."
+      },
+      "i18n": {
+        "title": "Multi-idioma",
+        "desc": "Suport per ES, EN i CA amb next-intl. Rutes localitzades i traduccions tipades."
+      },
+      "email": {
+        "title": "Correus transaccionals",
+        "desc": "Plantilles React Email amb Resend. Verificacio, reset de contrasenya, magic links."
+      },
+      "theme": {
+        "title": "Dark/Light mode",
+        "desc": "Tema fosc i clar amb next-themes. Respecta la preferencia del sistema."
+      },
+      "security": {
+        "title": "Seguretat",
+        "desc": "Headers de seguretat, CSP, rate limiting, audit logs i validacio amb Zod."
+      }
+    },
+    "stack": {
+      "title": "Stack modern",
+      "subtitle": "Les millors eines de l'ecosistema."
+    },
+    "footer": {
+      "copyright": "Starter App. Tots els drets reservats."
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Iniciar sessio",
+      "description": "Introdueix les teves credencials per accedir",
+      "noAccount": "No tens compte?",
+      "registerLink": "Crear compte",
+      "metaTitle": "Iniciar sessio",
+      "metaDescription": "Inicia sessio al teu compte.",
+      "identifierLabel": "Email o usuari",
+      "identifierPlaceholder": "tu@email.com o el_teu_usuari",
+      "passwordLabel": "Contrasenya",
+      "forgotPasswordLink": "Has oblidat la contrasenya?",
+      "verifiedMessage": "Email verificat. Inicia sessio per continuar.",
+      "resetMessage": "Contrasenya actualitzada. Inicia sessio amb la teva nova contrasenya.",
+      "emailNotVerifiedMessage": "El teu email no esta verificat. Hem reenviat l'enllac de verificacio. Revisa la teva safata d'entrada.",
+      "submitButton": "Iniciar sessio",
+      "orContinueWith": "O continuar amb",
+      "error": "Error al iniciar sessio",
+      "accountLocked": "Compte bloquejat temporalment per massa intents fallits.",
+      "magicLink": {
+        "title": "Iniciar sessio sense contrasenya",
+        "description": "T'enviarem un enllac magic al teu email",
+        "emailLabel": "Email",
+        "emailPlaceholder": "tu@email.com",
+        "submitButton": "Enviar enllac magic",
+        "successTitle": "Revisa el teu email",
+        "successDesc": "T'hem enviat un enllac per accedir al teu compte. Revisa la teva safata d'entrada.",
+        "error": "Error al enviar l'enllac",
+        "backToPassword": "Iniciar sessio amb contrasenya",
+        "useMagicLink": "Iniciar sessio sense contrasenya"
+      }
+    },
+    "register": {
+      "title": "Crear compte",
+      "description": "Completa el formulari per crear el teu compte",
+      "hasAccount": "Ja tens compte?",
+      "loginLink": "Iniciar sessio",
+      "metaTitle": "Crear compte",
+      "metaDescription": "Crea el teu compte gratuit.",
+      "nameLabel": "Nom",
+      "namePlaceholder": "El teu nom",
+      "usernameLabel": "Usuari",
+      "usernamePlaceholder": "el_teu_usuari",
+      "emailLabel": "Email",
+      "emailPlaceholder": "tu@email.com",
+      "passwordLabel": "Contrasenya",
+      "submitButton": "Crear compte",
+      "orContinueWith": "O continuar amb",
+      "error": "Error al crear el compte",
+      "checkEmailTitle": "Revisa el teu email",
+      "checkEmailDesc": "T'hem enviat un enllac de verificacio. Revisa la teva safata d'entrada (i spam) per activar el teu compte.",
+      "goToLogin": "Anar a iniciar sessio"
+    },
+    "forgotPassword": {
+      "title": "Restablir contrasenya",
+      "description": "Introdueix el teu email i t'enviarem un enllac per restablir la teva contrasenya",
+      "backToLogin": "Tornar a iniciar sessio",
+      "metaTitle": "Restablir contrasenya",
+      "metaDescription": "Sol·licita un enllac per restablir la teva contrasenya.",
+      "emailLabel": "Email",
+      "emailPlaceholder": "tu@email.com",
+      "submitButton": "Enviar enllac",
+      "checkEmailTitle": "Revisa el teu email",
+      "checkEmailDesc": "Si existeix un compte amb aquest email, rebras un enllac per restablir la teva contrasenya."
+    },
+    "resetPassword": {
+      "title": "Nova contrasenya",
+      "description": "Introdueix la teva nova contrasenya",
+      "metaTitle": "Nova contrasenya",
+      "metaDescription": "Estableix una nova contrasenya pel teu compte.",
+      "newPasswordLabel": "Nova contrasenya",
+      "confirmPasswordLabel": "Confirmar contrasenya",
+      "submitButton": "Restablir contrasenya",
+      "error": "Error al restablir la contrasenya",
+      "invalidLinkTitle": "Enllac invalid o expirat",
+      "invalidLinkDesc": "L'enllac per restablir la contrasenya ja no es valid. Sol·licita'n un de nou.",
+      "requestNewLink": "Sol·licitar nou enllac"
+    },
+    "verifyEmail": {
+      "metaTitle": "Verificar email",
+      "metaDescription": "Verifica el teu email per activar el teu compte.",
+      "invalidLinkTitle": "Enllac invalid o expirat",
+      "invalidLinkDesc": "L'enllac de verificacio ja no es valid. Inicia sessio per sol·licitar-ne un de nou.",
+      "goToLogin": "Anar a iniciar sessio",
+      "verifiedTitle": "Email verificat",
+      "verifiedDesc": "El teu compte ha estat activat correctament. Redirigint a l'inici de sessio..."
+    },
+    "twoFactor": {
+      "title": "Verificacio 2FA",
+      "description": "Introdueix el codi de la teva app d'autenticacio",
+      "metaTitle": "Verificacio 2FA",
+      "metaDescription": "Verifica la teva identitat amb autenticacio de dos factors.",
+      "codeLabel": "Codi de verificacio",
+      "codeHint": "Introdueix el codi de 6 digits de la teva app d'autenticacio",
+      "submitButton": "Verificar",
+      "error": "Codi invalid"
+    },
+    "userNav": {
+      "settings": "Configuracio",
+      "profile": "Perfil",
+      "logout": "Tancar sessio"
+    }
+  },
+  "authLayout": {
+    "platformTitle": "La teva propera app",
+    "platformTitleLine2": "comenca",
+    "platformTitleLine3": "aqui",
+    "platformDesc": "Plantilla full-stack amb autenticacio, base de dades, i18n i mes.",
+    "featureQr": "Autenticacio completa amb Better Auth",
+    "featurePayments": "Base de dades PostgreSQL amb Neon",
+    "featureWallet": "Multi-idioma amb next-intl",
+    "testimonial": "Starter Template — Llest per produccio."
+  },
+  "account": {
+    "nav": {
+      "profile": "El Meu Compte",
+      "addresses": "Les Meves Adreces"
+    },
+    "profile": {
+      "title": "El Meu Compte",
+      "subtitle": "Gestiona la teva informacio personal.",
+      "personalInfo": "Informacio personal",
+      "emailLabel": "Email",
+      "nameLabel": "Nom",
+      "namePlaceholder": "El teu nom",
+      "phoneLabel": "Telefon",
+      "phonePlaceholder": "+34 600 000 000",
+      "saveBtn": "Desar canvis",
+      "updated": "Perfil actualitzat",
+      "avatarLabel": "Foto de perfil",
+      "avatarHint": "Fes clic per canviar la teva foto"
+    },
+    "password": {
+      "title": "Canviar contrasenya",
+      "subtitle": "Actualitza la teva contrasenya d'acces.",
+      "currentPassword": "Contrasenya actual",
+      "newPassword": "Nova contrasenya",
+      "confirmPassword": "Confirmar contrasenya",
+      "saveBtn": "Canviar contrasenya",
+      "updated": "Contrasenya actualitzada",
+      "error": "Error al canviar contrasenya"
+    },
+    "addresses": {
+      "title": "Les Meves Adreces",
+      "subtitle": "Gestiona les teves adreces.",
+      "empty": "No tens adreces desades.",
+      "addBtn": "Afegir adreca",
+      "addTitle": "Nova adreca",
+      "editTitle": "Editar adreca",
+      "firstName": "Nom",
+      "lastName": "Cognom",
+      "street": "Adreca",
+      "city": "Ciutat",
+      "province": "Provincia",
+      "postalCode": "Codi postal",
+      "phone": "Telefon",
+      "cancel": "Cancel·lar",
+      "createBtn": "Crear adreca",
+      "updateBtn": "Actualitzar adreca",
+      "created": "Adreca creada",
+      "updated": "Adreca actualitzada",
+      "deleted": "Adreca eliminada",
+      "default": "Predeterminada",
+      "setDefault": "Establir com a predeterminada",
+      "defaultSet": "Adreca predeterminada actualitzada",
+      "edit": "Editar",
+      "delete": "Eliminar"
+    }
+  },
+  "validation": {
+    "identifierMin": "Introdueix el teu email o usuari",
+    "passwordMin": "La contrasenya ha de tenir almenys 8 caracters",
+    "nameMin": "El nom ha de tenir almenys 2 caracters",
+    "usernameMin": "L'usuari ha de tenir almenys 3 caracters",
+    "usernameMax": "L'usuari no pot superar 30 caracters",
+    "usernamePattern": "Nomes lletres, numeros, punts i guions baixos",
+    "emailInvalid": "Email invalid",
+    "codeLength": "El codi ha de tenir 6 digits",
+    "codePattern": "Nomes numeros",
+    "passwordsDoNotMatch": "Les contrasenyes no coincideixen"
+  },
+  "errors": {
+    "notFoundTitle": "Pagina no trobada",
+    "notFound": "La pagina que busques no existeix o ha estat moguda.",
+    "serverError": "Alguna cosa ha anat malament. Estem treballant per solucionar-ho.",
+    "tryAgain": "Tornar a intentar",
+    "backHome": "Tornar a l'inici"
+  },
+  "twoFactorSettings": {
+    "title": "Autenticacio de dos factors",
+    "enabledDesc": "2FA esta habilitat al teu compte",
+    "disabledDesc": "Afegeix una capa extra de seguretat",
+    "enable": "Habilitar",
+    "disable": "Deshabilitar",
+    "enableTitle": "Habilitar autenticacio de dos factors",
+    "enableDesc": "Introdueix la teva contrasenya per generar el codi QR",
+    "password": "Contrasenya",
+    "cancel": "Cancel·lar",
+    "continue": "Continuar",
+    "scanTitle": "Escaneja el codi QR",
+    "scanDesc": "Escaneja aquest codi amb la teva app d'autenticacio (Google Authenticator, Authy, etc.)",
+    "qrAlt": "Codi QR per 2FA",
+    "backupCodes": "Codis de respatller",
+    "copied": "Copiat",
+    "copy": "Copiar",
+    "backupWarning": "Desa aquests codis en un lloc segur. Els necessitaras si perds l'acces a la teva app d'autenticacio.",
+    "verificationCode": "Codi de verificacio",
+    "verifyAndActivate": "Verificar i activar",
+    "disableTitle": "Deshabilitar autenticacio de dos factors",
+    "disableDesc": "Introdueix la teva contrasenya per deshabilitar 2FA",
+    "disableButton": "Deshabilitar 2FA",
+    "enableError": "Error al habilitar 2FA",
+    "invalidCode": "Codi invalid",
+    "disableError": "Error al deshabilitar 2FA"
+  },
+  "activeSessions": {
+    "title": "Sessions actives",
+    "sessionCount": "{count, plural, one {# sessio activa} other {# sessions actives}}",
+    "revokeOthers": "Tancar altres sessions",
+    "current": "Actual",
+    "unknown": "Desconegut",
+    "mobile": "Mobil",
+    "desktop": "Escriptori"
+  },
+  "themeSwitcher": {
+    "label": "Tema",
+    "light": "Clar",
+    "dark": "Fosc",
+    "system": "Sistema"
+  },
+  "languageSwitcher": {
+    "label": "Idioma",
+    "es": "Espanol",
+    "en": "English",
+    "ca": "Catala"
+  },
+  "passwordStrength": {
+    "weak": "Feble",
+    "medium": "Mitjana",
+    "strong": "Forta",
+    "veryStrong": "Molt forta"
+  },
+  "emails": {
+    "common": {
+      "fallbackLink": "Si el boto no funciona, copia i enganxa aquest enllac al teu navegador:"
+    },
+    "layout": {
+      "tagline": "La teva plantilla de projecte",
+      "supportEmail": "suport@latuaapp.com",
+      "website": "Lloc web",
+      "support": "Suport",
+      "copyright": "Tots els drets reservats.",
+      "location": "La teva ubicacio"
+    },
+    "magicLink": {
+      "subject": "El teu enllac d'acces",
+      "preview": "El teu enllac d'acces",
+      "heading": "Accedeix al teu compte",
+      "subheading": "Fes clic a l'enllac per iniciar sessio",
+      "paragraph": "Hem rebut una sol·licitud per accedir al teu compte. Fes clic al boto de sota per iniciar sessio de forma segura sense contrasenya:",
+      "button": "Accedir al meu compte",
+      "infoBox": "Aquest enllac expira en <strong>10 minuts</strong> i nomes pot usar-se un cop. Si no has sol·licitat aquest acces, pots ignorar aquest email.",
+      "whyMagicLink": "Per que Magic Link?",
+      "featureSecure": "Acces segur sense contrasenya",
+      "featureOneClick": "Inici de sessio amb un clic",
+      "featureTemporary": "Enllac temporal d'un sol us"
+    },
+    "verification": {
+      "subject": "Verifica el teu email",
+      "preview": "Verifica el teu email per activar el teu compte",
+      "heading": "Verifica el teu email",
+      "subheading": "Nomes un pas mes per activar el teu compte",
+      "greeting": "Hola {name},",
+      "paragraph": "Gracies per unir-te. Per activar el teu compte, verifica la teva adreca d'email:",
+      "button": "Verificar el meu email",
+      "infoBox": "Aquest enllac expira en <strong>1 hora</strong>. Si no has creat un compte, pots ignorar aquest email.",
+      "whatYouCanDo": "El que pots fer",
+      "featureQr": "Acces complet a la plataforma",
+      "featureEvents": "Gestiona el teu perfil i configuracio",
+      "featurePayments": "Funcionalitats avancades",
+      "featureWallet": "Suport multi-idioma"
+    },
+    "resetPassword": {
+      "subject": "Restableix la teva contrasenya",
+      "preview": "Sol·licitud per restablir la teva contrasenya",
+      "heading": "Restablir contrasenya",
+      "subheading": "Hem rebut la teva sol·licitud per canviar la teva contrasenya",
+      "greeting": "Hola {name},",
+      "paragraph": "Algu ha sol·licitat restablir la contrasenya del teu compte. Si has estat tu, fes clic al boto de sota per crear una nova contrasenya:",
+      "button": "Crear nova contrasenya",
+      "warningBox": "Aquest enllac expira en <strong>1 hora</strong>. Si no has sol·licitat aquest canvi, ignora aquest email. La teva contrasenya actual no sera modificada.",
+      "securityTips": "Consells de seguretat",
+      "tipStrong": "Usa una contrasenya d'almenys 8 caracters amb lletres, numeros i simbols.",
+      "tipUnique": "No reutilitzis contrasenyes d'altres serveis.",
+      "tipTwoFactor": "Habilita la verificacio en dos passos per a major proteccio."
+    }
+  },
+  "DataTable": {
+    "toolbar": {
+      "search": "Cercar...",
+      "clearSearch": "Netejar cerca",
+      "refresh": "Actualitzar",
+      "density": "Densitat",
+      "densityRows": "Densitat de files",
+      "densityCompact": "Compacta",
+      "densityDefault": "Normal",
+      "densityComfortable": "Comoda",
+      "columns": "Columnes",
+      "showHideColumns": "Mostrar/amagar columnes",
+      "visibleColumns": "Columnes visibles",
+      "export": "Exportar",
+      "exportFormat": "Format d'exportacio",
+      "selected": "seleccionat",
+      "selectedPlural": "seleccionats",
+      "clearSelection": "Netejar seleccio",
+      "fullscreen": "Pantalla completa",
+      "exitFullscreen": "Sortir de pantalla completa",
+      "copy": "Copiar",
+      "print": "Imprimir"
+    },
+    "pagination": {
+      "ariaLabel": "Paginacio de taula",
+      "showing": "Mostrant {start} a {end} de {total}",
+      "rowsPerPage": "Files per pagina",
+      "selectRowsPerPage": "Seleccionar files per pagina",
+      "firstPage": "Primera pagina",
+      "previousPage": "Pagina anterior",
+      "nextPage": "Pagina seguent",
+      "lastPage": "Ultima pagina",
+      "pages": "Pagines",
+      "goToPage": "Anar a pagina {page}"
+    }
+  }
+}
