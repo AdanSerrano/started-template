@@ -47,6 +47,7 @@
     "dompurify": "^3.3.3",
     "drizzle-orm": "^0.45.1",
     "drizzle-zod": "^0.8.3",
+    "entities": "^4.5.0",
     "exceljs": "^4.4.0",
     "input-otp": "^1.4.2",
     "lucide-react": "^0.577.0",
