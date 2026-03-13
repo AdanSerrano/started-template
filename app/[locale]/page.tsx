@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { getTranslations } from 'next-intl/server'
 import { getServerSession } from '@/lib/auth-server'
 import { Link } from '@/i18n/navigation'
@@ -16,17 +17,40 @@ import {
 
 export const revalidate = 3600
 
-export default async function Home() {
-  const [t, tc, session] = await Promise.all([
-    getTranslations('landing'),
+/* ── Auth-aware CTA (streamed, does NOT block page render) ── */
+async function AuthCTA() {
+  const [tc, session] = await Promise.all([
     getTranslations('common'),
     getServerSession(),
+  ])
+
+  return session ? (
+    <Link
+      href="/account"
+      className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex h-9 items-center rounded-md px-4 text-sm font-medium transition-colors"
+    >
+      {tc('myAccount')}
+    </Link>
+  ) : (
+    <Link
+      href="/login"
+      className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex h-9 items-center rounded-md px-4 text-sm font-medium transition-colors"
+    >
+      {tc('login')}
+    </Link>
+  )
+}
+
+export default async function Home() {
+  const [t, tc] = await Promise.all([
+    getTranslations('landing'),
+    getTranslations('common'),
   ])
 
   return (
     <div className="flex min-h-screen flex-col">
       {/* Navbar */}
-      <header className="border-border/50 bg-background/85 sticky top-0 z-50 border-b backdrop-blur-md">
+      <header className="border-border/50 bg-background sticky top-0 z-50 border-b">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
           <div className="flex items-center gap-2.5">
             <div className="bg-primary flex size-9 items-center justify-center rounded-lg">
@@ -39,21 +63,13 @@ export default async function Home() {
           <div className="flex items-center gap-3">
             <LanguageSwitcher />
             <ThemeSwitcher />
-            {session ? (
-              <Link
-                href="/account"
-                className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex h-9 items-center rounded-md px-4 text-sm font-medium transition-colors"
-              >
-                {tc('myAccount')}
-              </Link>
-            ) : (
-              <Link
-                href="/login"
-                className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex h-9 items-center rounded-md px-4 text-sm font-medium transition-colors"
-              >
-                {tc('login')}
-              </Link>
-            )}
+            <Suspense
+              fallback={
+                <span className="bg-primary/10 inline-flex h-9 w-20 animate-pulse rounded-md" />
+              }
+            >
+              <AuthCTA />
+            </Suspense>
           </div>
         </div>
       </header>

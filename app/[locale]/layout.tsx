@@ -1,11 +1,12 @@
 import type { Metadata } from 'next'
+import dynamic from 'next/dynamic'
 import { notFound } from 'next/navigation'
 import { hasLocale, NextIntlClientProvider } from 'next-intl'
 import { getMessages, getTranslations } from 'next-intl/server'
 import { ThemeProvider } from 'next-themes'
-import { Toaster } from '@/components/ui/sonner'
 import { geistSans, geistMono } from '@/lib/fonts'
 import { routing } from '@/i18n/routing'
+import { Toaster } from '@/components/ui/sonner'
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
 
@@ -89,6 +90,15 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} suppressHydrationWarning>
+      <head>
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+        <link
+          rel="preconnect"
+          href="https://www.googletagmanager.com"
+          crossOrigin="anonymous"
+        />
+        <link rel="manifest" href="/manifest.webmanifest" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} overflow-x-hidden font-sans antialiased`}
       >
