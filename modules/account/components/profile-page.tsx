@@ -5,13 +5,13 @@ import { ProfileForm } from './profile-form'
 import { ChangePasswordForm } from './change-password-form'
 
 export async function ProfilePage() {
-  const [session, t, tPassword] = await Promise.all([
-    requireAuth(),
+  const session = await requireAuth()
+
+  const [profile, t, tPassword] = await Promise.all([
+    accountService.getProfile(session.user.id),
     getTranslations('account.profile'),
     getTranslations('account.password'),
   ])
-
-  const profile = await accountService.getProfile(session.user.id)
 
   return (
     <div className="space-y-6">

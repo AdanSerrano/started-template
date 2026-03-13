@@ -16,6 +16,8 @@ jobs:
         with:
           bun-version: latest
       - run: bun install --frozen-lockfile
+      - name: Format Check
+        run: bun run format:check
       - name: Type Check
         run: bun run tsc --noEmit
       - name: Lint

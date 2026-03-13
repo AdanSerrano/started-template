@@ -17,6 +17,15 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import type { BaseFormFieldProps } from './form-field.types'
 
+const DEFAULT_IBAN_MESSAGES = {
+  invalidCountryCode: 'Invalid country code',
+  unknownCountryCode: 'Unknown country code',
+  invalidChecksum: 'Invalid checksum',
+  expectedLength: 'Expected {length} characters',
+  validIban: 'Valid IBAN',
+  invalid: 'Invalid',
+}
+
 export interface FormIBANFieldProps<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
@@ -24,6 +33,7 @@ export interface FormIBANFieldProps<
   showValidation?: boolean | undefined
   showCountry?: boolean | undefined
   showCopy?: boolean | undefined
+  messages?: Partial<typeof DEFAULT_IBAN_MESSAGES> | undefined
 }
 
 const IBAN_LENGTHS: Record<string, number> = {
@@ -186,7 +196,10 @@ function getCountryCode(iban: string): string {
   return cleaned.slice(0, 2).toUpperCase()
 }
 
-function validateIBAN(iban: string): {
+function validateIBAN(
+  iban: string,
+  messages: typeof DEFAULT_IBAN_MESSAGES,
+): {
   valid: boolean
   error?: string | undefined
 } {
@@ -199,16 +212,22 @@ function validateIBAN(iban: string): {
   const countryCode = cleaned.slice(0, 2)
 
   if (!/^[A-Z]{2}$/.test(countryCode)) {
-    return { valid: false, error: 'Invalid country code' }
+    return { valid: false, error: messages.invalidCountryCode }
   }
 
   const expectedLength = IBAN_LENGTHS[countryCode]
   if (!expectedLength) {
-    return { valid: false, error: 'Unknown country code' }
+    return { valid: false, error: messages.unknownCountryCode }
   }
 
   if (cleaned.length !== expectedLength) {
-    return { valid: false, error: `Expected ${expectedLength} characters` }
+    return {
+      valid: false,
+      error: messages.expectedLength.replace(
+        '{length}',
+        expectedLength.toString(),
+      ),
+    }
   }
 
   const rearranged = cleaned.slice(4) + cleaned.slice(0, 4)
@@ -227,7 +246,7 @@ function validateIBAN(iban: string): {
   }
 
   if (parseInt(remainder, 10) % 97 !== 1) {
-    return { valid: false, error: 'Invalid checksum' }
+    return { valid: false, error: messages.invalidChecksum }
   }
 
   return { valid: true }
@@ -244,6 +263,7 @@ interface IBANContentProps {
   showValidation: boolean
   showCountry: boolean
   showCopy: boolean
+  messages: typeof DEFAULT_IBAN_MESSAGES
 }
 
 const IBANContent = memo(function IBANContent({
@@ -254,10 +274,11 @@ const IBANContent = memo(function IBANContent({
   showValidation,
   showCountry,
   showCopy,
+  messages,
 }: IBANContentProps) {
   const validation = useMemo(
-    () => validateIBAN(field.value || ''),
-    [field.value],
+    () => validateIBAN(field.value || '', messages),
+    [field.value, messages],
   )
 
   const countryCode = useMemo(
@@ -332,12 +353,12 @@ const IBANContent = memo(function IBANContent({
               {validation.valid ? (
                 <>
                   <Check className="mr-1 h-3 w-3" />
-                  Valid IBAN
+                  {messages.validIban}
                 </>
               ) : (
                 <>
                   <X className="mr-1 h-3 w-3" />
-                  {validation.error || 'Invalid'}
+                  {validation.error || messages.invalid}
                 </>
               )}
             </Badge>
@@ -368,7 +389,17 @@ function FormIBANFieldComponent<
   showValidation = true,
   showCountry = true,
   showCopy = true,
+  messages: customMessages,
 }: FormIBANFieldProps<TFieldValues, TName>) {
+  const messages = useMemo(
+    () =>
+      ({
+        ...DEFAULT_IBAN_MESSAGES,
+        ...customMessages,
+      }) as typeof DEFAULT_IBAN_MESSAGES,
+    [customMessages],
+  )
+
   return (
     <FormField
       control={control}
@@ -390,6 +421,7 @@ function FormIBANFieldComponent<
               showValidation={showValidation}
               showCountry={showCountry}
               showCopy={showCopy}
+              messages={messages}
             />
           </FormControl>
           {description && <FormDescription>{description}</FormDescription>}

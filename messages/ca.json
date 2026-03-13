@@ -405,5 +405,67 @@
       "pages": "Pagines",
       "goToPage": "Anar a pagina {page}"
     }
+  },
+  "formFields": {
+    "address": {
+      "labels": {
+        "street": "Carrer",
+        "number": "Numero",
+        "apartment": "Pis/Porta",
+        "city": "Ciutat",
+        "state": "Provincia/Estat",
+        "postalCode": "Codi postal",
+        "country": "Pais"
+      },
+      "placeholders": {
+        "street": "Carrer Major 1",
+        "number": "123",
+        "apartment": "2n B",
+        "city": "Barcelona",
+        "state": "Seleccionar provincia",
+        "postalCode": "08001",
+        "country": "Seleccionar pais"
+      }
+    },
+    "date": {
+      "pickDate": "Seleccionar data",
+      "pickDateRange": "Seleccionar rang de dates",
+      "presets": {
+        "today": "Avui",
+        "tomorrow": "Dema",
+        "in7Days": "En 7 dies",
+        "in30Days": "En 30 dies",
+        "last7Days": "Ultims 7 dies",
+        "last30Days": "Ultims 30 dies",
+        "thisMonth": "Aquest mes",
+        "lastMonth": "Mes anterior"
+      }
+    },
+    "iban": {
+      "invalidCountryCode": "Codi de pais invalid",
+      "unknownCountryCode": "Codi de pais desconegut",
+      "invalidChecksum": "Suma de verificacio invalida",
+      "expectedLength": "S'esperen {length} caracters",
+      "validIban": "IBAN valid",
+      "invalid": "Invalid"
+    },
+    "ip": {
+      "cidrNotAllowed": "Notacio CIDR no permesa",
+      "invalidCidr": "Notacio CIDR invalida",
+      "invalidCidrPrefix": "Prefix CIDR invalid",
+      "ipv6Only": "Nomes IPv6",
+      "ipv4CidrRange": "CIDR IPv4 ha de ser 0-32",
+      "ipv4Only": "Nomes IPv4",
+      "ipv6CidrRange": "CIDR IPv6 ha de ser 0-128",
+      "invalidIp": "Adreca IP invalida",
+      "valid": "Valida",
+      "invalid": "Invalida"
+    },
+    "url": {
+      "protocolNotAllowed": "Protocol \"{protocol}\" no permes",
+      "invalidFormat": "Format d'URL invalid",
+      "validUrl": "URL valida",
+      "invalid": "Invalida"
+    }
   }
 }

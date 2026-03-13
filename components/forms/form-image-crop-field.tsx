@@ -40,6 +40,7 @@ import {
   Check,
   Loader2,
 } from 'lucide-react'
+import NextImage from 'next/image'
 import { cn } from '@/lib/utils'
 import type { BaseFormFieldProps } from './form-field.types'
 
@@ -185,11 +186,14 @@ const CropDialog = memo(function CropDialog({
                 transform: `translate(${imageState.position.x}px, ${imageState.position.y}px) scale(${imageState.zoom}) rotate(${imageState.rotation}deg)`,
               }}
             >
-              <img
+              <NextImage
                 src={imageState.src}
                 alt="Crop preview"
+                width={500}
+                height={500}
                 className="max-w-none"
                 draggable={false}
+                unoptimized
               />
             </div>
             <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
@@ -439,10 +443,13 @@ const ImageCropContent = memo(function ImageCropContent({
             )}
             style={previewStyle}
           >
-            <img
+            <NextImage
               src={field.value}
               alt="Preview"
+              width={150}
+              height={150}
               className="h-full w-full object-cover"
+              unoptimized
             />
           </div>
           <Button

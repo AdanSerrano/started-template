@@ -22,6 +22,19 @@ import type { BaseFormFieldProps } from './form-field.types'
 
 export type IPVersion = 'ipv4' | 'ipv6' | 'both'
 
+const DEFAULT_IP_MESSAGES = {
+  cidrNotAllowed: 'CIDR notation not allowed',
+  invalidCidr: 'Invalid CIDR notation',
+  invalidCidrPrefix: 'Invalid CIDR prefix',
+  ipv6Only: 'IPv6 only',
+  ipv4CidrRange: 'IPv4 CIDR must be 0-32',
+  ipv4Only: 'IPv4 only',
+  ipv6CidrRange: 'IPv6 CIDR must be 0-128',
+  invalidIp: 'Invalid IP address',
+  valid: 'Valid',
+  invalid: 'Invalid',
+}
+
 export interface FormIPAddressFieldProps<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
@@ -29,6 +42,7 @@ export interface FormIPAddressFieldProps<
   version?: IPVersion | undefined
   allowCIDR?: boolean | undefined
   showValidation?: boolean | undefined
+  messages?: Partial<typeof DEFAULT_IP_MESSAGES> | undefined
 }
 
 interface IPValidation {
@@ -71,6 +85,7 @@ function validateIP(
   value: string,
   allowedVersions: IPVersion,
   allowCIDR: boolean,
+  messages: typeof DEFAULT_IP_MESSAGES,
 ): IPValidation {
   if (!value || !value.trim()) {
     return { valid: false }
@@ -81,16 +96,16 @@ function validateIP(
 
   if (ip.includes('/')) {
     if (!allowCIDR) {
-      return { valid: false, error: 'CIDR notation not allowed' }
+      return { valid: false, error: messages.cidrNotAllowed }
     }
     const parts = ip.split('/')
     if (parts.length !== 2) {
-      return { valid: false, error: 'Invalid CIDR notation' }
+      return { valid: false, error: messages.invalidCidr }
     }
     ip = parts[0]!
     cidr = parseInt(parts[1]!, 10)
     if (isNaN(cidr) || cidr < 0) {
-      return { valid: false, error: 'Invalid CIDR prefix' }
+      return { valid: false, error: messages.invalidCidrPrefix }
     }
   }
 
@@ -99,25 +114,25 @@ function validateIP(
 
   if (isIPv4) {
     if (allowedVersions === 'ipv6') {
-      return { valid: false, error: 'IPv6 only' }
+      return { valid: false, error: messages.ipv6Only }
     }
     if (cidr !== undefined && cidr > 32) {
-      return { valid: false, error: 'IPv4 CIDR must be 0-32' }
+      return { valid: false, error: messages.ipv4CidrRange }
     }
     return { valid: true, version: 'IPv4', cidr }
   }
 
   if (isIPv6) {
     if (allowedVersions === 'ipv4') {
-      return { valid: false, error: 'IPv4 only' }
+      return { valid: false, error: messages.ipv4Only }
     }
     if (cidr !== undefined && cidr > 128) {
-      return { valid: false, error: 'IPv6 CIDR must be 0-128' }
+      return { valid: false, error: messages.ipv6CidrRange }
     }
     return { valid: true, version: 'IPv6', cidr }
   }
 
-  return { valid: false, error: 'Invalid IP address' }
+  return { valid: false, error: messages.invalidIp }
 }
 
 function getPlaceholder(version: IPVersion, allowCIDR: boolean): string {
@@ -137,6 +152,7 @@ interface IPContentProps {
   version: IPVersion
   allowCIDR: boolean
   showValidation: boolean
+  messages: typeof DEFAULT_IP_MESSAGES
 }
 
 const IPContent = memo(function IPContent({
@@ -147,10 +163,11 @@ const IPContent = memo(function IPContent({
   version,
   allowCIDR,
   showValidation,
+  messages,
 }: IPContentProps) {
   const validation = useMemo(
-    () => validateIP(field.value || '', version, allowCIDR),
-    [field.value, version, allowCIDR],
+    () => validateIP(field.value || '', version, allowCIDR, messages),
+    [field.value, version, allowCIDR, messages],
   )
 
   const inputClasses = useMemo(
@@ -190,12 +207,12 @@ const IPContent = memo(function IPContent({
             {validation.valid ? (
               <>
                 <Check className="mr-1 h-3 w-3" />
-                Valid
+                {messages.valid}
               </>
             ) : (
               <>
                 <X className="mr-1 h-3 w-3" />
-                {validation.error || 'Invalid'}
+                {validation.error || messages.invalid}
               </>
             )}
           </Badge>
@@ -230,7 +247,17 @@ function FormIPAddressFieldComponent<
   version = 'both',
   allowCIDR = false,
   showValidation = true,
+  messages: customMessages,
 }: FormIPAddressFieldProps<TFieldValues, TName>) {
+  const messages = useMemo(
+    () =>
+      ({
+        ...DEFAULT_IP_MESSAGES,
+        ...customMessages,
+      }) as typeof DEFAULT_IP_MESSAGES,
+    [customMessages],
+  )
+
   const defaultPlaceholder = useMemo(
     () => placeholder || getPlaceholder(version, allowCIDR),
     [placeholder, version, allowCIDR],
@@ -259,6 +286,7 @@ function FormIPAddressFieldComponent<
               version={version}
               allowCIDR={allowCIDR}
               showValidation={showValidation}
+              messages={messages}
             />
           </FormControl>
           {description && <FormDescription>{description}</FormDescription>}

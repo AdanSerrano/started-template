@@ -2,10 +2,9 @@ const isDev = process.env.NODE_ENV !== 'production'
 
 const critical = ['DATABASE_URL', 'BETTER_AUTH_SECRET'] as const
 
-const recommended = [
-  'NEXT_PUBLIC_APP_URL',
-  'RESEND_API_KEY',
-] as const
+const recommended = ['NEXT_PUBLIC_APP_URL', 'RESEND_API_KEY'] as const
+
+const optional = ['GOOGLE_CLIENT_ID', 'GOOGLE_CLIENT_SECRET'] as const
 
 for (const key of critical) {
   if (!process.env[key]) {
@@ -20,6 +19,12 @@ for (const key of recommended) {
     } else {
       throw new Error(`Missing required environment variable: ${key}`)
     }
+  }
+}
+
+for (const key of optional) {
+  if (!process.env[key] && isDev) {
+    console.warn(`[env] Missing optional variable: ${key}`)
   }
 }
 

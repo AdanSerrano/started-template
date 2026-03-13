@@ -1,6 +1,7 @@
 'use client'
 
 import { memo, useCallback, useRef, useMemo, useLayoutEffect } from 'react'
+import DOMPurify from 'dompurify'
 import type { FieldPath, FieldValues } from 'react-hook-form'
 import {
   FormControl,
@@ -169,7 +170,7 @@ const RichTextEditor = memo(function RichTextEditor({
 
   useLayoutEffect(() => {
     if (editorRef.current && !isInitializedRef.current && value) {
-      editorRef.current.innerHTML = value
+      editorRef.current.innerHTML = DOMPurify.sanitize(value)
       isInitializedRef.current = true
     }
   }, [value])

@@ -98,6 +98,19 @@ export default async function LocaleLayout({
           crossOrigin="anonymous"
         />
         <link rel="manifest" href="/manifest.webmanifest" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Organization',
+              name: 'Starter App',
+              url: BASE_URL,
+              logo: `${BASE_URL}/icon-512.png`,
+              sameAs: [],
+            }),
+          }}
+        />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} overflow-x-hidden font-sans antialiased`}

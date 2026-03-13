@@ -405,5 +405,67 @@
       "pages": "Paginas",
       "goToPage": "Ir a pagina {page}"
     }
+  },
+  "formFields": {
+    "address": {
+      "labels": {
+        "street": "Calle",
+        "number": "Numero",
+        "apartment": "Piso/Puerta",
+        "city": "Ciudad",
+        "state": "Provincia/Estado",
+        "postalCode": "Codigo postal",
+        "country": "Pais"
+      },
+      "placeholders": {
+        "street": "Calle Mayor 1",
+        "number": "123",
+        "apartment": "2o B",
+        "city": "Madrid",
+        "state": "Seleccionar provincia",
+        "postalCode": "28001",
+        "country": "Seleccionar pais"
+      }
+    },
+    "date": {
+      "pickDate": "Seleccionar fecha",
+      "pickDateRange": "Seleccionar rango de fechas",
+      "presets": {
+        "today": "Hoy",
+        "tomorrow": "Manana",
+        "in7Days": "En 7 dias",
+        "in30Days": "En 30 dias",
+        "last7Days": "Ultimos 7 dias",
+        "last30Days": "Ultimos 30 dias",
+        "thisMonth": "Este mes",
+        "lastMonth": "Mes anterior"
+      }
+    },
+    "iban": {
+      "invalidCountryCode": "Codigo de pais invalido",
+      "unknownCountryCode": "Codigo de pais desconocido",
+      "invalidChecksum": "Suma de verificacion invalida",
+      "expectedLength": "Se esperan {length} caracteres",
+      "validIban": "IBAN valido",
+      "invalid": "Invalido"
+    },
+    "ip": {
+      "cidrNotAllowed": "Notacion CIDR no permitida",
+      "invalidCidr": "Notacion CIDR invalida",
+      "invalidCidrPrefix": "Prefijo CIDR invalido",
+      "ipv6Only": "Solo IPv6",
+      "ipv4CidrRange": "CIDR IPv4 debe ser 0-32",
+      "ipv4Only": "Solo IPv4",
+      "ipv6CidrRange": "CIDR IPv6 debe ser 0-128",
+      "invalidIp": "Direccion IP invalida",
+      "valid": "Valida",
+      "invalid": "Invalida"
+    },
+    "url": {
+      "protocolNotAllowed": "Protocolo \"{protocol}\" no permitido",
+      "invalidFormat": "Formato de URL invalido",
+      "validUrl": "URL valida",
+      "invalid": "Invalida"
+    }
   }
 }

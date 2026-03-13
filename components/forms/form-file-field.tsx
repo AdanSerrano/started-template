@@ -15,6 +15,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Button } from '@/components/ui/button'
+import NextImage from 'next/image'
 import { cn } from '@/lib/utils'
 import { Upload, X, File, Image, FileText, FileArchive } from 'lucide-react'
 import type { BaseFormFieldProps, FileWithPreview } from './form-field.types'
@@ -89,10 +90,13 @@ const FilePreviewItem = memo(function FilePreviewItem({
   return (
     <div className="flex items-center gap-3 rounded-lg border p-3">
       {file.preview ? (
-        <img
+        <NextImage
           src={file.preview}
           alt={file.name}
+          width={40}
+          height={40}
           className="h-10 w-10 rounded object-cover"
+          unoptimized
         />
       ) : (
         <FileTypeIcon type={file.type} className={iconClassName} />

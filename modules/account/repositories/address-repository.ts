@@ -1,21 +1,32 @@
 import { db } from '@/lib/db'
 import { addresses } from '@/db/schema'
-import { eq, and, count } from 'drizzle-orm'
+import { eq, and, count, sql } from 'drizzle-orm'
 import type { AddressInsert } from '../types'
 
+const findByUserIdPrepared = db
+  .select()
+  .from(addresses)
+  .where(eq(addresses.userId, sql.placeholder('userId')))
+  .orderBy(addresses.createdAt)
+  .prepare('address_find_by_user_id')
+
+const findByIdPrepared = db
+  .select()
+  .from(addresses)
+  .where(
+    and(
+      eq(addresses.id, sql.placeholder('id')),
+      eq(addresses.userId, sql.placeholder('userId')),
+    ),
+  )
+  .prepare('address_find_by_id')
+
 export async function findByUserId(userId: string) {
-  return db
-    .select()
-    .from(addresses)
-    .where(eq(addresses.userId, userId))
-    .orderBy(addresses.createdAt)
+  return findByUserIdPrepared.execute({ userId })
 }
 
 export async function findById(id: string, userId: string) {
-  const [address] = await db
-    .select()
-    .from(addresses)
-    .where(and(eq(addresses.id, id), eq(addresses.userId, userId)))
+  const [address] = await findByIdPrepared.execute({ id, userId })
   return address ?? null
 }
 

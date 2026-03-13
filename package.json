@@ -19,6 +19,7 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "knip": "knip",
+    "generate:icons": "node scripts/generate-icons.mjs",
     "prepare": "husky"
   },
   "lint-staged": {

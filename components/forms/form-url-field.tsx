@@ -1,6 +1,6 @@
 'use client'
 
-import { memo, useMemo, useCallback } from 'react'
+import { memo, useCallback, useMemo } from 'react'
 import type { FieldPath, FieldValues } from 'react-hook-form'
 import {
   FormControl,
@@ -17,6 +17,13 @@ import { Link2, ExternalLink, Check, X, Copy, Globe } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { BaseFormFieldProps } from './form-field.types'
 
+const DEFAULT_URL_MESSAGES = {
+  protocolNotAllowed: 'Protocol "{protocol}" not allowed',
+  invalidFormat: 'Invalid URL format',
+  validUrl: 'Valid URL',
+  invalid: 'Invalid',
+}
+
 export interface FormUrlFieldProps<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
@@ -27,6 +34,7 @@ export interface FormUrlFieldProps<
   showFavicon?: boolean | undefined
   allowedProtocols?: string[] | undefined
   autoAddProtocol?: boolean | undefined
+  messages?: Partial<typeof DEFAULT_URL_MESSAGES> | undefined
 }
 
 interface UrlValidation {
@@ -36,7 +44,11 @@ interface UrlValidation {
   error?: string | undefined
 }
 
-function validateUrl(url: string, allowedProtocols: string[]): UrlValidation {
+function validateUrl(
+  url: string,
+  allowedProtocols: string[],
+  messages: typeof DEFAULT_URL_MESSAGES,
+): UrlValidation {
   if (!url || !url.trim()) {
     return { valid: false }
   }
@@ -54,7 +66,7 @@ function validateUrl(url: string, allowedProtocols: string[]): UrlValidation {
       return {
         valid: false,
         protocol,
-        error: `Protocol "${protocol}" not allowed`,
+        error: messages.protocolNotAllowed.replace('{protocol}', protocol),
       }
     }
 
@@ -66,7 +78,7 @@ function validateUrl(url: string, allowedProtocols: string[]): UrlValidation {
   } catch {
     return {
       valid: false,
-      error: 'Invalid URL format',
+      error: messages.invalidFormat,
     }
   }
 }
@@ -129,6 +141,7 @@ interface UrlContentProps {
   showFavicon: boolean
   allowedProtocols: string[]
   autoAddProtocol: boolean
+  messages: typeof DEFAULT_URL_MESSAGES
 }
 
 const UrlContent = memo(function UrlContent({
@@ -142,10 +155,11 @@ const UrlContent = memo(function UrlContent({
   showFavicon,
   allowedProtocols,
   autoAddProtocol,
+  messages,
 }: UrlContentProps) {
   const validation = useMemo(
-    () => validateUrl(field.value || '', allowedProtocols),
-    [field.value, allowedProtocols],
+    () => validateUrl(field.value || '', allowedProtocols, messages),
+    [field.value, allowedProtocols, messages],
   )
 
   const faviconUrl = useMemo(
@@ -246,12 +260,12 @@ const UrlContent = memo(function UrlContent({
               {validation.valid ? (
                 <>
                   <Check className="mr-1 h-3 w-3" />
-                  Valid URL
+                  {messages.validUrl}
                 </>
               ) : (
                 <>
                   <X className="mr-1 h-3 w-3" />
-                  {validation.error || 'Invalid'}
+                  {validation.error || messages.invalid}
                 </>
               )}
             </Badge>
@@ -285,7 +299,17 @@ function FormUrlFieldComponent<
   showFavicon = true,
   allowedProtocols = ['http', 'https'],
   autoAddProtocol = true,
+  messages: customMessages,
 }: FormUrlFieldProps<TFieldValues, TName>) {
+  const messages = useMemo(
+    () =>
+      ({
+        ...DEFAULT_URL_MESSAGES,
+        ...customMessages,
+      }) as typeof DEFAULT_URL_MESSAGES,
+    [customMessages],
+  )
+
   return (
     <FormField
       control={control}
@@ -310,6 +334,7 @@ function FormUrlFieldComponent<
               showFavicon={showFavicon}
               allowedProtocols={allowedProtocols}
               autoAddProtocol={autoAddProtocol}
+              messages={messages}
             />
           </FormControl>
           {description && <FormDescription>{description}</FormDescription>}

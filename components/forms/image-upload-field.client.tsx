@@ -1,6 +1,7 @@
 'use client'
 
 import { memo, useCallback, useRef, useMemo } from 'react'
+import NextImage from 'next/image'
 import { Pencil, Trash2, ImageIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -93,10 +94,13 @@ export const ImageUploadField = memo(function ImageUploadField({
               isRound ? 'size-24 rounded-full' : 'h-24 w-36 rounded-lg',
             )}
           >
-            <img
+            <NextImage
               src={previewUrl}
               alt="Preview"
+              width={144}
+              height={96}
               className="h-full w-full object-contain"
+              unoptimized
             />
           </div>
 

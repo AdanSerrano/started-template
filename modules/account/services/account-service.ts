@@ -21,10 +21,11 @@ export async function getAddress(id: string, userId: string) {
 }
 
 export async function createAddress(data: AddressInsert) {
-  if (data.isDefault) {
-    await addressRepo.setDefault('', data.userId)
+  const address = await addressRepo.create(data)
+  if (data.isDefault && address) {
+    await addressRepo.setDefault(address.id, data.userId)
   }
-  return addressRepo.create(data)
+  return address
 }
 
 export async function updateAddress(

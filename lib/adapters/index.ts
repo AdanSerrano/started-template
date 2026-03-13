@@ -27,3 +27,6 @@ export { GA4AnalyticsService } from './ga4-analytics'
 
 // Cache
 export { MemoryCacheService } from './memory-cache'
+
+// Rate Limit
+export { InMemoryRateLimitService } from './in-memory-rate-limit'

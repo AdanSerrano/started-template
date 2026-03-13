@@ -18,6 +18,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
+import Image from 'next/image'
 import { Loader2, Copy, Check } from 'lucide-react'
 
 interface VerifyFormProps {
@@ -57,11 +58,12 @@ export const TwoFactorVerifyForm = memo(function TwoFactorVerifyForm({
 
       {totpUri && (
         <div className="bg-muted flex items-center justify-center rounded-lg p-4">
-          <img
+          <Image
             src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(totpUri)}`}
             alt={t('qrAlt')}
             width={200}
             height={200}
+            unoptimized
           />
         </div>
       )}

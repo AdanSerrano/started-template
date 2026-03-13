@@ -19,6 +19,7 @@ import type {
   IErrorMonitoringService,
   IAnalyticsService,
   ICache,
+  IRateLimitService,
 } from '@/lib/interfaces'
 
 import {
@@ -34,6 +35,7 @@ import {
   ConsoleMonitoringAdapter,
   GA4AnalyticsService,
   MemoryCacheService,
+  InMemoryRateLimitService,
 } from '@/lib/adapters'
 
 // ────────────────────────────────────────────────────────────
@@ -51,6 +53,7 @@ let httpClientInstance: IHttpClient | null = null
 let errorMonitoringInstance: IErrorMonitoringService | null = null
 let analyticsInstance: IAnalyticsService | null = null
 let cacheInstance: ICache | null = null
+let rateLimitInstance: IRateLimitService | null = null
 
 // ────────────────────────────────────────────────────────────
 // Email
@@ -173,6 +176,17 @@ export function getCacheService(): ICache {
 }
 
 // ────────────────────────────────────────────────────────────
+// Rate Limit
+// ────────────────────────────────────────────────────────────
+
+export function getRateLimitService(): IRateLimitService {
+  if (!rateLimitInstance) {
+    rateLimitInstance = new InMemoryRateLimitService()
+  }
+  return rateLimitInstance
+}
+
+// ────────────────────────────────────────────────────────────
 // Testing — permite inyectar mocks
 // ────────────────────────────────────────────────────────────
 
@@ -194,6 +208,30 @@ export function setErrorMonitoringInstance(
   errorMonitoringInstance = monitoring
 }
 
+export function setExcelExportInstance(service: IExcelExportService): void {
+  excelExportInstance = service
+}
+
+export function setPDFExportInstance(service: IPDFExportService): void {
+  pdfExportInstance = service
+}
+
+export function setCSVImportInstance(service: ICSVImportService): void {
+  csvImportInstance = service
+}
+
+export function setExcelImportInstance(service: IExcelImportService): void {
+  excelImportInstance = service
+}
+
+export function setJobsInstance(service: IJobsService): void {
+  jobsInstance = service
+}
+
+export function setRateLimitService(service: IRateLimitService): void {
+  rateLimitInstance = service
+}
+
 export function resetProviders(): void {
   emailInstance = null
   storageInstance = null
@@ -206,6 +244,7 @@ export function resetProviders(): void {
   errorMonitoringInstance = null
   analyticsInstance = null
   cacheInstance = null
+  rateLimitInstance = null
 }
 
 export function setAnalyticsInstance(analytics: IAnalyticsService): void {

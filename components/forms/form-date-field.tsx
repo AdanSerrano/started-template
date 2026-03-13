@@ -35,80 +35,97 @@ export interface DateRangePreset {
   getValue: () => DateRange
 }
 
-const DEFAULT_DATE_PRESETS: DatePreset[] = [
-  { label: 'Today', getValue: () => new Date() },
-  {
-    label: 'Tomorrow',
-    getValue: () => {
-      const date = new Date()
-      date.setDate(date.getDate() + 1)
-      return date
-    },
-  },
-  {
-    label: 'In 7 days',
-    getValue: () => {
-      const date = new Date()
-      date.setDate(date.getDate() + 7)
-      return date
-    },
-  },
-  {
-    label: 'In 30 days',
-    getValue: () => {
-      const date = new Date()
-      date.setDate(date.getDate() + 30)
-      return date
-    },
-  },
-]
+const DEFAULT_PRESET_LABELS = {
+  today: 'Today',
+  tomorrow: 'Tomorrow',
+  in7Days: 'In 7 days',
+  in30Days: 'In 30 days',
+  last7Days: 'Last 7 days',
+  last30Days: 'Last 30 days',
+  thisMonth: 'This month',
+  lastMonth: 'Last month',
+}
 
-const DEFAULT_DATE_RANGE_PRESETS: DateRangePreset[] = [
-  {
-    label: 'Today',
-    getValue: () => {
-      const today = new Date()
-      return { from: today, to: today }
+function buildDatePresets(labels: typeof DEFAULT_PRESET_LABELS): DatePreset[] {
+  return [
+    { label: labels.today, getValue: () => new Date() },
+    {
+      label: labels.tomorrow,
+      getValue: () => {
+        const date = new Date()
+        date.setDate(date.getDate() + 1)
+        return date
+      },
     },
-  },
-  {
-    label: 'Last 7 days',
-    getValue: () => {
-      const to = new Date()
-      const from = new Date()
-      from.setDate(from.getDate() - 7)
-      return { from, to }
+    {
+      label: labels.in7Days,
+      getValue: () => {
+        const date = new Date()
+        date.setDate(date.getDate() + 7)
+        return date
+      },
     },
-  },
-  {
-    label: 'Last 30 days',
-    getValue: () => {
-      const to = new Date()
-      const from = new Date()
-      from.setDate(from.getDate() - 30)
-      return { from, to }
+    {
+      label: labels.in30Days,
+      getValue: () => {
+        const date = new Date()
+        date.setDate(date.getDate() + 30)
+        return date
+      },
     },
-  },
-  {
-    label: 'This month',
-    getValue: () => {
-      const from = new Date()
-      from.setDate(1)
-      const to = new Date()
-      return { from, to }
+  ]
+}
+
+function buildDateRangePresets(
+  labels: typeof DEFAULT_PRESET_LABELS,
+): DateRangePreset[] {
+  return [
+    {
+      label: labels.today,
+      getValue: () => {
+        const today = new Date()
+        return { from: today, to: today }
+      },
     },
-  },
-  {
-    label: 'Last month',
-    getValue: () => {
-      const to = new Date()
-      to.setDate(0)
-      const from = new Date(to)
-      from.setDate(1)
-      return { from, to }
+    {
+      label: labels.last7Days,
+      getValue: () => {
+        const to = new Date()
+        const from = new Date()
+        from.setDate(from.getDate() - 7)
+        return { from, to }
+      },
     },
-  },
-]
+    {
+      label: labels.last30Days,
+      getValue: () => {
+        const to = new Date()
+        const from = new Date()
+        from.setDate(from.getDate() - 30)
+        return { from, to }
+      },
+    },
+    {
+      label: labels.thisMonth,
+      getValue: () => {
+        const from = new Date()
+        from.setDate(1)
+        const to = new Date()
+        return { from, to }
+      },
+    },
+    {
+      label: labels.lastMonth,
+      getValue: () => {
+        const to = new Date()
+        to.setDate(0)
+        const from = new Date(to)
+        from.setDate(1)
+        return { from, to }
+      },
+    },
+  ]
+}
 
 export interface FormDateFieldProps<
   TFieldValues extends FieldValues = FieldValues,
@@ -123,6 +140,7 @@ export interface FormDateFieldProps<
   triggerClassName?: string | undefined
   presets?: DatePreset[] | undefined
   showPresets?: boolean | undefined
+  presetLabels?: Partial<typeof DEFAULT_PRESET_LABELS> | undefined
 }
 
 const defaultFormatDate = (date: Date, locale = 'en-US') =>
@@ -261,10 +279,25 @@ function FormDateFieldComponent<
   triggerClassName,
   presets,
   showPresets = false,
+  presetLabels: customPresetLabels,
 }: FormDateFieldProps<TFieldValues, TName>) {
+  const mergedPresetLabels = useMemo(
+    () =>
+      ({
+        ...DEFAULT_PRESET_LABELS,
+        ...customPresetLabels,
+      }) as typeof DEFAULT_PRESET_LABELS,
+    [customPresetLabels],
+  )
+
+  const defaultPresets = useMemo(
+    () => buildDatePresets(mergedPresetLabels),
+    [mergedPresetLabels],
+  )
+
   const activePresets = useMemo(
-    () => (showPresets ? (presets ?? DEFAULT_DATE_PRESETS) : []),
-    [showPresets, presets],
+    () => (showPresets ? (presets ?? defaultPresets) : []),
+    [showPresets, presets, defaultPresets],
   )
 
   const format = useCallback(
@@ -339,6 +372,7 @@ export interface FormDateRangeFieldProps<
   triggerClassName?: string | undefined
   presets?: DateRangePreset[] | undefined
   showPresets?: boolean | undefined
+  presetLabels?: Partial<typeof DEFAULT_PRESET_LABELS> | undefined
 }
 
 interface DateRangePresetButtonProps {
@@ -486,10 +520,25 @@ function FormDateRangeFieldComponent<
   triggerClassName,
   presets,
   showPresets = false,
+  presetLabels: customPresetLabels,
 }: FormDateRangeFieldProps<TFieldValues, TName>) {
+  const mergedPresetLabels = useMemo(
+    () =>
+      ({
+        ...DEFAULT_PRESET_LABELS,
+        ...customPresetLabels,
+      }) as typeof DEFAULT_PRESET_LABELS,
+    [customPresetLabels],
+  )
+
+  const defaultPresets = useMemo(
+    () => buildDateRangePresets(mergedPresetLabels),
+    [mergedPresetLabels],
+  )
+
   const activePresets = useMemo(
-    () => (showPresets ? (presets ?? DEFAULT_DATE_RANGE_PRESETS) : []),
-    [showPresets, presets],
+    () => (showPresets ? (presets ?? defaultPresets) : []),
+    [showPresets, presets, defaultPresets],
   )
 
   const format = useCallback(

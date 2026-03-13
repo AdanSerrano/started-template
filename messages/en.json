@@ -405,5 +405,67 @@
       "pages": "Pages",
       "goToPage": "Go to page {page}"
     }
+  },
+  "formFields": {
+    "address": {
+      "labels": {
+        "street": "Street",
+        "number": "Number",
+        "apartment": "Apt/Suite",
+        "city": "City",
+        "state": "State/Province",
+        "postalCode": "Postal Code",
+        "country": "Country"
+      },
+      "placeholders": {
+        "street": "123 Main Street",
+        "number": "123",
+        "apartment": "Apt 4B",
+        "city": "New York",
+        "state": "Select state",
+        "postalCode": "10001",
+        "country": "Select country"
+      }
+    },
+    "date": {
+      "pickDate": "Pick a date",
+      "pickDateRange": "Pick a date range",
+      "presets": {
+        "today": "Today",
+        "tomorrow": "Tomorrow",
+        "in7Days": "In 7 days",
+        "in30Days": "In 30 days",
+        "last7Days": "Last 7 days",
+        "last30Days": "Last 30 days",
+        "thisMonth": "This month",
+        "lastMonth": "Last month"
+      }
+    },
+    "iban": {
+      "invalidCountryCode": "Invalid country code",
+      "unknownCountryCode": "Unknown country code",
+      "invalidChecksum": "Invalid checksum",
+      "expectedLength": "Expected {length} characters",
+      "validIban": "Valid IBAN",
+      "invalid": "Invalid"
+    },
+    "ip": {
+      "cidrNotAllowed": "CIDR notation not allowed",
+      "invalidCidr": "Invalid CIDR notation",
+      "invalidCidrPrefix": "Invalid CIDR prefix",
+      "ipv6Only": "IPv6 only",
+      "ipv4CidrRange": "IPv4 CIDR must be 0-32",
+      "ipv4Only": "IPv4 only",
+      "ipv6CidrRange": "IPv6 CIDR must be 0-128",
+      "invalidIp": "Invalid IP address",
+      "valid": "Valid",
+      "invalid": "Invalid"
+    },
+    "url": {
+      "protocolNotAllowed": "Protocol \"{protocol}\" not allowed",
+      "invalidFormat": "Invalid URL format",
+      "validUrl": "Valid URL",
+      "invalid": "Invalid"
+    }
   }
 }

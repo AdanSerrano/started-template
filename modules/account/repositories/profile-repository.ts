@@ -1,20 +1,23 @@
 import { db } from '@/lib/db'
 import { users } from '@/db/schema'
-import { eq } from 'drizzle-orm'
+import { eq, sql } from 'drizzle-orm'
 import type { ProfileUpdateData } from '../types'
 
+const findByIdPrepared = db
+  .select({
+    id: users.id,
+    name: users.name,
+    email: users.email,
+    phone: users.phone,
+    image: users.image,
+    createdAt: users.createdAt,
+  })
+  .from(users)
+  .where(eq(users.id, sql.placeholder('id')))
+  .prepare('profile_find_by_id')
+
 export async function findById(id: string) {
-  const [user] = await db
-    .select({
-      id: users.id,
-      name: users.name,
-      email: users.email,
-      phone: users.phone,
-      image: users.image,
-      createdAt: users.createdAt,
-    })
-    .from(users)
-    .where(eq(users.id, id))
+  const [user] = await findByIdPrepared.execute({ id })
   return user ?? null
 }
 
