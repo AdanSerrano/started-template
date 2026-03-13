@@ -50,7 +50,9 @@ async function generateIco(outputPath) {
   // Build ICO file manually (simple BMP-in-ICO format)
   const ico = buildIco(images, sizes)
   writeFileSync(outputPath, ico)
-  console.log(`  ✓ ${outputPath.replace(ROOT + '/', '')} (ICO: ${sizes.join(', ')})`)
+  console.log(
+    `  ✓ ${outputPath.replace(ROOT + '/', '')} (ICO: ${sizes.join(', ')})`,
+  )
 }
 
 /**
@@ -71,9 +73,9 @@ function buildIco(pngBuffers, sizes) {
   const icoBuffer = Buffer.alloc(dataOffset + totalDataSize)
 
   // ICO Header
-  icoBuffer.writeUInt16LE(0, 0)          // Reserved
-  icoBuffer.writeUInt16LE(1, 2)          // Type: ICO
-  icoBuffer.writeUInt16LE(numImages, 4)  // Number of images
+  icoBuffer.writeUInt16LE(0, 0) // Reserved
+  icoBuffer.writeUInt16LE(1, 2) // Type: ICO
+  icoBuffer.writeUInt16LE(numImages, 4) // Number of images
 
   // Directory entries + data
   let currentDataOffset = dataOffset
@@ -82,14 +84,14 @@ function buildIco(pngBuffers, sizes) {
     const pngBuf = pngBuffers[i]
     const entryOffset = headerSize + i * dirEntrySize
 
-    icoBuffer.writeUInt8(size >= 256 ? 0 : size, entryOffset)      // Width
-    icoBuffer.writeUInt8(size >= 256 ? 0 : size, entryOffset + 1)  // Height
-    icoBuffer.writeUInt8(0, entryOffset + 2)                        // Color palette
-    icoBuffer.writeUInt8(0, entryOffset + 3)                        // Reserved
-    icoBuffer.writeUInt16LE(1, entryOffset + 4)                     // Color planes
-    icoBuffer.writeUInt16LE(32, entryOffset + 6)                    // Bits per pixel
-    icoBuffer.writeUInt32LE(pngBuf.length, entryOffset + 8)         // Image size
-    icoBuffer.writeUInt32LE(currentDataOffset, entryOffset + 12)    // Data offset
+    icoBuffer.writeUInt8(size >= 256 ? 0 : size, entryOffset) // Width
+    icoBuffer.writeUInt8(size >= 256 ? 0 : size, entryOffset + 1) // Height
+    icoBuffer.writeUInt8(0, entryOffset + 2) // Color palette
+    icoBuffer.writeUInt8(0, entryOffset + 3) // Reserved
+    icoBuffer.writeUInt16LE(1, entryOffset + 4) // Color planes
+    icoBuffer.writeUInt16LE(32, entryOffset + 6) // Bits per pixel
+    icoBuffer.writeUInt32LE(pngBuf.length, entryOffset + 8) // Image size
+    icoBuffer.writeUInt32LE(currentDataOffset, entryOffset + 12) // Data offset
 
     pngBuf.copy(icoBuffer, currentDataOffset)
     currentDataOffset += pngBuf.length

@@ -92,11 +92,7 @@ export function MobileNav({ session: serverSession }: MobileNavProps) {
                 </div>
               </div>
               <Separator className="mb-2" />
-              <Button
-                variant="default"
-                asChild
-                onClick={() => setOpen(false)}
-              >
+              <Button variant="default" asChild onClick={() => setOpen(false)}>
                 <Link href="/account">
                   <UserCircle className="size-4" />
                   {tCommon('myAccount')}

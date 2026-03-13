@@ -78,7 +78,7 @@ export default async function Home() {
         {/* Hero */}
         <section className="relative flex min-h-[calc(100svh-4rem)] items-center justify-center">
           <div className="mx-auto max-w-4xl px-4 text-center sm:px-6">
-            <p className="text-muted-foreground mb-4 text-sm font-medium uppercase tracking-widest">
+            <p className="text-muted-foreground mb-4 text-sm font-medium tracking-widest uppercase">
               {t('hero.badge')}
             </p>
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">

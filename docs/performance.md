@@ -8,10 +8,10 @@
 
 Todas las paginas publicas usan `revalidate` para ISR:
 
-| Pagina       | `revalidate` | Razon                          |
-| ------------ | ------------ | ------------------------------ |
-| Landing `/`  | 3600 (1h)    | Contenido destacado            |
-| Paginas info | 86400 (24h)  | Contenido que cambia poco      |
+| Pagina       | `revalidate` | Razon                     |
+| ------------ | ------------ | ------------------------- |
+| Landing `/`  | 3600 (1h)    | Contenido destacado       |
+| Paginas info | 86400 (24h)  | Contenido que cambia poco |
 
 ```tsx
 export const revalidate = 3600 // En la pagina
@@ -56,12 +56,12 @@ Solo `'use client'` para: event handlers, React hooks cliente, APIs navegador, Z
 
 > Zustand SOLO para estado UI del cliente. NUNCA para datos del servidor.
 
-| Zustand                 | NO Zustand           |
-| ----------------------- | -------------------- |
-| Sidebar abierta/cerrada | Lista de entidades   |
-| Tema (dark/light)       | Datos de servidor    |
-| Filtros activos de UI   | Transacciones        |
-| Estado temporal de UI   | Metricas/estadisticas|
+| Zustand                 | NO Zustand            |
+| ----------------------- | --------------------- |
+| Sidebar abierta/cerrada | Lista de entidades    |
+| Tema (dark/light)       | Datos de servidor     |
+| Filtros activos de UI   | Transacciones         |
+| Estado temporal de UI   | Metricas/estadisticas |
 
 ### Selectors atomicos — OBLIGATORIO
 

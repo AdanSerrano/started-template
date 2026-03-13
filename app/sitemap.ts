@@ -34,9 +34,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     path: string
     changeFrequency: MetadataRoute.Sitemap[number]['changeFrequency']
     priority: number
-  }[] = [
-    { path: '', changeFrequency: 'weekly', priority: 1.0 },
-  ]
+  }[] = [{ path: '', changeFrequency: 'weekly', priority: 1.0 }]
 
   return staticPages.flatMap((page) =>
     locales.map((locale) => ({

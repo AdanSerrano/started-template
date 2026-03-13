@@ -57,16 +57,16 @@ Page → Action → Service → Repository → Database
 
 ## Scripts
 
-| Script           | Descripcion                    |
-| ---------------- | ------------------------------ |
-| `bun run dev`    | Servidor de desarrollo         |
-| `bun run build`  | Build de produccion            |
-| `bun run lint`   | Linter                         |
-| `bun run format` | Formatear codigo               |
-| `bun run db:generate` | Generar migraciones       |
-| `bun run db:push`     | Aplicar migraciones       |
-| `bun run db:studio`   | Drizzle Studio            |
-| `bun run type-check`  | Verificar tipos           |
+| Script                | Descripcion            |
+| --------------------- | ---------------------- |
+| `bun run dev`         | Servidor de desarrollo |
+| `bun run build`       | Build de produccion    |
+| `bun run lint`        | Linter                 |
+| `bun run format`      | Formatear codigo       |
+| `bun run db:generate` | Generar migraciones    |
+| `bun run db:push`     | Aplicar migraciones    |
+| `bun run db:studio`   | Drizzle Studio         |
+| `bun run type-check`  | Verificar tipos        |
 
 ## Documentacion
 

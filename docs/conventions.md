@@ -6,17 +6,17 @@
 
 ## Naming
 
-| Tipo                | Convencion            | Ejemplo                          |
-| ------------------- | --------------------- | -------------------------------- |
-| Archivos componente | kebab-case            | `user-form.client.tsx`           |
-| Client Components   | sufijo `.client.tsx`  | `sidebar-nav.client.tsx`         |
-| Server Components   | sin sufijo            | `user-grid.tsx`                  |
-| Server Actions      | un archivo por action | `create-user.ts`                 |
-| Zustand stores      | sufijo `-store.ts`    | `ui-store.ts`                    |
-| Hooks               | prefijo `use-`        | `use-debounce.ts`               |
-| Schemas Drizzle     | un archivo por tabla  | `db/schema/users.ts`            |
-| Schemas Zod         | `validations.ts`      | `modules/account/validations.ts` |
-| Emails              | kebab-case            | `welcome-email.tsx`              |
+| Tipo                | Convencion            | Ejemplo                            |
+| ------------------- | --------------------- | ---------------------------------- |
+| Archivos componente | kebab-case            | `user-form.client.tsx`             |
+| Client Components   | sufijo `.client.tsx`  | `sidebar-nav.client.tsx`           |
+| Server Components   | sin sufijo            | `user-grid.tsx`                    |
+| Server Actions      | un archivo por action | `create-user.ts`                   |
+| Zustand stores      | sufijo `-store.ts`    | `ui-store.ts`                      |
+| Hooks               | prefijo `use-`        | `use-debounce.ts`                  |
+| Schemas Drizzle     | un archivo por tabla  | `db/schema/users.ts`               |
+| Schemas Zod         | `validations.ts`      | `modules/account/validations.ts`   |
+| Emails              | kebab-case            | `welcome-email.tsx`                |
 | Loading pages       | `loading.tsx`         | `app/[locale]/account/loading.tsx` |
 
 ---
