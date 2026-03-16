@@ -177,7 +177,6 @@ export const auth = betterAuth({
       enabled: true,
       maxAge: 2 * 60, // 2 minutos — balance seguridad vs rendimiento
       strategy: 'compact',
-      refreshCache: true,
     },
   },
 
