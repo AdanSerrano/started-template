@@ -31,16 +31,20 @@ starter-app/
 │   └── [shared-components].tsx   # Componentes compartidos
 │
 ├── lib/                          # INFRAESTRUCTURA
-│   ├── interfaces/               # Contratos TypeScript
-│   ├── adapters/                 # Implementaciones concretas
-│   ├── providers.ts              # Factory (Singleton) — providers
-│   ├── db.ts                     # Cliente Drizzle
+│   ├── interfaces/               # Contratos TypeScript (ports)
+│   ├── adapters/                 # Implementaciones concretas (adapters)
+│   ├── providers.ts              # Factory (Singleton) — todos los providers
+│   ├── create-provider.ts        # Helper generico para crear providers
+│   ├── db.ts                     # Cliente Drizzle + pool
+│   ├── db-types.ts               # DbClient, DbTransaction, DbOrTx
 │   ├── env.ts                    # Validacion de variables de entorno
 │   ├── rate-limit.ts             # Rate limiter in-memory (sliding window)
 │   ├── auth.ts                   # Better Auth server config
 │   ├── auth-client.ts            # Better Auth client
 │   ├── auth-server.ts            # Helpers Server Components
-│   ├── audit.ts                  # Audit log helper
+│   ├── audit.ts                  # Audit log (framework-agnostic)
+│   ├── audit-helpers.ts          # getRequestMetadata() — Next.js specific
+│   ├── safe-action.ts            # createSafeAction() — wrapper actions
 │   ├── errors.ts                 # Custom error classes
 │   └── ...
 │
@@ -117,19 +121,22 @@ app/pages → modules/actions + modules/components
 
 ### Interfaces disponibles
 
-| Interface                 | Adapter actual              | Alternativas futuras                        |
-| ------------------------- | --------------------------- | ------------------------------------------- |
-| `IHttpClient`             | `AxiosHttpClient`           | FetchHttpClient                             |
-| `IEmailService`           | `ResendEmailService`        | SendGridEmailService                        |
-| `IStorageService`         | `R2StorageService`          | S3StorageService                            |
-| `IExcelExportService`     | `XLSXExportService`         | ExcelJSExportService                        |
-| `IExcelImportService`     | `XLSXImportService`         | --                                          |
-| `ICSVImportService`       | `PapaParseCSVImportService` | --                                          |
-| `IPDFExportService`       | `ReactPDFExportService`     | PuppeteerPDF                                |
-| `IJobsService`            | `TriggerJobsService`        | BullMQJobsService                           |
-| `IAnalyticsService`       | `GA4AnalyticsService`       | PostHog, Mixpanel                           |
-| `IErrorMonitoringService` | `ConsoleMonitoringAdapter`  | Reemplazar con @sentry/nextjs en produccion |
-| `IRateLimitResult`        | In-memory sliding window    | Redis-based                                 |
+| Interface                 | Adapter actual              | Alternativas futuras                         |
+| ------------------------- | --------------------------- | -------------------------------------------- |
+| `IAuthProvider`           | `BetterAuthProvider`        | AuthJSProvider, ClerkProvider, LuciaProvider |
+| `IEmailService`           | `ResendEmailService`        | SendGridEmailService, SESEmailService        |
+| `IStorageService`         | `R2StorageService`          | S3StorageService, GCSStorageService          |
+| `IHttpClient`             | `FetchHttpClient` (default) | AxiosHttpClient (via `createHttpClient`)     |
+| `ILogger`                 | `ConsoleLogger`             | PinoLogger, WinstonLogger                    |
+| `IExcelExportService`     | `XLSXExportService`         | ExcelJSExportService                         |
+| `IExcelImportService`     | `XLSXImportService`         | --                                           |
+| `ICSVImportService`       | `PapaParseCSVImportService` | --                                           |
+| `IPDFExportService`       | `ReactPDFExportService`     | PuppeteerPDF                                 |
+| `IJobsService`            | `TriggerJobsService`        | BullMQJobsService                            |
+| `IAnalyticsService`       | `GA4AnalyticsService`       | PostHog, Mixpanel                            |
+| `IErrorMonitoringService` | `ConsoleMonitoringAdapter`  | SentryMonitoringAdapter                      |
+| `IRateLimitService`       | `InMemoryRateLimitService`  | RedisRateLimitService                        |
+| `ICache`                  | `MemoryCacheService`        | RedisCacheService                            |
 
 ### Uso correcto
 
@@ -182,6 +189,168 @@ Todas las paginas tienen `loading.tsx` con `<Skeleton>` de shadcn/ui:
 | --- | --------- | ---------------------------------------------------- |
 | 1   | `auth`    | Login, registro, OAuth, magic links, sesiones, roles |
 | 2   | `account` | Perfil, direcciones del usuario                      |
+
+---
+
+## Transacciones en Repositories
+
+> Los repositories aceptan un parametro opcional `tx?: DbOrTx` en sus metodos de mutacion.
+
+```typescript
+import { db, type DbOrTx } from '@/lib/db'
+
+export interface IAddressRepository {
+  create(data: AddressInsert, tx?: DbOrTx): Promise<Address>
+  update(
+    id: string,
+    userId: string,
+    data: Partial<AddressInsert>,
+    tx?: DbOrTx,
+  ): Promise<Address | null>
+}
+
+// Uso sin transaccion (comportamiento normal)
+await addressRepository.create(data)
+
+// Uso con transaccion (operaciones atomicas)
+await db.transaction(async (tx) => {
+  await addressRepository.create(addressData, tx)
+  await profileRepository.update(userId, profileData, tx)
+})
+```
+
+**Reglas:**
+
+- Prepared statements NO pueden usar `tx` — se ejecutan siempre con `db`
+- Solo metodos de escritura (`create`, `update`, `remove`) aceptan `tx`
+- El service decide cuando usar transaccion, el repository la acepta
+
+---
+
+## Server Actions — `createSafeAction`
+
+> Wrapper estandar para actions con auth, validacion Zod y error handling.
+
+```typescript
+import { createSafeAction } from '@/lib/safe-action'
+import { createAuditLog } from '@/lib/audit'
+import { mySchema } from './validations'
+
+export const myAction = createSafeAction(
+  { schema: mySchema, auth: true },
+  async ({ data, session, metadata }) => {
+    const result = await myService.doSomething(data)
+
+    await createAuditLog({
+      action: 'entity.created',
+      entityType: 'entity',
+      entityId: result.id,
+      userId: session.user.id,
+      metadata, // IP y User-Agent ya extraidos
+    })
+
+    return result
+  },
+)
+```
+
+**Que hace automaticamente:**
+
+1. Verifica autenticacion (`requireAuth()`) si `auth: true`
+2. Valida input con Zod si se proporciona `schema`
+3. Extrae metadata del request (IP, User-Agent)
+4. Captura errores y los formatea como `ActionResult`
+5. Re-lanza errores internos de Next.js (`redirect`, `notFound`)
+
+**Tipo de retorno:** `ActionResult<T>` con `success`, `data?`, `error?`, `fieldErrors?`.
+
+---
+
+## Logging Estructurado
+
+> Interface `ILogger` con JSON estructurado y child loggers.
+
+```typescript
+import { getLogger } from '@/lib/providers'
+
+const logger = getLogger()
+
+// Logs basicos
+logger.info('Usuario creado', { userId: 'u1', email: 'test@test.com' })
+logger.error('Fallo al enviar email', error, { to: 'user@test.com' })
+
+// Child logger con contexto persistente
+const reqLogger = logger.child({ requestId: 'req-123', module: 'auth' })
+reqLogger.info('Login exitoso') // incluye requestId y module automaticamente
+```
+
+**Adapter actual:** `ConsoleLogger` — JSON a stdout. Para produccion, crear `PinoLogger`.
+
+---
+
+## Health Check — `/api/health`
+
+Endpoint para load balancers, uptime monitoring y deployment probes.
+
+```
+GET /api/health
+
+// Respuesta 200:
+{
+  "status": "healthy",
+  "checks": { "database": true },
+  "timestamp": "2026-03-16T...",
+  "uptime": 12345.67
+}
+
+// Respuesta 503 (degraded):
+{
+  "status": "degraded",
+  "checks": { "database": false },
+  ...
+}
+```
+
+No requiere autenticacion. El proxy de Next.js ya permite todas las rutas `/api`.
+
+---
+
+## Instrumentacion — `instrumentation.ts`
+
+Hook de Next.js 16 que se ejecuta una vez al iniciar el servidor.
+
+```typescript
+// instrumentation.ts (raiz del proyecto)
+export async function register() {
+  // Inicializar OpenTelemetry, Sentry, etc.
+}
+
+export async function onRequestError(error, request, context) {
+  // Captura errores no manejados en routes, server components, etc.
+}
+```
+
+Para activar OpenTelemetry, instalar `@opentelemetry/sdk-node` y descomentar el setup en `register()`.
+
+---
+
+## Como Swappear un Servicio
+
+Para cambiar cualquier servicio externo (email, auth, storage, etc.):
+
+1. **Crear adapter** en `lib/adapters/nuevo-adapter.ts` que implemente la interface
+2. **Exportar** en `lib/adapters/index.ts`
+3. **Cambiar UNA linea** en `lib/providers.ts`:
+
+```typescript
+// Antes
+const email = createProvider<IEmailService>(() => new ResendEmailService())
+
+// Despues
+const email = createProvider<IEmailService>(() => new SendGridEmailService())
+```
+
+4. El resto del sistema no cambia — services, actions y components siguen usando `getEmailService()`
 
 ---
 

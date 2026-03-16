@@ -30,15 +30,15 @@ La **UX es prioridad #1**. Toda decision optimiza:
 
 **ANTES de implementar cualquier cosa, LEE la documentacion relevante en `docs/`.**
 
-| Archivo                | Contenido                                             | Leer cuando...                                 |
-| ---------------------- | ----------------------------------------------------- | ---------------------------------------------- |
-| `docs/architecture.md` | Estructura, capas, adapters, SEO, skeletons, modulos  | Creas un modulo, pagina o componente nuevo     |
-| `docs/tech-stack.md`   | Stack completo, Tailwind v4, Drizzle, env vars        | Configuras algo o agregas dependencia          |
-| `docs/patterns.md`     | 12 patrones de diseno con ejemplos y anti-patrones    | Diseñas logica de negocio o servicios          |
-| `docs/conventions.md`  | Naming, imports, limites, skeletons, errores, Zod     | Escribes cualquier codigo nuevo                |
-| `docs/auth.md`         | Better Auth, cookie cache, roles, sesiones, 2FA       | Tocas auth, sesiones o permisos                |
-| `docs/performance.md`  | ISR, React 19.2, Zustand, analytics, rate limiting    | Optimizas rendimiento o agregas estado cliente |
-| `docs/i18n.md`         | next-intl (es/en/ca), theming dark/light, emails i18n | Agregas textos, traducciones o cambias tema    |
+| Archivo                | Contenido                                                      | Leer cuando...                                     |
+| ---------------------- | -------------------------------------------------------------- | -------------------------------------------------- |
+| `docs/architecture.md` | Capas, adapters, transacciones, safe actions, health, logging  | Creas modulo, swappeas servicio, o agregas adapter |
+| `docs/tech-stack.md`   | Stack completo, Tailwind v4, Drizzle, env vars                 | Configuras algo o agregas dependencia              |
+| `docs/patterns.md`     | 12 patrones de diseno con ejemplos y anti-patrones             | Diseñas logica de negocio o servicios              |
+| `docs/conventions.md`  | Naming, imports, limites, skeletons, errores, Zod, audit logs  | Escribes cualquier codigo nuevo                    |
+| `docs/auth.md`         | Better Auth, cookie cache, roles, sesiones, 2FA                | Tocas auth, sesiones o permisos                    |
+| `docs/performance.md`  | ISR, React 19.2, Zustand, prepared statements, instrumentation | Optimizas rendimiento o agregas monitoring         |
+| `docs/i18n.md`         | next-intl (es/en/ca), theming dark/light, emails i18n          | Agregas textos, traducciones o cambias tema        |
 
 ### Regla: Documentar componentes nuevos — OBLIGATORIO
 
@@ -123,6 +123,7 @@ Cada componente, modulo o utilidad nueva DEBE tener documentacion en `docs/`:
 ```
 starter-template/
 ├── app/[locale]/           # Routing — paginas thin con loading.tsx
+├── app/api/health/         # Health check endpoint (DB connectivity)
 ├── modules/                # Domain — modulos con arquitectura limpia
 │   ├── auth/               # Login, registro, OAuth, magic links, 2FA
 │   └── account/            # Perfil, direcciones del usuario
@@ -130,15 +131,20 @@ starter-template/
 │   ├── ui/                 # shadcn/ui
 │   └── forms/              # 40+ campos de formulario reutilizables
 ├── lib/
-│   ├── interfaces/         # Contratos TypeScript (email, storage, cache, etc.)
+│   ├── interfaces/         # Contratos TypeScript (auth, email, storage, logger, etc.)
 │   ├── adapters/           # Implementaciones (UNICO lugar con libs externas)
-│   ├── providers.ts        # Factory (Singleton) — todos los providers
+│   ├── providers.ts        # Factory (Singleton) — 14 providers con createProvider<T>
+│   ├── safe-action.ts      # createSafeAction() — wrapper estandar para actions
+│   ├── audit.ts            # Audit log (framework-agnostic)
+│   ├── audit-helpers.ts    # getRequestMetadata() — Next.js specific
+│   ├── db.ts               # Cliente Drizzle + tipos DbOrTx
 │   ├── rate-limit.ts       # Rate limiter in-memory
 │   └── env.ts              # Validacion de entorno (critical vs recommended)
 ├── db/schema/              # Drizzle schemas + relaciones + indexes
 ├── emails/                 # Templates React Email (sin emojis/iconos decorativos)
 ├── messages/               # Traducciones (es.json, en.json, ca.json)
 ├── tests/                  # Vitest setup + tests unitarios
+├── instrumentation.ts      # Next.js 16 — OpenTelemetry + error monitoring hook
 ├── .github/workflows/      # CI: type-check + lint + build
 └── docs/                   # DOCUMENTACION COMPLETA DEL SISTEMA
 ```
@@ -209,10 +215,17 @@ Cada pagina DEBE tener `loading.tsx` que refleje su layout real.
 ### Audit Logs — OBLIGATORIO en mutaciones
 
 ```ts
+import { createAuditLog } from '@/lib/audit'
+import { getRequestMetadata } from '@/lib/audit-helpers'
+
+const metadata = await getRequestMetadata() // En actions (Next.js)
+
 await createAuditLog({
   action: 'entity.created',
   entityType: 'entity',
   entityId: entity.id,
+  userId: session.user.id,
+  metadata, // IP + User-Agent (opcional en background jobs)
 })
 ```
 
@@ -263,6 +276,28 @@ z.string().refine((val) => val.length > 0, { error: 'Required' })
 
 // DEPRECADO (Zod 3)
 z.string().refine((val) => val.length > 0, { message: 'Required' })
+```
+
+### Repositories — Interfaces + tx? OBLIGATORIO
+
+```ts
+// Cada repository DEBE tener interface explicita y aceptar tx? en mutaciones
+export interface IAddressRepository {
+  findByUserId(userId: string): Promise<Address[]>
+  create(data: AddressInsert, tx?: DbOrTx): Promise<Address>
+}
+
+export const addressRepository: IAddressRepository = { ... }
+```
+
+### Logging — via ILogger provider
+
+```ts
+import { getLogger } from '@/lib/providers'
+
+const logger = getLogger()
+logger.info('Operacion completada', { userId, action })
+logger.error('Fallo al procesar', error, { context })
 ```
 
 **Convenciones completas:** `docs/conventions.md`

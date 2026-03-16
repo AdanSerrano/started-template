@@ -155,6 +155,59 @@ Solo se carga en produccion con `NEXT_PUBLIC_GA4_ID`.
 
 ---
 
+## Prepared Statements — Queries Frecuentes
+
+> Drizzle compila el SQL una sola vez. El driver reutiliza el binario compilado.
+
+```typescript
+// En el repository — definir fuera del objeto
+const findByIdPrepared = db
+  .select()
+  .from(users)
+  .where(eq(users.id, sql.placeholder('id')))
+  .prepare('user_find_by_id')
+
+// En el metodo — ejecutar con parametros
+export const userRepository = {
+  async findById(id: string) {
+    const [user] = await findByIdPrepared.execute({ id })
+    return user ?? null
+  },
+}
+```
+
+**Cuando usar prepare:**
+
+- Queries de lectura frecuentes (`findById`, `findByEmail`, `findByUserId`)
+- Queries con parametros dinamicos
+
+**Cuando NO usar prepare:**
+
+- Queries dinamicos (filtros opcionales, ordenamiento variable)
+- Mutaciones que necesitan soporte de transacciones (`tx?: DbOrTx`)
+
+---
+
+## Instrumentacion — `instrumentation.ts`
+
+Hook de Next.js 16 en la raiz del proyecto. Se ejecuta una vez al iniciar el servidor.
+
+- `register()` — inicializar OpenTelemetry, Sentry, o monitoring
+- `onRequestError()` — captura errores no manejados en routes y server components
+
+Para activar OpenTelemetry: instalar `@opentelemetry/sdk-node` y descomentar el setup.
+
+---
+
+## Health Check — `/api/health`
+
+Endpoint para load balancers y uptime monitoring. Verifica conexion a DB.
+
+- `200` + `{ status: "healthy" }` si todo funciona
+- `503` + `{ status: "degraded" }` si la DB no responde
+
+---
+
 ## Rate Limiting
 
 In-memory sliding window (`lib/rate-limit.ts`):
@@ -162,6 +215,7 @@ In-memory sliding window (`lib/rate-limit.ts`):
 - 10 intentos / 15min para login
 - Sin dependencia de Redis
 - Adecuado para single-instance
+- Para multi-instancia: crear `RedisRateLimitService` que implemente `IRateLimitService`
 
 ---
 

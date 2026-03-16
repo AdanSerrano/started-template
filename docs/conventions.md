@@ -134,12 +134,30 @@ export const env = { DATABASE_URL, BETTER_AUTH_SECRET, ... }
 ## Audit Logs — CADA mutacion
 
 ```typescript
+import { createAuditLog } from '@/lib/audit'
+import { getRequestMetadata } from '@/lib/audit-helpers'
+
+// En server actions — pasar metadata del request
+const metadata = await getRequestMetadata()
+
 await createAuditLog({
   action: 'user.updated', // entity.verb
   entityType: 'user',
   entityId: user.id,
+  userId: session.user.id,
+  metadata, // { ip, userAgent }
+})
+
+// En background jobs o services — metadata es opcional
+await createAuditLog({
+  action: 'report.generated',
+  entityType: 'report',
+  entityId: report.id,
 })
 ```
+
+> `createAuditLog` es framework-agnostic — NO depende de Next.js.
+> `getRequestMetadata()` es el helper de Next.js que extrae IP y User-Agent.
 
 ---
 
