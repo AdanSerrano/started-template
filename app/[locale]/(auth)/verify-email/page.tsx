@@ -4,6 +4,8 @@ import { getTranslations } from 'next-intl/server'
 import { VerifyEmailStatus } from '@/modules/auth/components'
 import { Skeleton } from '@/components/ui/skeleton'
 
+export const revalidate = 3600
+
 function VerifyEmailSkeleton() {
   return (
     <div className="flex flex-col items-center space-y-4">

@@ -9,8 +9,12 @@ neonConfig.webSocketConstructor = ws
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL!,
   max: 10,
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 10000,
+  idleTimeoutMillis: 60000,
+  connectionTimeoutMillis: 15000,
+})
+
+pool.on('error', (error: Error) => {
+  console.error('[db] Unexpected pool error:', error)
 })
 
 export const db = drizzle(pool, { schema })

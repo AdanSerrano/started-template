@@ -11,13 +11,13 @@ export {
 } from './services/account-service'
 
 // Components
-export { AccountSidebar } from './components/account-sidebar'
-export { AddressCard } from './components/address-card'
-export { AddressForm } from './components/address-form'
-export { AddressList } from './components/address-list'
+export { AccountSidebar } from './components/account-sidebar.client'
+export { AddressCard } from './components/address-card.client'
+export { AddressForm } from './components/address-form.client'
+export { AddressList } from './components/address-list.client'
 export { AddressesPage } from './components/addresses-page'
-export { ChangePasswordForm } from './components/change-password-form'
-export { ProfileForm } from './components/profile-form'
+export { ChangePasswordForm } from './components/change-password-form.client'
+export { ProfileForm } from './components/profile-form.client'
 export { ProfilePage } from './components/profile-page'
 
 // Validations

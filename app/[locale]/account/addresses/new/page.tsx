@@ -1,10 +1,12 @@
 import { getTranslations } from 'next-intl/server'
 import { requireAuth } from '@/lib/auth-server'
-import { AddressForm } from '@/modules/account/components/address-form'
+import { AddressForm } from '@/modules/account/components/address-form.client'
 
 export default async function NewAddressPage() {
-  await requireAuth()
-  const t = await getTranslations('account.addresses')
+  const [, t] = await Promise.all([
+    requireAuth(),
+    getTranslations('account.addresses'),
+  ])
 
   return (
     <div className="space-y-6">

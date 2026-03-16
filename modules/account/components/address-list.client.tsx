@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl'
 import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/i18n/navigation'
-import { AddressCard } from './address-card'
+import { AddressCard } from './address-card.client'
 import type { Address } from '../types'
 
 interface AddressListProps {

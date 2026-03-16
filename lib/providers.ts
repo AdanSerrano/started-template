@@ -53,6 +53,10 @@ import {
   GDPRService,
 } from '@/lib/adapters'
 
+/**
+ * Authentication provider — sessions, OAuth, magic links, 2FA.
+ * Swap: `setAuthProvider(new FakeAuthProvider())`
+ */
 // ── Auth ────────────────────────────────────────────────────
 const authProvider = createProvider<IAuthProvider>(
   () => new BetterAuthProvider(),
@@ -60,16 +64,28 @@ const authProvider = createProvider<IAuthProvider>(
 export const getAuthProvider = authProvider.get
 export const setAuthProvider = authProvider.set
 
+/**
+ * Transactional email — verification, password resets, notifications.
+ * Swap: `setEmailInstance(new InMemoryEmailService())`
+ */
 // ── Email ───────────────────────────────────────────────────
 const email = createProvider<IEmailService>(() => new ResendEmailService())
 export const getEmailService = email.get
 export const setEmailInstance = email.set
 
+/**
+ * File storage — uploads, downloads, deletion. Key: `public/{module}/{entityId}/{uuid}.{ext}`.
+ * Swap: `setStorageInstance(new InMemoryStorageService())`
+ */
 // ── Storage ─────────────────────────────────────────────────
 const storage = createProvider<IStorageService>(() => new R2StorageService())
 export const getStorageService = storage.get
 export const setStorageInstance = storage.set
 
+/**
+ * Excel export — generates `.xlsx` from structured data (reports, listings).
+ * Swap: `setExcelExportInstance(new FakeExcelExportService())`
+ */
 // ── Export ───────────────────────────────────────────────────
 const excelExport = createProvider<IExcelExportService>(
   () => new XLSXExportService(),
@@ -77,12 +93,20 @@ const excelExport = createProvider<IExcelExportService>(
 export const getExcelExportService = excelExport.get
 export const setExcelExportInstance = excelExport.set
 
+/**
+ * PDF export — generates PDFs (invoices, receipts, reports).
+ * Swap: `setPDFExportInstance(new FakePDFExportService())`
+ */
 const pdfExport = createProvider<IPDFExportService>(
   () => new ReactPDFExportService(),
 )
 export const getPDFExportService = pdfExport.get
 export const setPDFExportInstance = pdfExport.set
 
+/**
+ * CSV import — parses `.csv` files for bulk data import.
+ * Swap: `setCSVImportInstance(new FakeCSVImportService())`
+ */
 // ── Import ──────────────────────────────────────────────────
 const csvImport = createProvider<ICSVImportService>(
   () => new PapaParseCSVImportService(),
@@ -90,17 +114,29 @@ const csvImport = createProvider<ICSVImportService>(
 export const getCSVImportService = csvImport.get
 export const setCSVImportInstance = csvImport.set
 
+/**
+ * Excel import — parses `.xlsx` files for bulk data import.
+ * Swap: `setExcelImportInstance(new FakeExcelImportService())`
+ */
 const excelImport = createProvider<IExcelImportService>(
   () => new XLSXImportService(),
 )
 export const getExcelImportService = excelImport.get
 export const setExcelImportInstance = excelImport.set
 
+/**
+ * Background jobs — async tasks (bulk emails, file processing, reports).
+ * Swap: `setJobsInstance(new InMemoryJobsService())`
+ */
 // ── Jobs ────────────────────────────────────────────────────
 const jobs = createProvider<IJobsService>(() => new TriggerJobsService())
 export const getJobsService = jobs.get
 export const setJobsInstance = jobs.set
 
+/**
+ * HTTP client — external API calls. Use `createHttpClient(baseURL)` for fixed base URLs.
+ * Swap: `setHttpClientInstance(new MockHttpClient())`
+ */
 // ── HTTP Client ─────────────────────────────────────────────
 const httpClient = createProvider<IHttpClient>(() => new FetchHttpClient())
 export const getHttpClient = httpClient.get
@@ -113,6 +149,10 @@ export function createHttpClient(
   return new AxiosHttpClient(baseURL, defaultHeaders)
 }
 
+/**
+ * Error monitoring — captures and reports unhandled exceptions.
+ * Swap: `setErrorMonitoringInstance(new NoOpMonitoringService())`
+ */
 // ── Error Monitoring ────────────────────────────────────────
 const errorMonitoring = createProvider<IErrorMonitoringService>(
   () => new ConsoleMonitoringAdapter(),
@@ -120,6 +160,10 @@ const errorMonitoring = createProvider<IErrorMonitoringService>(
 export const getErrorMonitoring = errorMonitoring.get
 export const setErrorMonitoringInstance = errorMonitoring.set
 
+/**
+ * Analytics — tracks user events, page views, and custom metrics.
+ * Swap: `setAnalyticsInstance(new NoOpAnalyticsService())`
+ */
 // ── Analytics ───────────────────────────────────────────────
 const analytics = createProvider<IAnalyticsService>(
   () => new GA4AnalyticsService(),
@@ -127,11 +171,19 @@ const analytics = createProvider<IAnalyticsService>(
 export const getAnalytics = analytics.get
 export const setAnalyticsInstance = analytics.set
 
+/**
+ * Key-value cache — get/set/delete with TTL. Swap to Redis for multi-instance.
+ * Swap: `setCacheInstance(new MemoryCacheService())`
+ */
 // ── Cache ───────────────────────────────────────────────────
 const cache = createProvider<ICache>(() => new MemoryCacheService())
 export const getCacheService = cache.get
 export const setCacheInstance = cache.set
 
+/**
+ * Rate limiting — sliding window per key (IP, userId). Prevents abuse.
+ * Swap: `setRateLimitService(new NoOpRateLimitService())`
+ */
 // ── Rate Limit ──────────────────────────────────────────────
 const rateLimit = createProvider<IRateLimitService>(
   () => new InMemoryRateLimitService(),
@@ -139,11 +191,19 @@ const rateLimit = createProvider<IRateLimitService>(
 export const getRateLimitService = rateLimit.get
 export const setRateLimitService = rateLimit.set
 
+/**
+ * Structured logging — leveled (info, warn, error, debug) with context.
+ * Swap: `setLoggerInstance(new SilentLogger())`
+ */
 // ── Logger ──────────────────────────────────────────────────
 const logger = createProvider<ILogger>(() => new ConsoleLogger())
 export const getLogger = logger.get
 export const setLoggerInstance = logger.set
 
+/**
+ * User notifications — in-app alerts (bell icon, toasts, assignments).
+ * Swap: `setNotificationService(new InMemoryNotificationService())`
+ */
 // ── Notifications ──────────────────────────────────────────
 const notifications = createProvider<INotificationService>(
   () => new InAppNotificationService(),
@@ -151,21 +211,37 @@ const notifications = createProvider<INotificationService>(
 export const getNotificationService = notifications.get
 export const setNotificationService = notifications.set
 
+/**
+ * Full-text search — PostgreSQL by default. Swap to Meilisearch/Algolia.
+ * Swap: `setSearchService(new InMemorySearchService())`
+ */
 // ── Search ─────────────────────────────────────────────────
 const search = createProvider<ISearchService>(() => new PgSearchService())
 export const getSearchService = search.get
 export const setSearchService = search.set
 
+/**
+ * Outgoing webhooks — delivers payloads to external endpoints on events.
+ * Swap: `setWebhookService(new FakeWebhookService())`
+ */
 // ── Webhooks ───────────────────────────────────────────────
 const webhooks = createProvider<IWebhookService>(() => new WebhookService())
 export const getWebhookService = webhooks.get
 export const setWebhookService = webhooks.set
 
+/**
+ * GDPR compliance — data export, anonymization, right-to-be-forgotten.
+ * Swap: `setGDPRService(new FakeGDPRService())`
+ */
 // ── GDPR ───────────────────────────────────────────────────
 const gdpr = createProvider<IGDPRService>(() => new GDPRService())
 export const getGDPRService = gdpr.get
 export const setGDPRService = gdpr.set
 
+/**
+ * Feature flags — controls visibility and gradual rollouts. Env-based by default.
+ * Swap: `setFeatureFlagService(new StaticFeatureFlagService({ myFlag: true }))`
+ */
 // ── Feature Flags ──────────────────────────────────────────
 const featureFlags = createProvider<IFeatureFlagService>(
   () => new EnvFeatureFlagService(),
@@ -173,6 +249,10 @@ const featureFlags = createProvider<IFeatureFlagService>(
 export const getFeatureFlagService = featureFlags.get
 export const setFeatureFlagService = featureFlags.set
 
+/**
+ * Resets all providers to their default (lazy) state.
+ * Call in `afterEach` hooks to ensure test isolation.
+ */
 // ── Reset — para testing ────────────────────────────────────
 export function resetProviders(): void {
   ;[

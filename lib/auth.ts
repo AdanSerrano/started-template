@@ -204,35 +204,39 @@ export const auth = betterAuth({
     session: {
       create: {
         before: async (session) => {
-          const authSecurity = getAuthSecurityService()
-          const isLocked = await authSecurity.isAccountLocked(session.userId)
+          // Single query to check lock, deletion and active status atomically
+          const [user] = await db
+            .select({
+              deletedAt: users.deletedAt,
+              isActive: users.isActive,
+              lockedUntil: users.lockedUntil,
+              failedLoginAttempts: users.failedLoginAttempts,
+            })
+            .from(users)
+            .where(eq(users.id, session.userId))
 
-          if (isLocked) {
-            const expiry = await authSecurity.getLockExpiry(session.userId)
-            const minutesLeft = expiry
-              ? Math.ceil((expiry.getTime() - Date.now()) / 60000)
-              : 30
+          if (!user) {
+            throw new Error('Usuario no encontrado')
+          }
+
+          if (user.deletedAt) {
+            throw new Error('Cuenta eliminada')
+          }
+
+          if (!user.isActive) {
+            throw new Error('Cuenta desactivada')
+          }
+
+          if (user.lockedUntil && user.lockedUntil > new Date()) {
+            const minutesLeft = Math.ceil(
+              (user.lockedUntil.getTime() - Date.now()) / 60000,
+            )
             throw new Error(
               `Cuenta bloqueada temporalmente. Intenta de nuevo en ${minutesLeft} minutos.`,
             )
           }
 
-          const [user] = await db
-            .select({
-              deletedAt: users.deletedAt,
-              isActive: users.isActive,
-            })
-            .from(users)
-            .where(eq(users.id, session.userId))
-
-          if (user?.deletedAt) {
-            throw new Error('Cuenta eliminada')
-          }
-
-          if (!user?.isActive) {
-            throw new Error('Cuenta desactivada')
-          }
-
+          const authSecurity = getAuthSecurityService()
           await authSecurity.resetFailedAttempts(session.userId)
 
           return { data: session }

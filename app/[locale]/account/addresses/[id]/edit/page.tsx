@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 import { requireAuth } from '@/lib/auth-server'
 import { addressRepository } from '@/modules/account/repositories/address-repository'
-import { AddressForm } from '@/modules/account/components/address-form'
+import { AddressForm } from '@/modules/account/components/address-form.client'
 
 interface EditAddressPageProps {
   params: Promise<{ id: string }>

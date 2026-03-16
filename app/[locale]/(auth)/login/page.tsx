@@ -5,6 +5,8 @@ import { getTranslations } from 'next-intl/server'
 import { LoginForm } from '@/modules/auth/components'
 import { Skeleton } from '@/components/ui/skeleton'
 
+export const revalidate = 3600
+
 function LoginFormSkeleton() {
   return (
     <div className="space-y-4">

@@ -1,5 +1,5 @@
 import { requireAuth } from '@/lib/auth-server'
-import { AccountSidebar } from '@/modules/account/components/account-sidebar'
+import { AccountSidebar } from '@/modules/account/components/account-sidebar.client'
 import { Link } from '@/i18n/navigation'
 import { ThemeSwitcher } from '@/components/theme-switcher.client'
 import { LanguageSwitcher } from '@/components/language-switcher.client'

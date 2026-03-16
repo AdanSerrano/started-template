@@ -6,6 +6,8 @@ import { RegisterForm } from '@/modules/auth/components'
 import { Skeleton } from '@/components/ui/skeleton'
 import { DEFAULT_LOGOUT_REDIRECT } from '@/routes'
 
+export const revalidate = 3600
+
 function RegisterFormSkeleton() {
   return (
     <div className="space-y-4">

@@ -6,6 +6,8 @@ import { ForgotPasswordForm } from '@/modules/auth/components'
 import { Skeleton } from '@/components/ui/skeleton'
 import { DEFAULT_LOGOUT_REDIRECT } from '@/routes'
 
+export const revalidate = 3600
+
 function ForgotPasswordFormSkeleton() {
   return (
     <div className="space-y-4">

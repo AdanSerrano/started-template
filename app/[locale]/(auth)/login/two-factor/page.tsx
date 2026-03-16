@@ -4,6 +4,8 @@ import { getTranslations } from 'next-intl/server'
 import { TwoFactorVerifyForm } from '@/modules/auth/components/two-factor-verify-form.client'
 import { Skeleton } from '@/components/ui/skeleton'
 
+export const revalidate = 3600
+
 function TwoFactorFormSkeleton() {
   return (
     <div className="space-y-4">

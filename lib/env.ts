@@ -92,6 +92,12 @@ for (const key of optional) {
   }
 }
 
+// ── Format validation ────────────────────────────────────────
+
+if (process.env.EMAIL_FROM && !process.env.EMAIL_FROM.includes('@')) {
+  throw new Error('EMAIL_FROM must be a valid email address (must contain @)')
+}
+
 // ── Exported validated env ──────────────────────────────────
 
 export const env = {
