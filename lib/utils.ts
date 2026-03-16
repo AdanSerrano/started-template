@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
+import { appConfig } from '@/lib/config'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -7,8 +8,8 @@ export function cn(...inputs: ClassValue[]) {
 
 export function formatCurrency(
   amount: number,
-  currency = 'EUR',
-  locale = 'es-ES',
+  currency = appConfig.currency,
+  locale = appConfig.currencyLocale,
 ) {
   return new Intl.NumberFormat(locale, {
     style: 'currency',
@@ -21,10 +22,10 @@ export function formatDate(
   options?: Intl.DateTimeFormatOptions,
 ) {
   const d = typeof date === 'string' ? new Date(date) : date
-  return new Intl.DateTimeFormat('es-ES', {
+  return new Intl.DateTimeFormat(appConfig.currencyLocale, {
     dateStyle: 'medium',
     timeStyle: 'short',
-    timeZone: 'Europe/Madrid',
+    timeZone: appConfig.timezone,
     ...options,
   }).format(d)
 }

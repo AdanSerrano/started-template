@@ -3,10 +3,12 @@
  * Extraen metadata del request para pasar a createAuditLog.
  */
 import { headers } from 'next/headers'
+import { getRequestId } from '@/lib/request-context'
 
 export async function getRequestMetadata(): Promise<{
   ip: string
   userAgent: string
+  requestId?: string
 }> {
   const headersList = await headers()
   const ip =
@@ -14,5 +16,6 @@ export async function getRequestMetadata(): Promise<{
     headersList.get('x-real-ip') ??
     'unknown'
   const userAgent = headersList.get('user-agent') ?? 'unknown'
-  return { ip, userAgent }
+  const requestId = getRequestId()
+  return { ip, userAgent, ...(requestId && { requestId }) }
 }

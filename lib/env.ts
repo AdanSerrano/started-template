@@ -54,6 +54,27 @@ if (
   throw new Error('NEXT_PUBLIC_APP_URL must be a valid URL')
 }
 
+// ── Paired — variables que requieren ambas o ninguna ─────────
+
+const paired: [string, string][] = [
+  ['GOOGLE_CLIENT_ID', 'GOOGLE_CLIENT_SECRET'],
+  ['UPSTASH_REDIS_REST_URL', 'UPSTASH_REDIS_REST_TOKEN'],
+  ['R2_ACCESS_KEY_ID', 'R2_SECRET_ACCESS_KEY'],
+]
+
+for (const [a, b] of paired) {
+  if (process.env[a] && !process.env[b]) {
+    const msg = `${a} is set but ${b} is missing — both are required`
+    if (isDev) console.warn(`[env] ${msg}`)
+    else throw new Error(msg)
+  }
+  if (process.env[b] && !process.env[a]) {
+    const msg = `${b} is set but ${a} is missing — both are required`
+    if (isDev) console.warn(`[env] ${msg}`)
+    else throw new Error(msg)
+  }
+}
+
 // ── Optional — solo warn en dev ─────────────────────────────
 
 const optional = [

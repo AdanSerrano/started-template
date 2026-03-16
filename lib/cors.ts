@@ -2,7 +2,7 @@
  * CORS helper para API routes.
  *
  * Uso en route handlers:
- *   import { corsHeaders, handleCorsPrefligh } from '@/lib/cors'
+ *   import { corsHeaders, handleCorsPreflight } from '@/lib/cors'
  *
  *   export function OPTIONS(request: Request) {
  *     return handleCorsPreflight(request)

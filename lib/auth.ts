@@ -22,6 +22,7 @@ import { MagicLinkEmail } from '@/emails/magic-link'
 import { getEmailTranslations, type EmailLocale } from '@/emails/i18n'
 import { cookies } from 'next/headers'
 import { routing } from '@/i18n/routing'
+import { appConfig } from '@/lib/config'
 import { getAuthSecurityService } from '@/modules/auth/services/auth-security-service'
 
 /**
@@ -42,8 +43,6 @@ async function getLocaleFromRequest(): Promise<EmailLocale> {
 
   return routing.defaultLocale as EmailLocale
 }
-
-import { appConfig } from '@/lib/config'
 
 export const auth = betterAuth({
   appName: appConfig.name,
@@ -178,6 +177,21 @@ export const auth = betterAuth({
       enabled: true,
       maxAge: 2 * 60, // 2 minutos — balance seguridad vs rendimiento
       strategy: 'compact',
+      refreshCache: true,
+    },
+  },
+
+  rateLimit: {
+    enabled: true,
+    window: 60,
+    max: 30,
+    storage: 'memory',
+    customRules: {
+      '/sign-in/email': { window: 900, max: 5 },
+      '/sign-in/username': { window: 900, max: 5 },
+      '/sign-up/email': { window: 3600, max: 3 },
+      '/forget-password': { window: 3600, max: 3 },
+      '/magic-link/sign-in': { window: 3600, max: 3 },
     },
   },
 
@@ -191,39 +205,36 @@ export const auth = betterAuth({
     session: {
       create: {
         before: async (session) => {
-          // Atomic check: lock status + account status + reset in single transaction
-          await db.transaction(async (tx) => {
-            const authSecurity = getAuthSecurityService()
-            const isLocked = await authSecurity.isAccountLocked(session.userId)
+          const authSecurity = getAuthSecurityService()
+          const isLocked = await authSecurity.isAccountLocked(session.userId)
 
-            if (isLocked) {
-              const expiry = await authSecurity.getLockExpiry(session.userId)
-              const minutesLeft = expiry
-                ? Math.ceil((expiry.getTime() - Date.now()) / 60000)
-                : 30
-              throw new Error(
-                `Cuenta bloqueada temporalmente. Intenta de nuevo en ${minutesLeft} minutos.`,
-              )
-            }
+          if (isLocked) {
+            const expiry = await authSecurity.getLockExpiry(session.userId)
+            const minutesLeft = expiry
+              ? Math.ceil((expiry.getTime() - Date.now()) / 60000)
+              : 30
+            throw new Error(
+              `Cuenta bloqueada temporalmente. Intenta de nuevo en ${minutesLeft} minutos.`,
+            )
+          }
 
-            const [user] = await tx
-              .select({
-                deletedAt: users.deletedAt,
-                isActive: users.isActive,
-              })
-              .from(users)
-              .where(eq(users.id, session.userId))
+          const [user] = await db
+            .select({
+              deletedAt: users.deletedAt,
+              isActive: users.isActive,
+            })
+            .from(users)
+            .where(eq(users.id, session.userId))
 
-            if (user?.deletedAt) {
-              throw new Error('Cuenta eliminada')
-            }
+          if (user?.deletedAt) {
+            throw new Error('Cuenta eliminada')
+          }
 
-            if (!user?.isActive) {
-              throw new Error('Cuenta desactivada')
-            }
+          if (!user?.isActive) {
+            throw new Error('Cuenta desactivada')
+          }
 
-            await authSecurity.resetFailedAttempts(session.userId)
-          })
+          await authSecurity.resetFailedAttempts(session.userId)
 
           return { data: session }
         },

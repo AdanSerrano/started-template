@@ -38,8 +38,11 @@ const securityHeaders = [
       "font-src 'self' data:",
       "frame-src 'self'",
       "connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://region1.google-analytics.com",
+      "worker-src 'self' blob:",
       "object-src 'none'",
       "base-uri 'self'",
+      "form-action 'self'",
+      "frame-ancestors 'none'",
     ].join('; '),
   },
 ]

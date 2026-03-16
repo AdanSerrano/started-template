@@ -20,6 +20,13 @@ export const appConfig = {
   /** Locales soportados */
   locales: ['es', 'en', 'ca'] as const,
   defaultLocale: 'es' as const,
+
+  /** Timezone por defecto — usado en formatDate, i18n/request, etc. */
+  timezone: 'Europe/Madrid',
+
+  /** Moneda y locale por defecto para formateo */
+  currency: 'EUR' as const,
+  currencyLocale: 'es-ES' as const,
 } as const
 
 export type AppLocale = (typeof appConfig.locales)[number]

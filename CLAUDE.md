@@ -30,20 +30,21 @@ La **UX es prioridad #1**. Toda decision optimiza:
 
 **ANTES de implementar cualquier cosa, LEE la documentacion relevante en `docs/`.**
 
-| Archivo                | Contenido                                                       | Leer cuando...                                     |
-| ---------------------- | --------------------------------------------------------------- | -------------------------------------------------- |
-| `docs/architecture.md` | Capas, adapters, transacciones, safe actions, health, logging   | Creas modulo, swappeas servicio, o agregas adapter |
-| `docs/database.md`     | Schemas, migraciones, transacciones, prepared statements, seeds | Agregas tabla, creas migracion, o tocas DB         |
-| `docs/tech-stack.md`   | Stack completo, Tailwind v4, Drizzle, env vars                  | Configuras algo o agregas dependencia              |
-| `docs/patterns.md`     | 12 patrones de diseno con ejemplos y anti-patrones              | Diseñas logica de negocio o servicios              |
-| `docs/conventions.md`  | Naming, imports, limites, skeletons, errores, Zod, audit logs   | Escribes cualquier codigo nuevo                    |
-| `docs/auth.md`         | Better Auth, cookie cache, roles, sesiones, 2FA                 | Tocas auth, sesiones o permisos                    |
-| `docs/performance.md`  | ISR, React 19.2, Zustand, prepared statements, instrumentation  | Optimizas rendimiento o agregas monitoring         |
-| `docs/i18n.md`         | next-intl (es/en/ca), theming dark/light, emails i18n           | Agregas textos, traducciones o cambias tema        |
-| `docs/testing.md`      | Estrategia de tests, patrones por capa, factories, MSW          | Escribes tests o agregas modulo nuevo              |
-| `docs/deployment.md`   | Deploy a Vercel/Docker/Node, env vars, migraciones, rollback    | Despliegas o configuras entorno                    |
-| `docs/monitoring.md`   | Logging estructurado, Sentry, health check, request IDs         | Configuras observabilidad o depuras produccion     |
-| `docs/security.md`     | OWASP Top 10, rate limiting, CORS, GDPR, file upload            | Implementas seguridad o revisas vulnerabilidades   |
+| Archivo                 | Contenido                                                       | Leer cuando...                                     |
+| ----------------------- | --------------------------------------------------------------- | -------------------------------------------------- |
+| `docs/architecture.md`  | Capas, adapters, transacciones, safe actions, health, logging   | Creas modulo, swappeas servicio, o agregas adapter |
+| `docs/database.md`      | Schemas, migraciones, transacciones, prepared statements, seeds | Agregas tabla, creas migracion, o tocas DB         |
+| `docs/tech-stack.md`    | Stack completo, Tailwind v4, Drizzle, env vars                  | Configuras algo o agregas dependencia              |
+| `docs/patterns.md`      | 12 patrones de diseno con ejemplos y anti-patrones              | Diseñas logica de negocio o servicios              |
+| `docs/conventions.md`   | Naming, imports, limites, skeletons, errores, Zod, audit logs   | Escribes cualquier codigo nuevo                    |
+| `docs/auth.md`          | Better Auth, cookie cache, roles, sesiones, 2FA                 | Tocas auth, sesiones o permisos                    |
+| `docs/performance.md`   | ISR, React 19.2, Zustand, prepared statements, instrumentation  | Optimizas rendimiento o agregas monitoring         |
+| `docs/i18n.md`          | next-intl (es/en/ca), theming dark/light, emails i18n           | Agregas textos, traducciones o cambias tema        |
+| `docs/testing.md`       | Estrategia de tests, patrones por capa, factories, MSW          | Escribes tests o agregas modulo nuevo              |
+| `docs/deployment.md`    | Deploy a Vercel/Docker/Node, env vars, migraciones, rollback    | Despliegas o configuras entorno                    |
+| `docs/monitoring.md`    | Logging estructurado, Sentry, health check, request IDs         | Configuras observabilidad o depuras produccion     |
+| `docs/security.md`      | OWASP Top 10, rate limiting, CORS, GDPR, file upload            | Implementas seguridad o revisas vulnerabilidades   |
+| `docs/official-docs.md` | URLs documentacion oficial de TODOS los paquetes del stack      | Usas cualquier paquete — SIEMPRE consultar primero |
 
 ### Regla: Documentar componentes nuevos — OBLIGATORIO
 
@@ -82,13 +83,14 @@ Cada componente, modulo o utilidad nueva DEBE tener documentacion en `docs/`:
 6. Revisa modules/ — ¿hay servicios o repositorios que ya hacen algo similar?
 ```
 
-### Paso 2: Buscar mejores practicas
+### Paso 2: Buscar mejores practicas — CONSULTAR `docs/official-docs.md`
 
 ```
-1. Consulta la documentacion oficial de cada paquete involucrado (versiones actuales)
-2. Busca patrones recomendados para la version especifica del stack
-3. Verifica que no existan breaking changes o deprecaciones en las APIs que vas a usar
+1. Abre docs/official-docs.md y localiza las URLs de los paquetes que vas a tocar
+2. Consulta la documentacion oficial para la VERSION EXACTA del proyecto (ver package.json)
+3. Busca patrones recomendados, breaking changes y deprecaciones en esa version
 4. Si usas una API poco comun, confirma con la documentacion que es la forma correcta
+5. Si agregas un paquete nuevo, agrega su URL a docs/official-docs.md
 ```
 
 ### Paso 3: Planificar antes de codificar

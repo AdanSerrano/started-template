@@ -1,77 +1,70 @@
 /**
  * API Route: /api/auth/[...all]
  *
- * Better Auth handler with rate limiting per operation.
+ * Better Auth handler con:
+ * - Rate limiting built-in (configurado en lib/auth.ts, in-memory)
+ * - Account locking por intentos fallidos (via DB)
  */
 
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { toNextJsHandler } from 'better-auth/next-js'
 import {
-  applyRateLimit,
   checkAccountLockByEmail,
   checkAccountLockByUsername,
   extractCredentialsFromRequest,
-  getRateLimitType,
   handleFailedLogin,
 } from '@/modules/auth/services/auth-rate-limit'
 
-async function handleWithRateLimit(
+const LOGIN_PATHS = ['/api/auth/sign-in/email', '/api/auth/sign-in/username']
+
+async function handleLogin(
   request: NextRequest,
   handler: (req: NextRequest) => Promise<Response>,
 ): Promise<Response> {
   const pathname = request.nextUrl.pathname
-  const rateLimitType = getRateLimitType(pathname)
+  const isEmailLogin = pathname === '/api/auth/sign-in/email'
+  const isLoginRequest = LOGIN_PATHS.includes(pathname)
 
-  if (rateLimitType && request.method === 'POST') {
-    const { allowed, response } = await applyRateLimit(rateLimitType, request)
-    if (!allowed && response) return response
+  if (!isLoginRequest || request.method !== 'POST') {
+    return handler(request)
   }
 
-  const isEmailLogin = pathname === '/api/auth/sign-in/email'
-  const isUsernameLogin = pathname === '/api/auth/sign-in/username'
-  const isLoginRequest = isEmailLogin || isUsernameLogin
+  // Check account lock before attempting login
+  const creds = await extractCredentialsFromRequest(request)
   let userId: string | null = null
 
-  if (isLoginRequest) {
-    const creds = await extractCredentialsFromRequest(request)
+  if (creds?.email || creds?.username) {
+    const lockCheck =
+      isEmailLogin && creds.email
+        ? await checkAccountLockByEmail(creds.email)
+        : await checkAccountLockByUsername(creds.username!)
 
-    if (creds?.email || creds?.username) {
-      const lockCheck =
-        isEmailLogin && creds.email
-          ? await checkAccountLockByEmail(creds.email)
-          : await checkAccountLockByUsername(creds.username!)
-
-      if (lockCheck.locked) {
-        return NextResponse.json(
-          {
-            message: lockCheck.message,
-            code: 'ACCOUNT_LOCKED',
-            minutesRemaining: lockCheck.minutesRemaining,
-          },
-          { status: 423 },
-        )
-      }
-
-      userId = lockCheck.userId
+    if (lockCheck.locked) {
+      return NextResponse.json(
+        {
+          message: lockCheck.message,
+          code: 'ACCOUNT_LOCKED',
+          minutesRemaining: lockCheck.minutesRemaining,
+        },
+        { status: 423 },
+      )
     }
+
+    userId = lockCheck.userId
   }
 
   const response = await handler(request)
 
-  if (
-    isLoginRequest &&
-    userId &&
-    response.status >= 400 &&
-    response.status < 500
-  ) {
+  // Track failed login attempts for account locking
+  if (userId && response.status >= 400 && response.status < 500) {
     const lockResult = await handleFailedLogin(userId)
 
     if (lockResult?.locked) {
       return NextResponse.json(
         {
           message:
-            'Account locked due to too many failed attempts. Try again in 15 minutes.',
+            'Cuenta bloqueada por demasiados intentos fallidos. Intenta de nuevo en 15 minutos.',
           code: 'ACCOUNT_LOCKED',
           minutesRemaining: 15,
         },
@@ -86,7 +79,7 @@ async function handleWithRateLimit(
 const { POST: betterAuthPOST, GET: betterAuthGET } = toNextJsHandler(auth)
 
 export async function POST(request: NextRequest) {
-  return handleWithRateLimit(
+  return handleLogin(
     request,
     betterAuthPOST as (req: NextRequest) => Promise<Response>,
   )

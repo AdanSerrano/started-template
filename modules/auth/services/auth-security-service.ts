@@ -4,14 +4,12 @@
  * Maneja:
  * - Tracking de intentos fallidos de login (via DB)
  * - Estado de bloqueo de cuentas
- * - Rate limiting en memoria (sliding window)
+ *
+ * Rate limiting ahora lo maneja Better Auth built-in (config en lib/auth.ts).
  */
 
 import { userRepository } from '@/modules/auth/repositories'
-import { checkRateLimit } from '@/lib/rate-limit'
-import type { RateLimitResult } from '@/lib/interfaces'
 
-// Constantes de configuracion
 const LOCK_THRESHOLD = 5
 const LOCK_DURATION_SECONDS = 15 * 60
 
@@ -32,19 +30,7 @@ export interface AuthSecurityService {
   lockAccount(userId: string): Promise<void>
   unlockAccount(userId: string): Promise<void>
   getLockExpiry(userId: string): Promise<Date | null>
-  checkLoginRateLimit(ip: string): Promise<RateLimitResult>
-  checkRegisterRateLimit(ip: string): Promise<RateLimitResult>
-  checkResetPasswordRateLimit(email: string): Promise<RateLimitResult>
-  checkMagicLinkRateLimit(email: string): Promise<RateLimitResult>
 }
-
-// Rate limit configurations
-const RATE_LIMITS = {
-  login: { maxAttempts: 5, windowMs: 15 * 60 * 1000 }, // 5 per 15 min
-  register: { maxAttempts: 3, windowMs: 60 * 60 * 1000 }, // 3 per hour
-  resetPassword: { maxAttempts: 3, windowMs: 60 * 60 * 1000 }, // 3 per hour
-  magicLink: { maxAttempts: 3, windowMs: 60 * 60 * 1000 }, // 3 per hour
-} as const
 
 class AuthSecurityServiceImpl implements AuthSecurityService {
   async recordFailedLogin(
@@ -110,22 +96,6 @@ class AuthSecurityServiceImpl implements AuthSecurityService {
 
   async getLockExpiry(userId: string): Promise<Date | null> {
     return userRepository.getLockedUntil(userId)
-  }
-
-  async checkLoginRateLimit(ip: string): Promise<RateLimitResult> {
-    return checkRateLimit(`login:${ip}`, RATE_LIMITS.login)
-  }
-
-  async checkRegisterRateLimit(ip: string): Promise<RateLimitResult> {
-    return checkRateLimit(`register:${ip}`, RATE_LIMITS.register)
-  }
-
-  async checkResetPasswordRateLimit(email: string): Promise<RateLimitResult> {
-    return checkRateLimit(`reset:${email}`, RATE_LIMITS.resetPassword)
-  }
-
-  async checkMagicLinkRateLimit(email: string): Promise<RateLimitResult> {
-    return checkRateLimit(`magic:${email}`, RATE_LIMITS.magicLink)
   }
 }
 

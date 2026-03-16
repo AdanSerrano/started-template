@@ -2,6 +2,7 @@ import { z } from 'zod/v4'
 import { requireAuth } from '@/lib/auth-server'
 import { getRequestMetadata } from '@/lib/audit-helpers'
 import { AppError } from '@/lib/errors'
+import { getLogger } from '@/lib/providers'
 
 /**
  * Resultado estandar de server actions.
@@ -10,6 +11,7 @@ export type ActionResult<T = void> = {
   success: boolean
   data?: T | undefined
   error?: string | undefined
+  code?: string | undefined
   fieldErrors?: Record<string, string[]> | undefined
 }
 
@@ -54,6 +56,7 @@ export function createSafeAction<TSchema extends z.ZodType, TResult = void>(
           return {
             success: false,
             error: 'Datos invalidos',
+            code: 'VALIDATION_ERROR',
             fieldErrors: z.flattenError(parsed.error).fieldErrors as Record<
               string,
               string[]
@@ -79,12 +82,17 @@ export function createSafeAction<TSchema extends z.ZodType, TResult = void>(
         return {
           success: false,
           error: error.message,
+          code: error.code,
           fieldErrors: error.fieldErrors,
         }
       }
 
-      console.error('[safeAction] Unhandled error:', error)
-      return { success: false, error: 'Error interno del servidor' }
+      getLogger().error('[safeAction] Unhandled error', error as Error)
+      return {
+        success: false,
+        error: 'Error interno del servidor',
+        code: 'INTERNAL_ERROR',
+      }
     }
   }
 }

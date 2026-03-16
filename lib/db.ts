@@ -15,4 +15,12 @@ const pool = new Pool({
 
 export const db = drizzle(pool, { schema })
 
+// Graceful shutdown — cerrar pool al terminar el proceso
+function gracefulShutdown() {
+  pool.end().catch(() => {})
+}
+
+process.on('SIGTERM', gracefulShutdown)
+process.on('SIGINT', gracefulShutdown)
+
 export type { DbClient, DbTransaction, DbOrTx } from './db-types'
