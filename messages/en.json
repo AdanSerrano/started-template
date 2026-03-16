@@ -242,6 +242,7 @@
     "usernameMin": "Username must be at least 3 characters",
     "usernameMax": "Username cannot exceed 30 characters",
     "usernamePattern": "Only letters, numbers, dots and underscores",
+    "usernameReserved": "This username is reserved",
     "emailInvalid": "Invalid email",
     "codeLength": "Code must be 6 digits",
     "codePattern": "Numbers only",

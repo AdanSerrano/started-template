@@ -6,17 +6,22 @@ export default function robots(): MetadataRoute.Robots {
   const authPaths = [
     '/login/',
     '/register/',
+    '/forgot-password/',
+    '/reset-password/',
+    '/verify-email/',
     '/en/login/',
     '/en/register/',
-    '/forgot-password/',
     '/en/forgot-password/',
-    '/reset-password/',
     '/en/reset-password/',
-    '/verify-email/',
     '/en/verify-email/',
+    '/ca/login/',
+    '/ca/register/',
+    '/ca/forgot-password/',
+    '/ca/reset-password/',
+    '/ca/verify-email/',
   ]
 
-  const privatePaths = ['/api/', '/account/', '/en/account/']
+  const privatePaths = ['/api/', '/account/', '/en/account/', '/ca/account/']
 
   return {
     rules: [

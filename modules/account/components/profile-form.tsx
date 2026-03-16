@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useRef, useState, useTransition } from 'react'
+import { useCallback, useMemo, useRef, useState, useTransition } from 'react'
 import Image from 'next/image'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -47,9 +47,10 @@ export function ProfileForm({
     defaultValues,
   })
 
-  const previewUrl = pendingFile
-    ? URL.createObjectURL(pendingFile)
-    : currentImage
+  const previewUrl = useMemo(() => {
+    if (!pendingFile) return currentImage
+    return URL.createObjectURL(pendingFile)
+  }, [pendingFile, currentImage])
 
   const handleFileChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {

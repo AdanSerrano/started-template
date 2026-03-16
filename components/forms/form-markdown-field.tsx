@@ -119,7 +119,27 @@ const MarkdownPreview = memo(function MarkdownPreview({
       .replace(/^\- (.*$)/gim, '<li>$1</li>')
       .replace(/^\d+\. (.*$)/gim, '<li>$1</li>')
       .replace(/\n/gim, '<br />')
-    return DOMPurify.sanitize(result)
+    return DOMPurify.sanitize(result, {
+      ALLOWED_TAGS: [
+        'h1',
+        'h2',
+        'h3',
+        'strong',
+        'em',
+        'code',
+        'blockquote',
+        'hr',
+        'a',
+        'img',
+        'li',
+        'ul',
+        'ol',
+        'br',
+        'p',
+      ],
+      ALLOWED_ATTR: ['href', 'target', 'rel', 'alt', 'src'],
+      ALLOW_DATA_ATTR: false,
+    })
   }, [content])
 
   return (

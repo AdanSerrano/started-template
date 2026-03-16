@@ -146,8 +146,7 @@ export async function createAddressAction(
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { id: _id, ...addressData } = parsed.data
+  const { id: _, ...addressData } = parsed.data
   const address = await accountService.createAddress({
     ...addressData,
     userId: session.user.id,

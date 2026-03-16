@@ -242,6 +242,7 @@
     "usernameMin": "L'usuari ha de tenir almenys 3 caracters",
     "usernameMax": "L'usuari no pot superar 30 caracters",
     "usernamePattern": "Nomes lletres, numeros, punts i guions baixos",
+    "usernameReserved": "Aquest nom d'usuari esta reservat",
     "emailInvalid": "Email invalid",
     "codeLength": "El codi ha de tenir 6 digits",
     "codePattern": "Nomes numeros",

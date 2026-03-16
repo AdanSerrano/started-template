@@ -187,6 +187,22 @@ Solo `'use client'` para: event handlers, React hooks cliente, APIs navegador, Z
 
 **Decision table React 19.2:** `docs/performance.md` > React 19.2
 
+### useEffect — CASI PROHIBIDO
+
+> `useEffect` es el ultimo recurso. Siempre buscar alternativas primero.
+
+| Necesitas...                  | NO uses           | USA                                    |
+| ----------------------------- | ----------------- | -------------------------------------- |
+| Derivar valor de props/state  | `useEffect`       | Calculo directo o `useMemo`            |
+| Datos del servidor            | `useEffect`+fetch | Server Component                       |
+| Subscribirse a evento externo | `useEffect`       | `useSyncExternalStore`                 |
+| Estado pending de accion      | `useEffect`       | `useTransition`                        |
+| Feedback instantaneo          | `useEffect`       | `useOptimistic`                        |
+| Animacion al montar           | `useEffect`       | CSS transition o Intersection Observer |
+| Timer/interval                | `useEffect`       | Aceptable — unico caso valido comun    |
+
+**Solo usar `useEffect` cuando:** conectas con API del navegador (ResizeObserver, IntersectionObserver), cleanup de recursos externos, o timer/interval que no tiene alternativa.
+
 ### Forms — React Hook Form + Zod + useTransition OBLIGATORIO
 
 ```tsx

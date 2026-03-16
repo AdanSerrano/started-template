@@ -30,11 +30,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
   const now = new Date()
 
+  // Agregar paginas publicas aqui al crear nuevas rutas
+  // Solo incluir rutas accesibles sin autenticacion
   const staticPages: {
     path: string
     changeFrequency: MetadataRoute.Sitemap[number]['changeFrequency']
     priority: number
-  }[] = [{ path: '', changeFrequency: 'weekly', priority: 1.0 }]
+  }[] = [
+    { path: '', changeFrequency: 'weekly', priority: 1.0 },
+    // { path: '/pricing', changeFrequency: 'monthly', priority: 0.8 },
+    // { path: '/about', changeFrequency: 'monthly', priority: 0.5 },
+    // { path: '/legal/terms', changeFrequency: 'yearly', priority: 0.3 },
+    // { path: '/legal/privacy', changeFrequency: 'yearly', priority: 0.3 },
+  ]
 
   return staticPages.flatMap((page) =>
     locales.map((locale) => ({

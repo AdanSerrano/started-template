@@ -1,4 +1,4 @@
-import { db } from '@/lib/db'
+import { db } from '@/lib/db' // eslint-disable-line @typescript-eslint/no-unused-vars -- used in seed data below
 import * as schema from '@/db/schema'
 
 /**

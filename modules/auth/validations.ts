@@ -2,6 +2,35 @@ import { z } from 'zod/v4'
 
 type T = (key: string) => string
 
+const RESERVED_USERNAMES = new Set([
+  'admin',
+  'administrator',
+  'root',
+  'system',
+  'superadmin',
+  'api',
+  'auth',
+  'login',
+  'register',
+  'account',
+  'settings',
+  'profile',
+  'dashboard',
+  'help',
+  'support',
+  'contact',
+  'billing',
+  'pricing',
+  'status',
+  'health',
+  'webhook',
+  'null',
+  'undefined',
+  'true',
+  'false',
+  'test',
+])
+
 export function createLoginSchema(t: T) {
   return z.object({
     identifier: z.string().min(3, t('identifierMin')),
@@ -16,7 +45,10 @@ export function createRegisterSchema(t: T) {
       .string()
       .min(3, t('usernameMin'))
       .max(30, t('usernameMax'))
-      .regex(/^[a-zA-Z0-9_.]+$/, t('usernamePattern')),
+      .regex(/^[a-zA-Z0-9_.]+$/, t('usernamePattern'))
+      .refine((val) => !RESERVED_USERNAMES.has(val.toLowerCase()), {
+        error: t('usernameReserved'),
+      }),
     email: z.string().email(t('emailInvalid')),
     password: z.string().min(8, t('passwordMin')),
   })

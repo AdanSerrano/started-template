@@ -219,6 +219,26 @@ In-memory sliding window (`lib/rate-limit.ts`):
 
 ---
 
+## useEffect — CASI PROHIBIDO
+
+> `useEffect` es el ultimo recurso. React 19.2 provee mejores alternativas.
+
+| Necesitas...                  | NO uses                | USA                         |
+| ----------------------------- | ---------------------- | --------------------------- |
+| Derivar valor de props/state  | `useEffect` + setState | Calculo directo o `useMemo` |
+| Datos del servidor            | `useEffect` + fetch    | Server Component            |
+| Subscribirse a evento externo | `useEffect`            | `useSyncExternalStore`      |
+| Estado pending de accion      | `useEffect`            | `useTransition`             |
+| Feedback instantaneo          | `useEffect`            | `useOptimistic`             |
+
+**Usos aceptables de `useEffect`:**
+
+- Conectar con APIs del navegador (ResizeObserver, IntersectionObserver)
+- Cleanup de recursos externos
+- Timer/interval sin alternativa
+
+---
+
 ## Patrones PROHIBIDOS
 
 ```tsx

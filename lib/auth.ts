@@ -174,7 +174,7 @@ export const auth = betterAuth({
     updateAge: 60 * 60 * 24, // Refresh DB session cada 1 dia de actividad
     cookieCache: {
       enabled: true,
-      maxAge: 5 * 60, // 5 minutos
+      maxAge: 2 * 60, // 2 minutos — balance seguridad vs rendimiento
       strategy: 'compact',
     },
   },
@@ -189,36 +189,39 @@ export const auth = betterAuth({
     session: {
       create: {
         before: async (session) => {
-          const authSecurity = getAuthSecurityService()
-          const isLocked = await authSecurity.isAccountLocked(session.userId)
+          // Atomic check: lock status + account status + reset in single transaction
+          await db.transaction(async (tx) => {
+            const authSecurity = getAuthSecurityService()
+            const isLocked = await authSecurity.isAccountLocked(session.userId)
 
-          if (isLocked) {
-            const expiry = await authSecurity.getLockExpiry(session.userId)
-            const minutesLeft = expiry
-              ? Math.ceil((expiry.getTime() - Date.now()) / 60000)
-              : 30
-            throw new Error(
-              `Cuenta bloqueada temporalmente. Intenta de nuevo en ${minutesLeft} minutos.`,
-            )
-          }
+            if (isLocked) {
+              const expiry = await authSecurity.getLockExpiry(session.userId)
+              const minutesLeft = expiry
+                ? Math.ceil((expiry.getTime() - Date.now()) / 60000)
+                : 30
+              throw new Error(
+                `Cuenta bloqueada temporalmente. Intenta de nuevo en ${minutesLeft} minutos.`,
+              )
+            }
 
-          const [user] = await db
-            .select({
-              deletedAt: users.deletedAt,
-              isActive: users.isActive,
-            })
-            .from(users)
-            .where(eq(users.id, session.userId))
+            const [user] = await tx
+              .select({
+                deletedAt: users.deletedAt,
+                isActive: users.isActive,
+              })
+              .from(users)
+              .where(eq(users.id, session.userId))
 
-          if (user?.deletedAt) {
-            throw new Error('Cuenta eliminada')
-          }
+            if (user?.deletedAt) {
+              throw new Error('Cuenta eliminada')
+            }
 
-          if (!user?.isActive) {
-            throw new Error('Cuenta desactivada')
-          }
+            if (!user?.isActive) {
+              throw new Error('Cuenta desactivada')
+            }
 
-          await authSecurity.resetFailedAttempts(session.userId)
+            await authSecurity.resetFailedAttempts(session.userId)
+          })
 
           return { data: session }
         },
