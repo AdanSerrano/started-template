@@ -1,7 +1,26 @@
-import { db } from '@/lib/db'
+import { db, type DbOrTx } from '@/lib/db'
 import { addresses } from '@/db/schema'
 import { eq, and, count, sql } from 'drizzle-orm'
-import type { AddressInsert } from '../types'
+import type { Address, AddressInsert } from '../types'
+
+// ── Interface ───────────────────────────────────────────────
+
+export interface IAddressRepository {
+  findByUserId(userId: string): Promise<Address[]>
+  findById(id: string, userId: string): Promise<Address | null>
+  create(data: AddressInsert, tx?: DbOrTx): Promise<Address>
+  update(
+    id: string,
+    userId: string,
+    data: Partial<Omit<AddressInsert, 'id' | 'userId'>>,
+    tx?: DbOrTx,
+  ): Promise<Address | null>
+  remove(id: string, userId: string, tx?: DbOrTx): Promise<boolean>
+  setDefault(id: string, userId: string, tx?: DbOrTx): Promise<Address | null>
+  countByUserId(userId: string): Promise<number>
+}
+
+// ── Prepared statements ─────────────────────────────────────
 
 const findByUserIdPrepared = db
   .select()
@@ -21,60 +40,69 @@ const findByIdPrepared = db
   )
   .prepare('address_find_by_id')
 
-export async function findByUserId(userId: string) {
-  return findByUserIdPrepared.execute({ userId })
-}
+// ── Repository ──────────────────────────────────────────────
 
-export async function findById(id: string, userId: string) {
-  const [address] = await findByIdPrepared.execute({ id, userId })
-  return address ?? null
-}
+export const addressRepository: IAddressRepository = {
+  async findByUserId(userId: string) {
+    return findByUserIdPrepared.execute({ userId })
+  },
 
-export async function create(data: AddressInsert) {
-  const [address] = await db.insert(addresses).values(data).returning()
-  return address
-}
+  async findById(id: string, userId: string) {
+    const [address] = await findByIdPrepared.execute({ id, userId })
+    return address ?? null
+  },
 
-export async function update(
-  id: string,
-  userId: string,
-  data: Partial<Omit<AddressInsert, 'id' | 'userId'>>,
-) {
-  const [address] = await db
-    .update(addresses)
-    .set({ ...data, updatedAt: new Date() })
-    .where(and(eq(addresses.id, id), eq(addresses.userId, userId)))
-    .returning()
-  return address ?? null
-}
+  async create(data: AddressInsert, tx?: DbOrTx) {
+    const client = tx ?? db
+    const [address] = await client.insert(addresses).values(data).returning()
+    return address!
+  },
 
-export async function remove(id: string, userId: string) {
-  const [deleted] = await db
-    .delete(addresses)
-    .where(and(eq(addresses.id, id), eq(addresses.userId, userId)))
-    .returning({ id: addresses.id })
-  return !!deleted
-}
+  async update(
+    id: string,
+    userId: string,
+    data: Partial<Omit<AddressInsert, 'id' | 'userId'>>,
+    tx?: DbOrTx,
+  ) {
+    const client = tx ?? db
+    const [address] = await client
+      .update(addresses)
+      .set({ ...data, updatedAt: new Date() })
+      .where(and(eq(addresses.id, id), eq(addresses.userId, userId)))
+      .returning()
+    return address ?? null
+  },
 
-export async function setDefault(id: string, userId: string) {
-  // First unset all defaults for user
-  await db
-    .update(addresses)
-    .set({ isDefault: false, updatedAt: new Date() })
-    .where(eq(addresses.userId, userId))
-  // Set the selected one as default
-  const [address] = await db
-    .update(addresses)
-    .set({ isDefault: true, updatedAt: new Date() })
-    .where(and(eq(addresses.id, id), eq(addresses.userId, userId)))
-    .returning()
-  return address ?? null
-}
+  async remove(id: string, userId: string, tx?: DbOrTx) {
+    const client = tx ?? db
+    const [deleted] = await client
+      .delete(addresses)
+      .where(and(eq(addresses.id, id), eq(addresses.userId, userId)))
+      .returning({ id: addresses.id })
+    return !!deleted
+  },
 
-export async function countByUserId(userId: string) {
-  const [result] = await db
-    .select({ total: count() })
-    .from(addresses)
-    .where(eq(addresses.userId, userId))
-  return result?.total ?? 0
+  async setDefault(id: string, userId: string, tx?: DbOrTx) {
+    const client = tx ?? db
+    // Unset all defaults for user
+    await client
+      .update(addresses)
+      .set({ isDefault: false, updatedAt: new Date() })
+      .where(eq(addresses.userId, userId))
+    // Set the selected one as default
+    const [address] = await client
+      .update(addresses)
+      .set({ isDefault: true, updatedAt: new Date() })
+      .where(and(eq(addresses.id, id), eq(addresses.userId, userId)))
+      .returning()
+    return address ?? null
+  },
+
+  async countByUserId(userId: string) {
+    const [result] = await db
+      .select({ total: count() })
+      .from(addresses)
+      .where(eq(addresses.userId, userId))
+    return result?.total ?? 0
+  },
 }

@@ -1,29 +1,29 @@
-import * as profileRepo from '../repositories/profile-repository'
-import * as addressRepo from '../repositories/address-repository'
+import { profileRepository } from '../repositories/profile-repository'
+import { addressRepository } from '../repositories/address-repository'
 import type { ProfileUpdateData, AddressInsert } from '../types'
 
 // Profile
 export async function getProfile(userId: string) {
-  return profileRepo.findById(userId)
+  return profileRepository.findById(userId)
 }
 
 export async function updateProfile(userId: string, data: ProfileUpdateData) {
-  return profileRepo.update(userId, data)
+  return profileRepository.update(userId, data)
 }
 
 // Addresses
 export async function getAddresses(userId: string) {
-  return addressRepo.findByUserId(userId)
+  return addressRepository.findByUserId(userId)
 }
 
 export async function getAddress(id: string, userId: string) {
-  return addressRepo.findById(id, userId)
+  return addressRepository.findById(id, userId)
 }
 
 export async function createAddress(data: AddressInsert) {
-  const address = await addressRepo.create(data)
+  const address = await addressRepository.create(data)
   if (data.isDefault && address) {
-    await addressRepo.setDefault(address.id, data.userId)
+    await addressRepository.setDefault(address.id, data.userId)
   }
   return address
 }
@@ -34,15 +34,15 @@ export async function updateAddress(
   data: Partial<Omit<AddressInsert, 'id' | 'userId'>>,
 ) {
   if (data.isDefault) {
-    await addressRepo.setDefault(id, userId)
+    await addressRepository.setDefault(id, userId)
   }
-  return addressRepo.update(id, userId, data)
+  return addressRepository.update(id, userId, data)
 }
 
 export async function deleteAddress(id: string, userId: string) {
-  return addressRepo.remove(id, userId)
+  return addressRepository.remove(id, userId)
 }
 
 export async function setDefaultAddress(id: string, userId: string) {
-  return addressRepo.setDefault(id, userId)
+  return addressRepository.setDefault(id, userId)
 }

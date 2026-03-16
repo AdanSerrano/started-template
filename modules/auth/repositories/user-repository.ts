@@ -1,10 +1,8 @@
-import { db } from '@/lib/db'
+import { db, type DbOrTx } from '@/lib/db'
 import * as schema from '@/db/schema'
 import { eq, sql } from 'drizzle-orm'
 
-// ────────────────────────────────────────────────────────────
-// Prepared statements — queries reutilizadas con parametros
-// ────────────────────────────────────────────────────────────
+// ── Prepared statements ─────────────────────────────────────
 
 const findIdByEmailQuery = db
   .select({ id: schema.users.id })
@@ -30,9 +28,7 @@ const getLockedUntilQuery = db
   .where(eq(schema.users.id, sql.placeholder('userId')))
   .prepare('get_locked_until')
 
-// ────────────────────────────────────────────────────────────
-// Repository
-// ────────────────────────────────────────────────────────────
+// ── Interface ───────────────────────────────────────────────
 
 export interface IUserRepository {
   findIdByEmail(email: string): Promise<string | null>
@@ -42,33 +38,37 @@ export interface IUserRepository {
     userId: string,
     attempts: number,
     lockedUntil?: Date | null,
+    tx?: DbOrTx,
   ): Promise<void>
-  resetFailedLogin(userId: string): Promise<void>
+  resetFailedLogin(userId: string, tx?: DbOrTx): Promise<void>
   getLockedUntil(userId: string): Promise<Date | null>
-  softDelete(userId: string, deletedByUserId: string): Promise<void>
-  restore(userId: string): Promise<void>
+  softDelete(
+    userId: string,
+    deletedByUserId: string,
+    tx?: DbOrTx,
+  ): Promise<void>
+  restore(userId: string, tx?: DbOrTx): Promise<void>
 }
 
+// ── Repository ──────────────────────────────────────────────
+
 export const userRepository: IUserRepository = {
-  async findIdByEmail(email: string): Promise<string | null> {
+  async findIdByEmail(email: string) {
     const [user] = await findIdByEmailQuery.execute({
       email: email.toLowerCase().trim(),
     })
-
     return user?.id ?? null
   },
 
-  async findIdByUsername(username: string): Promise<string | null> {
+  async findIdByUsername(username: string) {
     const [user] = await findIdByUsernameQuery.execute({
       username: username.toLowerCase().trim(),
     })
-
     return user?.id ?? null
   },
 
-  async getFailedLoginAttempts(userId: string): Promise<number | null> {
+  async getFailedLoginAttempts(userId: string) {
     const [user] = await getFailedLoginAttemptsQuery.execute({ userId })
-
     return user?.failedLoginAttempts ?? null
   },
 
@@ -76,24 +76,25 @@ export const userRepository: IUserRepository = {
     userId: string,
     attempts: number,
     lockedUntil?: Date | null,
-  ): Promise<void> {
+    tx?: DbOrTx,
+  ) {
+    const client = tx ?? db
     const updates: Partial<typeof schema.users.$inferInsert> = {
       failedLoginAttempts: attempts,
       updatedAt: new Date(),
     }
-
     if (lockedUntil !== undefined) {
       updates.lockedUntil = lockedUntil
     }
-
-    await db
+    await client
       .update(schema.users)
       .set(updates)
       .where(eq(schema.users.id, userId))
   },
 
-  async resetFailedLogin(userId: string): Promise<void> {
-    await db
+  async resetFailedLogin(userId: string, tx?: DbOrTx) {
+    const client = tx ?? db
+    await client
       .update(schema.users)
       .set({
         failedLoginAttempts: 0,
@@ -104,14 +105,14 @@ export const userRepository: IUserRepository = {
       .where(eq(schema.users.id, userId))
   },
 
-  async getLockedUntil(userId: string): Promise<Date | null> {
+  async getLockedUntil(userId: string) {
     const [user] = await getLockedUntilQuery.execute({ userId })
-
     return user?.lockedUntil ?? null
   },
 
-  async softDelete(userId: string, deletedByUserId: string): Promise<void> {
-    await db
+  async softDelete(userId: string, deletedByUserId: string, tx?: DbOrTx) {
+    const client = tx ?? db
+    await client
       .update(schema.users)
       .set({
         deletedAt: new Date(),
@@ -122,8 +123,9 @@ export const userRepository: IUserRepository = {
       .where(eq(schema.users.id, userId))
   },
 
-  async restore(userId: string): Promise<void> {
-    await db
+  async restore(userId: string, tx?: DbOrTx) {
+    const client = tx ?? db
+    await client
       .update(schema.users)
       .set({
         deletedAt: null,

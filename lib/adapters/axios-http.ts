@@ -1,14 +1,15 @@
+/**
+ * Axios HTTP Client adapter.
+ *
+ * axios is imported ONLY in this file (per adapter pattern).
+ * For the default HTTP client, see fetch-http.ts.
+ */
 import axios, { type AxiosInstance, type AxiosResponse } from 'axios'
 import type {
   IHttpClient,
   HttpRequestOptions,
   HttpResponse,
 } from '@/lib/interfaces'
-
-/**
- * Implementacion de IHttpClient usando Axios.
- * Para cambiar a fetch nativo, got, etc., crear nuevo adapter.
- */
 export class AxiosHttpClient implements IHttpClient {
   private client: AxiosInstance
 

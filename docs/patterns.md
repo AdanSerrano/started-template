@@ -26,7 +26,7 @@
 
 ### Factory Pattern
 
-> **Estado:** Planned — Este ejemplo (NotificationFactory) aun no esta implementado. El patron Factory SI se usa en `lib/providers.ts`.
+> **Estado: No implementado** — Ejemplo de referencia para uso futuro. El patron Factory SI se usa en `lib/providers.ts`.
 
 ```typescript
 // lib/factories/notification-factory.ts
@@ -67,7 +67,7 @@ export const db = getDb()
 
 ### Builder Pattern
 
-> **Estado:** Planned — Este patron (EmailBuilder) aun no esta implementado en el codebase.
+> **Estado: No implementado** — Ejemplo de referencia para uso futuro.
 
 ```typescript
 // lib/builders/email-builder.ts
@@ -270,7 +270,7 @@ function createValidationChain(): IValidationHandler {
 
 ### Observer Pattern
 
-> **Estado:** Planned — Este patron (EventBus) aun no esta implementado en el codebase.
+> **Estado: No implementado** — Ejemplo de referencia para uso futuro.
 
 ```typescript
 // lib/events/event-emitter.ts

@@ -215,9 +215,9 @@ export default async function AdminPage() {
 
 ---
 
-## Multi-tenancy — Planned / Futuro
+## Multi-tenancy — No implementado
 
-> **Nota:** Multi-tenancy aun no esta implementado. Las siguientes son pautas para cuando se implemente.
+> **Estado: No implementado** — Ejemplo de referencia para uso futuro. Las siguientes son pautas para cuando se implemente.
 
 ```typescript
 // SIEMPRE

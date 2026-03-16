@@ -7,7 +7,9 @@
  * Los services NUNCA importan directamente de adapters, siempre via este provider.
  */
 
+import { createProvider } from '@/lib/create-provider'
 import type {
+  IAuthProvider,
   IEmailService,
   IStorageService,
   IExcelExportService,
@@ -20,9 +22,11 @@ import type {
   IAnalyticsService,
   ICache,
   IRateLimitService,
+  ILogger,
 } from '@/lib/interfaces'
 
 import {
+  BetterAuthProvider,
   ResendEmailService,
   R2StorageService,
   XLSXExportService,
@@ -36,104 +40,61 @@ import {
   GA4AnalyticsService,
   MemoryCacheService,
   InMemoryRateLimitService,
+  ConsoleLogger,
 } from '@/lib/adapters'
 
-// ────────────────────────────────────────────────────────────
-// Singletons — se instancian una vez y se reutilizan
-// ────────────────────────────────────────────────────────────
+// ── Auth ────────────────────────────────────────────────────
+const authProvider = createProvider<IAuthProvider>(
+  () => new BetterAuthProvider(),
+)
+export const getAuthProvider = authProvider.get
+export const setAuthProvider = authProvider.set
 
-let emailInstance: IEmailService | null = null
-let storageInstance: IStorageService | null = null
-let excelExportInstance: IExcelExportService | null = null
-let pdfExportInstance: IPDFExportService | null = null
-let csvImportInstance: ICSVImportService | null = null
-let excelImportInstance: IExcelImportService | null = null
-let jobsInstance: IJobsService | null = null
-let httpClientInstance: IHttpClient | null = null
-let errorMonitoringInstance: IErrorMonitoringService | null = null
-let analyticsInstance: IAnalyticsService | null = null
-let cacheInstance: ICache | null = null
-let rateLimitInstance: IRateLimitService | null = null
+// ── Email ───────────────────────────────────────────────────
+const email = createProvider<IEmailService>(() => new ResendEmailService())
+export const getEmailService = email.get
+export const setEmailInstance = email.set
 
-// ────────────────────────────────────────────────────────────
-// Email
-// ────────────────────────────────────────────────────────────
+// ── Storage ─────────────────────────────────────────────────
+const storage = createProvider<IStorageService>(() => new R2StorageService())
+export const getStorageService = storage.get
+export const setStorageInstance = storage.set
 
-export function getEmailService(): IEmailService {
-  if (!emailInstance) {
-    emailInstance = new ResendEmailService()
-  }
-  return emailInstance
-}
+// ── Export ───────────────────────────────────────────────────
+const excelExport = createProvider<IExcelExportService>(
+  () => new XLSXExportService(),
+)
+export const getExcelExportService = excelExport.get
+export const setExcelExportInstance = excelExport.set
 
-// ────────────────────────────────────────────────────────────
-// Storage
-// ────────────────────────────────────────────────────────────
+const pdfExport = createProvider<IPDFExportService>(
+  () => new ReactPDFExportService(),
+)
+export const getPDFExportService = pdfExport.get
+export const setPDFExportInstance = pdfExport.set
 
-export function getStorageService(): IStorageService {
-  if (!storageInstance) {
-    storageInstance = new R2StorageService()
-  }
-  return storageInstance
-}
+// ── Import ──────────────────────────────────────────────────
+const csvImport = createProvider<ICSVImportService>(
+  () => new PapaParseCSVImportService(),
+)
+export const getCSVImportService = csvImport.get
+export const setCSVImportInstance = csvImport.set
 
-// ────────────────────────────────────────────────────────────
-// Export
-// ────────────────────────────────────────────────────────────
+const excelImport = createProvider<IExcelImportService>(
+  () => new XLSXImportService(),
+)
+export const getExcelImportService = excelImport.get
+export const setExcelImportInstance = excelImport.set
 
-export function getExcelExportService(): IExcelExportService {
-  if (!excelExportInstance) {
-    excelExportInstance = new XLSXExportService()
-  }
-  return excelExportInstance
-}
+// ── Jobs ────────────────────────────────────────────────────
+const jobs = createProvider<IJobsService>(() => new TriggerJobsService())
+export const getJobsService = jobs.get
+export const setJobsInstance = jobs.set
 
-export function getPDFExportService(): IPDFExportService {
-  if (!pdfExportInstance) {
-    pdfExportInstance = new ReactPDFExportService()
-  }
-  return pdfExportInstance
-}
-
-// ────────────────────────────────────────────────────────────
-// Import
-// ────────────────────────────────────────────────────────────
-
-export function getCSVImportService(): ICSVImportService {
-  if (!csvImportInstance) {
-    csvImportInstance = new PapaParseCSVImportService()
-  }
-  return csvImportInstance
-}
-
-export function getExcelImportService(): IExcelImportService {
-  if (!excelImportInstance) {
-    excelImportInstance = new XLSXImportService()
-  }
-  return excelImportInstance
-}
-
-// ────────────────────────────────────────────────────────────
-// Jobs
-// ────────────────────────────────────────────────────────────
-
-export function getJobsService(): IJobsService {
-  if (!jobsInstance) {
-    jobsInstance = new TriggerJobsService()
-  }
-  return jobsInstance
-}
-
-// ────────────────────────────────────────────────────────────
-// HTTP Client
-// ────────────────────────────────────────────────────────────
-
-export function getHttpClient(): IHttpClient {
-  if (!httpClientInstance) {
-    httpClientInstance = new FetchHttpClient()
-  }
-  return httpClientInstance
-}
+// ── HTTP Client ─────────────────────────────────────────────
+const httpClient = createProvider<IHttpClient>(() => new FetchHttpClient())
+export const getHttpClient = httpClient.get
+export const setHttpClientInstance = httpClient.set
 
 export function createHttpClient(
   baseURL: string,
@@ -142,115 +103,53 @@ export function createHttpClient(
   return new AxiosHttpClient(baseURL, defaultHeaders)
 }
 
-// ────────────────────────────────────────────────────────────
-// Error Monitoring
-// ────────────────────────────────────────────────────────────
+// ── Error Monitoring ────────────────────────────────────────
+const errorMonitoring = createProvider<IErrorMonitoringService>(
+  () => new ConsoleMonitoringAdapter(),
+)
+export const getErrorMonitoring = errorMonitoring.get
+export const setErrorMonitoringInstance = errorMonitoring.set
 
-export function getErrorMonitoring(): IErrorMonitoringService {
-  if (!errorMonitoringInstance) {
-    errorMonitoringInstance = new ConsoleMonitoringAdapter()
-  }
-  return errorMonitoringInstance
-}
+// ── Analytics ───────────────────────────────────────────────
+const analytics = createProvider<IAnalyticsService>(
+  () => new GA4AnalyticsService(),
+)
+export const getAnalytics = analytics.get
+export const setAnalyticsInstance = analytics.set
 
-// ────────────────────────────────────────────────────────────
-// Analytics
-// ────────────────────────────────────────────────────────────
+// ── Cache ───────────────────────────────────────────────────
+const cache = createProvider<ICache>(() => new MemoryCacheService())
+export const getCacheService = cache.get
+export const setCacheInstance = cache.set
 
-export function getAnalytics(): IAnalyticsService {
-  if (!analyticsInstance) {
-    analyticsInstance = new GA4AnalyticsService()
-  }
-  return analyticsInstance
-}
+// ── Rate Limit ──────────────────────────────────────────────
+const rateLimit = createProvider<IRateLimitService>(
+  () => new InMemoryRateLimitService(),
+)
+export const getRateLimitService = rateLimit.get
+export const setRateLimitService = rateLimit.set
 
-// ────────────────────────────────────────────────────────────
-// Cache
-// ────────────────────────────────────────────────────────────
+// ── Logger ──────────────────────────────────────────────────
+const logger = createProvider<ILogger>(() => new ConsoleLogger())
+export const getLogger = logger.get
+export const setLoggerInstance = logger.set
 
-export function getCacheService(): ICache {
-  if (!cacheInstance) {
-    cacheInstance = new MemoryCacheService()
-  }
-  return cacheInstance
-}
-
-// ────────────────────────────────────────────────────────────
-// Rate Limit
-// ────────────────────────────────────────────────────────────
-
-export function getRateLimitService(): IRateLimitService {
-  if (!rateLimitInstance) {
-    rateLimitInstance = new InMemoryRateLimitService()
-  }
-  return rateLimitInstance
-}
-
-// ────────────────────────────────────────────────────────────
-// Testing — permite inyectar mocks
-// ────────────────────────────────────────────────────────────
-
-export function setEmailInstance(email: IEmailService): void {
-  emailInstance = email
-}
-
-export function setStorageInstance(storage: IStorageService): void {
-  storageInstance = storage
-}
-
-export function setHttpClientInstance(http: IHttpClient): void {
-  httpClientInstance = http
-}
-
-export function setErrorMonitoringInstance(
-  monitoring: IErrorMonitoringService,
-): void {
-  errorMonitoringInstance = monitoring
-}
-
-export function setExcelExportInstance(service: IExcelExportService): void {
-  excelExportInstance = service
-}
-
-export function setPDFExportInstance(service: IPDFExportService): void {
-  pdfExportInstance = service
-}
-
-export function setCSVImportInstance(service: ICSVImportService): void {
-  csvImportInstance = service
-}
-
-export function setExcelImportInstance(service: IExcelImportService): void {
-  excelImportInstance = service
-}
-
-export function setJobsInstance(service: IJobsService): void {
-  jobsInstance = service
-}
-
-export function setRateLimitService(service: IRateLimitService): void {
-  rateLimitInstance = service
-}
-
+// ── Reset — para testing ────────────────────────────────────
 export function resetProviders(): void {
-  emailInstance = null
-  storageInstance = null
-  excelExportInstance = null
-  pdfExportInstance = null
-  csvImportInstance = null
-  excelImportInstance = null
-  jobsInstance = null
-  httpClientInstance = null
-  errorMonitoringInstance = null
-  analyticsInstance = null
-  cacheInstance = null
-  rateLimitInstance = null
-}
-
-export function setAnalyticsInstance(analytics: IAnalyticsService): void {
-  analyticsInstance = analytics
-}
-
-export function setCacheInstance(cache: ICache): void {
-  cacheInstance = cache
+  ;[
+    authProvider,
+    email,
+    storage,
+    excelExport,
+    pdfExport,
+    csvImport,
+    excelImport,
+    jobs,
+    httpClient,
+    errorMonitoring,
+    analytics,
+    cache,
+    rateLimit,
+    logger,
+  ].forEach((p) => p.reset())
 }

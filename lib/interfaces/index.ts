@@ -1,3 +1,6 @@
+// Auth
+export type { IAuthProvider, AuthSessionData } from './auth.interface'
+
 // Cache
 export type { ICache } from './cache.interface'
 
@@ -60,3 +63,6 @@ export type {
 
 // Error Monitoring
 export type { IErrorMonitoringService } from './error-monitoring.interface'
+
+// Logger
+export type { ILogger, LogContext, LogLevel } from './logger.interface'

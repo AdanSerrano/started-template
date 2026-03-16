@@ -30,3 +30,9 @@ export { MemoryCacheService } from './memory-cache'
 
 // Rate Limit
 export { InMemoryRateLimitService } from './in-memory-rate-limit'
+
+// Auth
+export { BetterAuthProvider } from './better-auth-provider'
+
+// Logger
+export { ConsoleLogger } from './console-logger'

@@ -3,6 +3,7 @@
 import { z } from 'zod/v4'
 import { requireAuth } from '@/lib/auth-server'
 import { createAuditLog } from '@/lib/audit'
+import { getRequestMetadata } from '@/lib/audit-helpers'
 import * as accountService from '../services/account-service'
 import {
   createProfileUpdateSchema,
@@ -29,6 +30,7 @@ export async function updateProfileAction(
   data: unknown,
 ): Promise<ActionResult> {
   const session = await requireAuth()
+  const metadata = await getRequestMetadata()
 
   const parsed = profileUpdateSchema.safeParse(data)
   if (!parsed.success) {
@@ -53,6 +55,7 @@ export async function updateProfileAction(
     entityId: session.user.id,
     userId: session.user.id,
     severity: 'low',
+    metadata,
   })
 
   return { success: true }
@@ -63,6 +66,7 @@ export async function uploadAvatarAction(
   formData: FormData,
 ): Promise<ActionResult & { data?: unknown }> {
   const session = await requireAuth()
+  const metadata = await getRequestMetadata()
 
   const file = formData.get('file') as File | null
   if (!file) {
@@ -112,6 +116,7 @@ export async function uploadAvatarAction(
     entityId: session.user.id,
     userId: session.user.id,
     severity: 'low',
+    metadata,
   })
 
   return { success: true, data: { url: publicUrl } }
@@ -127,6 +132,7 @@ export async function createAddressAction(
   data: unknown,
 ): Promise<ActionResult> {
   const session = await requireAuth()
+  const metadata = await getRequestMetadata()
 
   const parsed = addressFormSchema.safeParse(data)
   if (!parsed.success) {
@@ -152,6 +158,7 @@ export async function createAddressAction(
     entityType: 'address',
     entityId: address!.id,
     userId: session.user.id,
+    metadata,
   })
 
   return { success: true }
@@ -161,6 +168,7 @@ export async function updateAddressAction(
   data: unknown,
 ): Promise<ActionResult> {
   const session = await requireAuth()
+  const metadata = await getRequestMetadata()
 
   const parsed = addressFormSchema.safeParse(data)
   if (!parsed.success) {
@@ -186,6 +194,7 @@ export async function updateAddressAction(
     entityType: 'address',
     entityId: id,
     userId: session.user.id,
+    metadata,
   })
 
   return { success: true }
@@ -193,6 +202,7 @@ export async function updateAddressAction(
 
 export async function deleteAddressAction(id: string): Promise<ActionResult> {
   const session = await requireAuth()
+  const metadata = await getRequestMetadata()
 
   await accountService.deleteAddress(id, session.user.id)
 
@@ -202,6 +212,7 @@ export async function deleteAddressAction(id: string): Promise<ActionResult> {
     entityId: id,
     userId: session.user.id,
     severity: 'high',
+    metadata,
   })
 
   return { success: true }
@@ -211,6 +222,7 @@ export async function setDefaultAddressAction(
   id: string,
 ): Promise<ActionResult> {
   const session = await requireAuth()
+  const metadata = await getRequestMetadata()
 
   await accountService.setDefaultAddress(id, session.user.id)
 
@@ -220,6 +232,7 @@ export async function setDefaultAddressAction(
     entityId: id,
     userId: session.user.id,
     severity: 'low',
+    metadata,
   })
 
   return { success: true }

@@ -1,6 +1,5 @@
 import { db } from '@/lib/db'
 import { auditLogs } from '@/db/schema'
-import { headers } from 'next/headers'
 
 type AuditSeverity = 'low' | 'medium' | 'high' | 'critical'
 
@@ -17,11 +16,17 @@ interface CreateAuditLogParams {
     | undefined
   severity?: AuditSeverity | undefined
   description?: string | undefined
+  metadata?:
+    | { ip?: string; userAgent?: string; [key: string]: unknown }
+    | undefined
 }
 
 /**
  * Creates an audit log entry for tracking mutations.
  * Should be called in every server action that modifies data.
+ *
+ * Metadata (IP, userAgent) must be passed explicitly — use
+ * getRequestMetadata() from '@/lib/audit-helpers' in actions.
  */
 export async function createAuditLog({
   action,
@@ -31,14 +36,8 @@ export async function createAuditLog({
   changes,
   severity = 'medium',
   description,
+  metadata,
 }: CreateAuditLogParams): Promise<void> {
-  const headersList = await headers()
-  const ip =
-    headersList.get('x-forwarded-for')?.split(',')[0]?.trim() ??
-    headersList.get('x-real-ip') ??
-    'unknown'
-  const userAgent = headersList.get('user-agent') ?? 'unknown'
-
   await db.insert(auditLogs).values({
     action,
     entityType,
@@ -47,6 +46,6 @@ export async function createAuditLog({
     changes,
     severity,
     description,
-    metadata: { ip, userAgent },
+    metadata: metadata ?? {},
   })
 }
