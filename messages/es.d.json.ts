@@ -245,6 +245,7 @@ declare const messages: {
     usernameMin: 'El usuario debe tener al menos 3 caracteres'
     usernameMax: 'El usuario no puede superar 30 caracteres'
     usernamePattern: 'Solo letras, numeros, puntos y guiones bajos'
+    usernameReserved: 'Este nombre de usuario esta reservado'
     emailInvalid: 'Email invalido'
     codeLength: 'El codigo debe tener 6 digitos'
     codePattern: 'Solo numeros'

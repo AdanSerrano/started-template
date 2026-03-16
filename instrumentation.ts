@@ -2,19 +2,28 @@
  * Next.js Instrumentation Hook
  *
  * Se ejecuta una vez cuando el servidor Next.js inicia.
- * Usar para inicializar monitoring, tracing, u otro setup server-side.
+ * Inicializa monitoring, logging, y error tracking.
  *
  * @see https://nextjs.org/docs/app/building-your-application/optimizing/instrumentation
  */
 export async function register() {
   if (process.env.NEXT_RUNTIME === 'nodejs') {
-    // Server-side initialization
-    // Agregar OpenTelemetry, Sentry, u otro monitoring aqui.
-    //
-    // Ejemplo con OpenTelemetry (descomentar cuando se instale @opentelemetry/sdk-node):
-    // const { NodeSDK } = await import('@opentelemetry/sdk-node')
-    // const sdk = new NodeSDK({ ... })
-    // sdk.start()
+    // Inicializar Sentry si esta configurado
+    if (process.env.SENTRY_DSN) {
+      try {
+        const Sentry = await import('@sentry/nextjs')
+        Sentry.init({
+          dsn: process.env.SENTRY_DSN,
+          environment: process.env.NODE_ENV,
+          tracesSampleRate: Number(
+            process.env.SENTRY_TRACES_SAMPLE_RATE ?? 0.1,
+          ),
+          debug: false,
+        })
+      } catch {
+        console.warn('[instrumentation] Sentry not available, skipping init')
+      }
+    }
   }
 }
 
@@ -37,12 +46,38 @@ export async function onRequestError(
     renderType: 'dynamic' | 'dynamic-resume'
   },
 ) {
-  console.error('[instrumentation] Request error:', {
-    error: error.message,
+  const errorContext = {
     digest: error.digest,
     path: request.path,
     method: request.method,
     routePath: context.routePath,
     routeType: context.routeType,
-  })
+    renderSource: context.renderSource,
+  }
+
+  // Log estructurado
+  console.error(
+    JSON.stringify({
+      level: 'error',
+      message: error.message,
+      timestamp: new Date().toISOString(),
+      ...errorContext,
+    }),
+  )
+
+  // Reportar a Sentry si esta disponible
+  if (process.env.SENTRY_DSN) {
+    try {
+      const Sentry = await import('@sentry/nextjs')
+      Sentry.captureException(error, {
+        extra: errorContext,
+        tags: {
+          routeType: context.routeType,
+          renderSource: context.renderSource,
+        },
+      })
+    } catch {
+      // Sentry no disponible
+    }
+  }
 }

@@ -56,7 +56,14 @@ if (
 
 // ── Optional — solo warn en dev ─────────────────────────────
 
-const optional = ['GOOGLE_CLIENT_ID', 'GOOGLE_CLIENT_SECRET'] as const
+const optional = [
+  'GOOGLE_CLIENT_ID',
+  'GOOGLE_CLIENT_SECRET',
+  'SENTRY_DSN',
+  'UPSTASH_REDIS_REST_URL',
+  'UPSTASH_REDIS_REST_TOKEN',
+  'CORS_ALLOWED_ORIGINS',
+] as const
 
 for (const key of optional) {
   if (!process.env[key] && isDev) {

@@ -66,3 +66,46 @@ export type { IErrorMonitoringService } from './error-monitoring.interface'
 
 // Logger
 export type { ILogger, LogContext, LogLevel } from './logger.interface'
+
+// Notifications
+export type {
+  INotificationService,
+  Notification,
+  NotificationPayload,
+  NotificationChannel,
+  NotificationPriority,
+} from './notification.interface'
+
+// Search
+export type {
+  ISearchService,
+  SearchOptions,
+  SearchResult,
+  SearchHit,
+  SearchFacet,
+  IndexDocument,
+} from './search.interface'
+
+// Webhooks
+export type {
+  IWebhookService,
+  WebhookConfig,
+  WebhookPayload,
+  WebhookDelivery,
+  WebhookSendOptions,
+} from './webhook.interface'
+
+// Feature Flags
+export type {
+  IFeatureFlagService,
+  FeatureFlag,
+  FlagContext,
+  FlagVariant,
+} from './feature-flag.interface'
+
+// GDPR
+export type {
+  IGDPRService,
+  UserDataExport,
+  DataCategory,
+} from './gdpr.interface'

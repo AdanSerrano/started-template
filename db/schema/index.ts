@@ -12,5 +12,8 @@ export * from './audit-logs'
 // User profile
 export * from './addresses'
 
+// Organizations (multi-tenancy)
+export * from './organizations'
+
 // Relations
 export * from './relations'

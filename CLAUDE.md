@@ -40,6 +40,10 @@ La **UX es prioridad #1**. Toda decision optimiza:
 | `docs/auth.md`         | Better Auth, cookie cache, roles, sesiones, 2FA                 | Tocas auth, sesiones o permisos                    |
 | `docs/performance.md`  | ISR, React 19.2, Zustand, prepared statements, instrumentation  | Optimizas rendimiento o agregas monitoring         |
 | `docs/i18n.md`         | next-intl (es/en/ca), theming dark/light, emails i18n           | Agregas textos, traducciones o cambias tema        |
+| `docs/testing.md`      | Estrategia de tests, patrones por capa, factories, MSW          | Escribes tests o agregas modulo nuevo              |
+| `docs/deployment.md`   | Deploy a Vercel/Docker/Node, env vars, migraciones, rollback    | Despliegas o configuras entorno                    |
+| `docs/monitoring.md`   | Logging estructurado, Sentry, health check, request IDs         | Configuras observabilidad o depuras produccion     |
+| `docs/security.md`     | OWASP Top 10, rate limiting, CORS, GDPR, file upload            | Implementas seguridad o revisas vulnerabilidades   |
 
 ### Regla: Documentar componentes nuevos — OBLIGATORIO
 

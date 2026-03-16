@@ -12,8 +12,23 @@ export default defineConfig({
     exclude: ['node_modules', '.next', 'e2e'],
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'lcov'],
-      exclude: ['node_modules/', '.next/', 'tests/', '*.config.*'],
+      reporter: ['text', 'lcov', 'json-summary'],
+      exclude: [
+        'node_modules/',
+        '.next/',
+        'tests/',
+        'e2e/',
+        '*.config.*',
+        'components/ui/',
+        'messages/',
+        'db/migrations/',
+      ],
+      thresholds: {
+        statements: 50,
+        branches: 50,
+        functions: 50,
+        lines: 50,
+      },
     },
   },
 })

@@ -1,4 +1,4 @@
-import { db } from '@/lib/db' // eslint-disable-line @typescript-eslint/no-unused-vars -- used in seed data below
+import { db } from '@/lib/db'
 import * as schema from '@/db/schema'
 
 /**
@@ -6,28 +6,90 @@ import * as schema from '@/db/schema'
  *
  * Usage: bun run db:seed
  *
- * Add your seed data below. Example:
- *
- *   await db.insert(schema.users).values({
- *     id: 'seed-user-1',
- *     name: 'Test User',
- *     email: 'test@example.com',
- *     emailVerified: true,
- *     createdAt: new Date(),
- *     updatedAt: new Date(),
- *   })
- *
- * Tips:
- * - Use `onConflictDoNothing()` to make seeds idempotent
- * - Group related seeds with comments
- * - Keep seed data minimal — just enough to develop against
+ * Idempotente — usa onConflictDoNothing() para no duplicar datos.
  */
 async function main() {
   console.log('Seeding database...')
 
-  // Add your seed data here
-  // Keeping schema import to avoid unused-import warnings in CI
-  void schema
+  // ── Users ────────────────────────────────────────────────
+  const seedUsers = [
+    {
+      id: 'seed-admin-1',
+      name: 'Admin User',
+      email: 'admin@example.com',
+      emailVerified: true,
+      role: 'admin' as const,
+      username: 'admin',
+      displayUsername: 'Admin',
+      isActive: true,
+      failedLoginAttempts: 0,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: 'seed-user-1',
+      name: 'Test User',
+      email: 'user@example.com',
+      emailVerified: true,
+      role: 'user' as const,
+      username: 'testuser',
+      displayUsername: 'TestUser',
+      isActive: true,
+      failedLoginAttempts: 0,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+  ]
+
+  for (const user of seedUsers) {
+    await db
+      .insert(schema.users)
+      .values(user)
+      .onConflictDoNothing({ target: schema.users.id })
+  }
+  console.log(`  Users: ${seedUsers.length} seeded`)
+
+  // ── Addresses ────────────────────────────────────────────
+  const seedAddresses = [
+    {
+      id: 'seed-address-1',
+      userId: 'seed-user-1',
+      type: 'shipping' as const,
+      isDefault: true,
+      firstName: 'Test',
+      lastName: 'User',
+      street: 'Carrer de Balmes 100',
+      city: 'Barcelona',
+      province: 'Barcelona',
+      postalCode: '08008',
+      country: 'ES',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: 'seed-address-2',
+      userId: 'seed-user-1',
+      type: 'billing' as const,
+      isDefault: false,
+      firstName: 'Test',
+      lastName: 'User',
+      street: 'Gran Via 500',
+      city: 'Barcelona',
+      province: 'Barcelona',
+      postalCode: '08015',
+      country: 'ES',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+  ]
+
+  for (const address of seedAddresses) {
+    await db
+      .insert(schema.addresses)
+      .values(address)
+      .onConflictDoNothing({ target: schema.addresses.id })
+  }
+  console.log(`  Addresses: ${seedAddresses.length} seeded`)
 
   console.log('Seeding complete.')
 }

@@ -32,7 +32,7 @@ const securityHeaders = [
     key: 'Content-Security-Policy',
     value: [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com",
+      "script-src 'self' 'unsafe-inline' 'strict-dynamic' https://www.googletagmanager.com",
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: blob: https:",
       "font-src 'self' data:",
@@ -45,6 +45,9 @@ const securityHeaders = [
 ]
 
 const nextConfig: NextConfig = {
+  ...(process.env.DOCKER_BUILD === '1'
+    ? { output: 'standalone' as const }
+    : {}),
   reactCompiler: true,
   poweredByHeader: false,
   trailingSlash: false,

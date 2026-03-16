@@ -36,3 +36,22 @@ export { BetterAuthProvider } from './better-auth-provider'
 
 // Logger
 export { ConsoleLogger } from './console-logger'
+export { PinoLogger } from './pino-logger'
+
+// Rate Limit (distributed)
+export { UpstashRateLimitService } from './upstash-rate-limit'
+
+// Notifications
+export { InAppNotificationService } from './in-app-notification'
+
+// Search
+export { PgSearchService } from './pg-search'
+
+// Webhooks
+export { WebhookService } from './webhook'
+
+// Feature Flags
+export { EnvFeatureFlagService } from './env-feature-flags'
+
+// GDPR
+export { GDPRService } from './gdpr'

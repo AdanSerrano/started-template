@@ -17,3 +17,17 @@ export const auditSeverityEnum = pgEnum('audit_severity', [
   'high',
   'critical',
 ])
+
+// --- Organizaciones ---
+export const organizationPlanEnum = pgEnum('organization_plan', [
+  'free',
+  'pro',
+  'enterprise',
+])
+
+export const orgMemberRoleEnum = pgEnum('org_member_role', [
+  'owner',
+  'admin',
+  'member',
+  'viewer',
+])
