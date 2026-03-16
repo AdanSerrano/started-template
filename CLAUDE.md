@@ -30,15 +30,16 @@ La **UX es prioridad #1**. Toda decision optimiza:
 
 **ANTES de implementar cualquier cosa, LEE la documentacion relevante en `docs/`.**
 
-| Archivo                | Contenido                                                      | Leer cuando...                                     |
-| ---------------------- | -------------------------------------------------------------- | -------------------------------------------------- |
-| `docs/architecture.md` | Capas, adapters, transacciones, safe actions, health, logging  | Creas modulo, swappeas servicio, o agregas adapter |
-| `docs/tech-stack.md`   | Stack completo, Tailwind v4, Drizzle, env vars                 | Configuras algo o agregas dependencia              |
-| `docs/patterns.md`     | 12 patrones de diseno con ejemplos y anti-patrones             | Diseñas logica de negocio o servicios              |
-| `docs/conventions.md`  | Naming, imports, limites, skeletons, errores, Zod, audit logs  | Escribes cualquier codigo nuevo                    |
-| `docs/auth.md`         | Better Auth, cookie cache, roles, sesiones, 2FA                | Tocas auth, sesiones o permisos                    |
-| `docs/performance.md`  | ISR, React 19.2, Zustand, prepared statements, instrumentation | Optimizas rendimiento o agregas monitoring         |
-| `docs/i18n.md`         | next-intl (es/en/ca), theming dark/light, emails i18n          | Agregas textos, traducciones o cambias tema        |
+| Archivo                | Contenido                                                       | Leer cuando...                                     |
+| ---------------------- | --------------------------------------------------------------- | -------------------------------------------------- |
+| `docs/architecture.md` | Capas, adapters, transacciones, safe actions, health, logging   | Creas modulo, swappeas servicio, o agregas adapter |
+| `docs/database.md`     | Schemas, migraciones, transacciones, prepared statements, seeds | Agregas tabla, creas migracion, o tocas DB         |
+| `docs/tech-stack.md`   | Stack completo, Tailwind v4, Drizzle, env vars                  | Configuras algo o agregas dependencia              |
+| `docs/patterns.md`     | 12 patrones de diseno con ejemplos y anti-patrones              | Diseñas logica de negocio o servicios              |
+| `docs/conventions.md`  | Naming, imports, limites, skeletons, errores, Zod, audit logs   | Escribes cualquier codigo nuevo                    |
+| `docs/auth.md`         | Better Auth, cookie cache, roles, sesiones, 2FA                 | Tocas auth, sesiones o permisos                    |
+| `docs/performance.md`  | ISR, React 19.2, Zustand, prepared statements, instrumentation  | Optimizas rendimiento o agregas monitoring         |
+| `docs/i18n.md`         | next-intl (es/en/ca), theming dark/light, emails i18n           | Agregas textos, traducciones o cambias tema        |
 
 ### Regla: Documentar componentes nuevos — OBLIGATORIO
 
@@ -244,6 +245,22 @@ await createAuditLog({
   metadata, // IP + User-Agent (opcional en background jobs)
 })
 ```
+
+### Branding — Centralizado en `lib/config.ts`
+
+```ts
+import { appConfig } from '@/lib/config'
+
+// CORRECTO — siempre via appConfig
+appConfig.name     // "Starter App"
+appConfig.url      // process.env.NEXT_PUBLIC_APP_URL
+appConfig.emailFrom // remitente de emails
+
+// PROHIBIDO — hardcodear nombre de la app
+<span>Starter App</span>  // NUNCA
+```
+
+Al copiar la plantilla para un nuevo proyecto, solo cambiar `lib/config.ts`.
 
 ### ISR — Paginas publicas con revalidate
 

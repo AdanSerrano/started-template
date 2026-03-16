@@ -43,8 +43,10 @@ async function getLocaleFromRequest(): Promise<EmailLocale> {
   return routing.defaultLocale as EmailLocale
 }
 
+import { appConfig } from '@/lib/config'
+
 export const auth = betterAuth({
-  appName: 'Starter App',
+  appName: appConfig.name,
   trustedOrigins: [process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'],
 
   database: drizzleAdapter(db, {
@@ -62,7 +64,7 @@ export const auth = betterAuth({
   plugins: [
     username(),
     twoFactor({
-      issuer: 'Starter App',
+      issuer: appConfig.name,
     }),
     admin({
       ac,

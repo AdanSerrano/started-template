@@ -74,6 +74,33 @@ export function checkRateLimit(
 }
 
 /**
+ * Peek at current rate limit status without consuming an attempt.
+ */
+export function peekRateLimit(
+  key: string,
+  config: RateLimitConfig,
+): RateLimitResult {
+  const now = Date.now()
+  const entry = store.get(key)
+
+  if (!entry || entry.resetAt <= now) {
+    return {
+      success: true,
+      remaining: config.maxAttempts,
+      reset: now + config.windowMs,
+      limit: config.maxAttempts,
+    }
+  }
+
+  return {
+    success: entry.count <= config.maxAttempts,
+    remaining: Math.max(0, config.maxAttempts - entry.count),
+    reset: entry.resetAt,
+    limit: config.maxAttempts,
+  }
+}
+
+/**
  * Reset rate limit for a given key.
  */
 export function resetRateLimit(key: string): void {

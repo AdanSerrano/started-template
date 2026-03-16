@@ -1,7 +1,7 @@
 /**
  * In-memory rate limit adapter.
  *
- * Wraps the existing checkRateLimit/resetRateLimit functions
+ * Wraps the existing checkRateLimit/resetRateLimit/peekRateLimit functions
  * to implement the IRateLimitService interface.
  */
 
@@ -10,7 +10,7 @@ import type {
   RateLimitConfig,
   RateLimitResult,
 } from '@/lib/interfaces'
-import { checkRateLimit, resetRateLimit } from '@/lib/rate-limit'
+import { checkRateLimit, resetRateLimit, peekRateLimit } from '@/lib/rate-limit'
 
 const DEFAULT_CONFIG: RateLimitConfig = {
   limit: 10,
@@ -33,15 +33,14 @@ export class InMemoryRateLimitService implements IRateLimitService {
     resetRateLimit(identifier)
   }
 
-  async getStatus(identifier: string): Promise<RateLimitResult> {
-    // Check without consuming — peek by using a high limit probe
-    // Since the existing implementation always consumes, we use a
-    // read-only approach: check with maxAttempts=Infinity so it
-    // never blocks, then adjust remaining based on actual config.
-    // Note: This is a best-effort implementation for the in-memory adapter.
-    return checkRateLimit(identifier, {
-      maxAttempts: Number.MAX_SAFE_INTEGER,
-      windowMs: 60_000,
+  async getStatus(
+    identifier: string,
+    config?: RateLimitConfig,
+  ): Promise<RateLimitResult> {
+    const cfg = config ?? DEFAULT_CONFIG
+    return peekRateLimit(identifier, {
+      maxAttempts: cfg.limit,
+      windowMs: cfg.windowSeconds * 1000,
     })
   }
 }

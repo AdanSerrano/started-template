@@ -8,8 +8,9 @@ import type { ReactElement } from 'react'
 import { getEmailService } from '@/lib/providers'
 import type { EmailLocale } from '@/emails/i18n'
 
-const DEFAULT_FROM =
-  process.env.EMAIL_FROM ?? 'Starter App <no-reply@your-domain.com>'
+import { appConfig } from '@/lib/config'
+
+const DEFAULT_FROM = appConfig.emailFrom
 
 interface SendEmailParams {
   to: string

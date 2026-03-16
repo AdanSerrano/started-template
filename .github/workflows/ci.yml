@@ -16,14 +16,25 @@ jobs:
         with:
           bun-version: latest
       - run: bun install --frozen-lockfile
+
       - name: Format Check
         run: bun run format:check
+
       - name: Type Check
         run: bun run tsc --noEmit
+
       - name: Lint
         run: bun run lint
+
       - name: Test
         run: bun run test
+
+      - name: Dead Code Check
+        run: bun run knip
+
+      - name: Security Audit
+        run: bun audit --production || true
+
       - name: Build
         run: bun run build
         env:

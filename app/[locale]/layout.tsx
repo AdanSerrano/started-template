@@ -7,7 +7,9 @@ import { geistSans, geistMono } from '@/lib/fonts'
 import { routing } from '@/i18n/routing'
 import { Toaster } from '@/components/ui/sonner'
 
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
+import { appConfig } from '@/lib/config'
+
+const BASE_URL = appConfig.url
 
 export async function generateMetadata({
   params,
@@ -24,7 +26,7 @@ export async function generateMetadata({
       template: t('titleTemplate'),
     },
     description: t('description'),
-    applicationName: 'Starter App',
+    applicationName: appConfig.name,
     generator: 'Next.js',
     openGraph: {
       type: 'website',
@@ -34,7 +36,7 @@ export async function generateMetadata({
           l !==
           (locale === 'en' ? 'en_US' : locale === 'ca' ? 'ca_ES' : 'es_ES'),
       ),
-      siteName: 'Starter App',
+      siteName: appConfig.name,
       title: t('title'),
       description: t('description'),
       url: locale === 'es' ? BASE_URL : `${BASE_URL}/${locale}`,
@@ -104,7 +106,7 @@ export default async function LocaleLayout({
             __html: JSON.stringify({
               '@context': 'https://schema.org',
               '@type': 'Organization',
-              name: 'Starter App',
+              name: appConfig.name,
               url: BASE_URL,
               logo: `${BASE_URL}/icon-512.png`,
               sameAs: [],

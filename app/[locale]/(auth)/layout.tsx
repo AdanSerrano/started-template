@@ -1,6 +1,7 @@
 import { Zap, CreditCard, Smartphone } from 'lucide-react'
 import { Link } from '@/i18n/navigation'
 import { getTranslations } from 'next-intl/server'
+import { appConfig } from '@/lib/config'
 
 export default async function AuthLayout({
   children,
@@ -34,7 +35,7 @@ export default async function AuthLayout({
             <div className="flex size-10 items-center justify-center rounded-xl bg-white/15 backdrop-blur-xs">
               <Zap className="size-5 text-white" />
             </div>
-            <span className="text-xl font-bold">Starter App</span>
+            <span className="text-xl font-bold">{appConfig.name}</span>
           </Link>
         </div>
 
@@ -87,7 +88,7 @@ export default async function AuthLayout({
             <div className="bg-primary flex size-10 items-center justify-center rounded-xl">
               <Zap className="size-5 text-white" />
             </div>
-            <span className="text-xl font-bold">Starter App</span>
+            <span className="text-xl font-bold">{appConfig.name}</span>
           </Link>
 
           {children}
