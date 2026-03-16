@@ -41,6 +41,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# next-intl auto-generated type declarations
+messages/*.d.json.ts
+
 
 bun.lockb
 pnpm-lock.yaml
