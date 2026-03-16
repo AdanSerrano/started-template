@@ -8,6 +8,7 @@ import {
   DEFAULT_LOGIN_REDIRECT,
   DEFAULT_LOGOUT_REDIRECT,
 } from '@/routes'
+import { generateRequestId } from '@/lib/request-context'
 
 const intlMiddleware = createIntlMiddleware(routing)
 
@@ -52,9 +53,18 @@ function isAuthRoute(pathname: string): boolean {
 export default function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
+  // Inject request ID header for tracing across the request lifecycle
+  const requestId = generateRequestId()
+  const requestHeaders = new Headers(request.headers)
+  requestHeaders.set('x-request-id', requestId)
+
   // Skip API routes entirely — no locale processing
   if (pathname.startsWith('/api')) {
-    return NextResponse.next()
+    const response = NextResponse.next({
+      request: { headers: requestHeaders },
+    })
+    response.headers.set('x-request-id', requestId)
+    return response
   }
 
   // Server actions use POST with next-action header — never redirect them

@@ -146,7 +146,11 @@ starter-template/
 │   ├── audit-helpers.ts    # getRequestMetadata() — Next.js specific
 │   ├── db.ts               # Cliente Drizzle + tipos DbOrTx
 │   ├── rate-limit.ts       # Rate limiter in-memory
-│   └── env.ts              # Validacion de entorno (critical vs recommended)
+│   ├── api-response.ts     # Helpers estandar para API routes (apiSuccess, apiError)
+│   ├── pagination.ts       # Tipos, schemas Zod, y helpers de paginacion
+│   ├── sanitize.ts         # DOMPurify centralizado (sanitizeHtml, sanitizeText)
+│   ├── query-helpers.ts    # Helpers Drizzle (notDeleted para soft-delete)
+│   └── env.ts              # Validacion de entorno (critical vs recommended vs paired)
 ├── db/schema/              # Drizzle schemas + relaciones + indexes
 ├── emails/                 # Templates React Email (sin emojis/iconos decorativos)
 ├── messages/               # Traducciones (es.json, en.json, ca.json)

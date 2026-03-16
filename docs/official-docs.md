@@ -141,6 +141,17 @@
 
 ---
 
+## Utilidades
+
+| Paquete      | Version | Documentacion Oficial                 | Notas                                         |
+| ------------ | ------- | ------------------------------------- | --------------------------------------------- |
+| **nanoid**   | 5.x     | https://github.com/ai/nanoid#readme   | Generador de IDs unicos — alternativa a UUID  |
+| **clsx**     | 2.x     | https://github.com/lukeed/clsx#readme | Construccion condicional de class names       |
+| **entities** | 4.x     | https://github.com/fb55/entities      | Encode/decode HTML entities                   |
+| **ws**       | 8.x     | https://github.com/websockets/ws      | WebSocket client para Neon serverless en Node |
+
+---
+
 ## Testing
 
 | Paquete                   | Version | Documentacion Oficial                                        | Notas                                                      |

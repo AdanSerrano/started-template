@@ -29,6 +29,7 @@
     "generate:icons": "node scripts/generate-icons.mjs",
     "generate:module": "node scripts/generate-module.mjs",
     "db:reset": "drizzle-kit push --force && bun run db:seed",
+    "email:preview": "email dev --dir emails --port 3001",
     "prepare": "husky"
   },
   "lint-staged": {
