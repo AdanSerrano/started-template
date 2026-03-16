@@ -4,7 +4,7 @@ import { twoFactorClient } from 'better-auth/client/plugins'
 import { adminClient } from 'better-auth/client/plugins'
 import { inferAdditionalFields } from 'better-auth/client/plugins'
 import { magicLinkClient } from 'better-auth/client/plugins'
-import { ac, roles } from '@/modules/auth/permissions'
+import { ac, roles } from '@/lib/permissions'
 import type { auth } from '@/lib/auth'
 
 export const authClient = createAuthClient({

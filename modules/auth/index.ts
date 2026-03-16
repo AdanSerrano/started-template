@@ -34,4 +34,4 @@ export type {
 export type { AuthSession } from './types'
 
 // Permissions
-export { ac, roles } from './permissions'
+export { ac, roles } from '@/lib/permissions'

@@ -34,28 +34,17 @@ vi.mock('@/modules/auth/services/auth-security-service', () => ({
 }))
 
 import {
-  extractCredentialsFromRequest,
+  extractCredentials,
   checkAccountLockByEmail,
   checkAccountLockByUsername,
   handleFailedLogin,
 } from '@/modules/auth/services/auth-rate-limit'
 
-// ── Helpers ─────────────────────────────────────────────────
-
-function createMockRequest(body: Record<string, unknown>): Request {
-  return new Request('http://localhost/api/auth/sign-in', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  }) as unknown as Request
-}
-
 // ── Tests ───────────────────────────────────────────────────
 
-describe('extractCredentialsFromRequest', () => {
-  it('should extract and normalize email from request body', async () => {
-    const request = createMockRequest({ email: '  TEST@Example.COM  ' })
-    const result = await extractCredentialsFromRequest(request as never)
+describe('extractCredentials', () => {
+  it('should extract and normalize email from body', () => {
+    const result = extractCredentials({ email: '  TEST@Example.COM  ' })
 
     expect(result).toEqual({
       email: 'test@example.com',
@@ -63,9 +52,8 @@ describe('extractCredentialsFromRequest', () => {
     })
   })
 
-  it('should extract and normalize username from request body', async () => {
-    const request = createMockRequest({ username: ' MyUser ' })
-    const result = await extractCredentialsFromRequest(request as never)
+  it('should extract and normalize username from body', () => {
+    const result = extractCredentials({ username: ' MyUser ' })
 
     expect(result).toEqual({
       email: undefined,
@@ -73,12 +61,11 @@ describe('extractCredentialsFromRequest', () => {
     })
   })
 
-  it('should extract both email and username', async () => {
-    const request = createMockRequest({
+  it('should extract both email and username', () => {
+    const result = extractCredentials({
       email: 'User@Test.com',
       username: 'TestUser',
     })
-    const result = await extractCredentialsFromRequest(request as never)
 
     expect(result).toEqual({
       email: 'user@test.com',
@@ -86,14 +73,13 @@ describe('extractCredentialsFromRequest', () => {
     })
   })
 
-  it('should return null when body is not valid JSON', async () => {
-    const request = new Request('http://localhost/api/auth/sign-in', {
-      method: 'POST',
-      body: 'not-json',
-    })
-    const result = await extractCredentialsFromRequest(request as never)
+  it('should handle non-string values gracefully', () => {
+    const result = extractCredentials({ email: 123, username: null })
 
-    expect(result).toBeNull()
+    expect(result).toEqual({
+      email: undefined,
+      username: undefined,
+    })
   })
 })
 

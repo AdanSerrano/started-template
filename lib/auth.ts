@@ -14,7 +14,7 @@ import {
   twoFactors,
 } from '@/db/schema'
 import { eq } from 'drizzle-orm'
-import { ac, roles } from '@/modules/auth/permissions'
+import { ac, roles } from '@/lib/permissions'
 import { sendEmail } from '@/lib/email'
 import { VerificationEmail } from '@/emails/verification'
 import { ResetPasswordEmail } from '@/emails/reset-password'

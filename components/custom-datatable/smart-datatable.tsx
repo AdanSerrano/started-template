@@ -10,6 +10,7 @@ import {
   useState,
 } from 'react'
 import { useStore, type StoreApi } from 'zustand'
+import { useShallow } from 'zustand/react/shallow'
 import { useSearchParams } from 'next/navigation'
 import { usePathname } from '@/i18n/navigation'
 import { CustomDataTable } from './custom-datatable'
@@ -239,8 +240,11 @@ function SmartDataTableInner<TData>(
   // Sync store state → URL search params
   useSearchParamsSync(store, initialPageSize, syncEnabled)
 
-  // Subscribe to store state
-  const state = useStore(store)
+  // Subscribe to store state with shallow comparison to avoid unnecessary re-renders
+  const state = useStore(
+    store,
+    useShallow((s) => s),
+  )
 
   // Expose ref methods
   useImperativeHandle(

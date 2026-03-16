@@ -5,7 +5,6 @@
  * Este archivo solo maneja account locking por intentos fallidos via DB.
  */
 
-import { NextRequest } from 'next/server'
 import { getAuthSecurityService } from '@/modules/auth/services/auth-security-service'
 import { userRepository } from '@/modules/auth/repositories'
 
@@ -16,15 +15,24 @@ export type LockCheckResult = {
   minutesRemaining?: number
 }
 
-export async function extractCredentialsFromRequest(
-  request: NextRequest,
-): Promise<{ email?: string; username?: string } | null> {
+export type CredentialsInput = {
+  email?: string | undefined
+  username?: string | undefined
+}
+
+export function extractCredentials(
+  body: Record<string, unknown>,
+): CredentialsInput | null {
   try {
-    const clonedRequest = request.clone()
-    const body = await clonedRequest.json()
     return {
-      email: body?.email?.toLowerCase()?.trim(),
-      username: body?.username?.toLowerCase()?.trim(),
+      email:
+        typeof body?.email === 'string'
+          ? body.email.toLowerCase().trim()
+          : undefined,
+      username:
+        typeof body?.username === 'string'
+          ? body.username.toLowerCase().trim()
+          : undefined,
     }
   } catch {
     return null

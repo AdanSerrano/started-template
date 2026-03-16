@@ -1,7 +1,7 @@
 'use client'
 
 import { memo, useCallback, useRef, useMemo, useLayoutEffect } from 'react'
-import DOMPurify from 'dompurify'
+import { sanitizeHtml } from '@/lib/sanitize'
 import type { FieldPath, FieldValues } from 'react-hook-form'
 import {
   FormControl,
@@ -170,7 +170,7 @@ const RichTextEditor = memo(function RichTextEditor({
 
   useLayoutEffect(() => {
     if (editorRef.current && !isInitializedRef.current && value) {
-      editorRef.current.innerHTML = DOMPurify.sanitize(value)
+      editorRef.current.innerHTML = sanitizeHtml(value)
       isInitializedRef.current = true
     }
   }, [value])

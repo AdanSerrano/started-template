@@ -13,6 +13,7 @@ import {
 } from '@react-email/components'
 import type { ReactNode } from 'react'
 import { getEmailTranslations, type EmailLocale } from './i18n'
+import { appConfig } from '@/lib/config'
 import {
   body,
   accentBar,
@@ -69,7 +70,7 @@ export function EmailLayout({
 
         <Container style={container}>
           <Section style={headerSection}>
-            <Text style={logoName}>Starter App</Text>
+            <Text style={logoName}>{appConfig.name}</Text>
           </Section>
 
           <Section style={contentSection}>{children}</Section>
@@ -92,7 +93,7 @@ export function EmailLayout({
               </Column>
             </Row>
             <Text style={footerCopyright}>
-              &copy; {new Date().getFullYear()} Starter App.{' '}
+              &copy; {new Date().getFullYear()} {appConfig.name}.{' '}
               {t.layout.copyright}
             </Text>
             <Text style={footerAddress}>{t.layout.location}</Text>

@@ -1,6 +1,4 @@
 import { getServerSession } from '@/lib/auth-server'
-import { redirect } from 'next/navigation'
-import { DEFAULT_LOGOUT_REDIRECT } from '@/routes'
 import { UnauthorizedError, ForbiddenError } from '@/lib/errors'
 import { userRepository } from '@/modules/auth/repositories'
 import { getAuthSecurityService } from './auth-security-service'
@@ -42,20 +40,6 @@ export const authService = {
 
     if (!roles.includes(session.user.role)) {
       throw new ForbiddenError('Forbidden: insufficient permissions')
-    }
-
-    return session
-  },
-
-  /**
-   * Redirect to login if not authenticated.
-   * Use in Server Components that should redirect.
-   */
-  async requireAuthOrRedirect(): Promise<AuthSession> {
-    const session = await this.getSession()
-
-    if (!session) {
-      redirect(DEFAULT_LOGOUT_REDIRECT)
     }
 
     return session

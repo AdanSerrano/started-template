@@ -55,6 +55,20 @@ export function sanitizeText(dirty: string): string {
   })
 }
 
+const MARKDOWN_ALLOWED_TAGS = [...ALLOWED_TAGS, 'img', 'hr', 'br']
+
+const MARKDOWN_ALLOWED_ATTR = [...ALLOWED_ATTR, 'src', 'alt']
+
+/**
+ * Sanitiza HTML generado desde Markdown (permite img, hr, br adicionales).
+ */
+export function sanitizeMarkdownHtml(dirty: string): string {
+  return DOMPurify.sanitize(dirty, {
+    ALLOWED_TAGS: MARKDOWN_ALLOWED_TAGS,
+    ALLOWED_ATTR: MARKDOWN_ALLOWED_ATTR,
+  })
+}
+
 /**
  * Sanitiza para uso en atributos HTML (previene XSS en atributos).
  */

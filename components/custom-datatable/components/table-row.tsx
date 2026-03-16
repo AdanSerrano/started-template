@@ -1,11 +1,8 @@
 'use client'
 
 import { memo, useCallback, useRef, Fragment, useMemo } from 'react'
-import { ChevronRight, ChevronDown } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
 import { TableCell, TableRow } from '@/components/ui/table'
 
 import type {
@@ -14,7 +11,9 @@ import type {
   ExpansionConfig,
   StyleConfig,
 } from '../types'
-import { DENSITY_PADDING, DENSITY_HEIGHT, CLICK_DELAY_MS } from '../constants'
+import { DENSITY_HEIGHT, CLICK_DELAY_MS } from '../constants'
+
+import { SelectionCell, DataCell, ExpanderCell } from './table-row-cells'
 
 interface TableRowProps<TData> {
   row: TData
@@ -34,167 +33,6 @@ interface TableRowProps<TData> {
   onRowContextMenu?: ((row: TData, event: React.MouseEvent) => void) | undefined
   rowClassName?: string | undefined
 }
-
-// Memoized checkbox cell - no generics, safe to memo
-const SelectionCell = memo(function SelectionCell({
-  isSelected,
-  mode,
-  onToggle,
-  rowIndex,
-}: {
-  isSelected: boolean
-  mode: 'single' | 'multiple'
-  onToggle: () => void
-  rowIndex: number
-}) {
-  return (
-    <TableCell
-      className="bg-background sticky left-0 z-10 !px-2 !py-0"
-      style={{ width: 40, minWidth: 40, maxWidth: 40 }}
-    >
-      <div
-        className="flex items-center justify-center"
-        onClick={(e) => e.stopPropagation()}
-        data-stop-propagation="true"
-      >
-        {mode === 'multiple' ? (
-          <Checkbox
-            checked={isSelected}
-            onCheckedChange={onToggle}
-            aria-label={`Seleccionar fila ${rowIndex + 1}`}
-          />
-        ) : (
-          <div
-            className={cn(
-              'h-4 w-4 cursor-pointer rounded-full border-2 transition-colors',
-              isSelected
-                ? 'border-primary bg-primary'
-                : 'border-muted-foreground/50',
-            )}
-            onClick={onToggle}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault()
-                onToggle()
-              }
-            }}
-            role="radio"
-            aria-checked={isSelected}
-            aria-label={`Seleccionar fila ${rowIndex + 1}`}
-            tabIndex={0}
-          >
-            {isSelected && (
-              <div className="flex h-full w-full items-center justify-center">
-                <div className="bg-primary-foreground h-1.5 w-1.5 rounded-full" />
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-    </TableCell>
-  )
-})
-
-// Memoized data cell - cellFn executes INSIDE memo boundary
-// so React.memo can prevent re-renders when props are stable
-interface DataCellProps<TData> {
-  columnId: string
-  cellFn: (ctx: {
-    row: TData
-    rowIndex: number
-    isSelected: boolean
-    isExpanded: boolean
-  }) => React.ReactNode
-  row: TData
-  rowIndex: number
-  isSelected: boolean
-  isExpanded: boolean
-  density: 'compact' | 'default' | 'comfortable'
-  alignClass: string
-  pinnedClass: string
-  cellClassName?: string | undefined
-  cellStyle: React.CSSProperties
-}
-
-function DataCellInner<TData>({
-  cellFn,
-  row,
-  rowIndex,
-  isSelected,
-  isExpanded,
-  density,
-  alignClass,
-  pinnedClass,
-  cellClassName,
-  cellStyle,
-}: DataCellProps<TData>) {
-  return (
-    <TableCell
-      className={cn(
-        DENSITY_PADDING[density],
-        alignClass,
-        pinnedClass,
-        cellClassName,
-      )}
-      style={cellStyle}
-    >
-      {cellFn({ row, rowIndex, isSelected, isExpanded })}
-    </TableCell>
-  )
-}
-
-const DataCell = memo(DataCellInner) as typeof DataCellInner
-
-// Memoized expander cell - no generics, safe to memo
-const ExpanderCell = memo(function ExpanderCell({
-  isExpanded,
-  canExpand,
-  onToggle,
-  hasCheckbox,
-  rowIndex,
-}: {
-  isExpanded: boolean
-  canExpand: boolean
-  onToggle: () => void
-  hasCheckbox: boolean
-  rowIndex: number
-}) {
-  return (
-    <TableCell
-      className={cn(
-        'bg-background sticky z-10 !px-1 !py-0',
-        hasCheckbox ? 'left-10' : 'left-0',
-      )}
-      style={{ width: 36, minWidth: 36, maxWidth: 36 }}
-    >
-      {canExpand && (
-        <div className="flex items-center justify-center">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-6 w-6 p-0"
-            onClick={(e) => {
-              e.stopPropagation()
-              onToggle()
-            }}
-            aria-expanded={isExpanded}
-            aria-label={
-              isExpanded
-                ? `Contraer fila ${rowIndex + 1}`
-                : `Expandir fila ${rowIndex + 1}`
-            }
-          >
-            {isExpanded ? (
-              <ChevronDown className="h-4 w-4" aria-hidden="true" />
-            ) : (
-              <ChevronRight className="h-4 w-4" aria-hidden="true" />
-            )}
-          </Button>
-        </div>
-      )}
-    </TableCell>
-  )
-})
 
 function TableRowInner<TData>({
   row,
@@ -383,15 +221,13 @@ function TableRowInner<TData>({
   rowRef.current = row
 
   // Memoize expanded content - only re-render when isExpanded changes
-  // Uses rowRef to access current row data without triggering re-renders
   const expandedContent = useMemo(() => {
     if (!isExpanded || !expansion?.renderContent) return null
     return expansion.renderContent(rowRef.current)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isExpanded, expansion?.renderContent])
 
-  // Pre-compute cell STYLES only - these don't depend on row state
-  // This is stable across selection/expansion changes
+  // Pre-compute cell STYLES only - stable across selection/expansion changes
   const cellStyles = useMemo(() => {
     return columns.map((column) => {
       const cellStyle: React.CSSProperties = {}
@@ -424,11 +260,10 @@ function TableRowInner<TData>({
         pinnedClass,
         cellClassName: column.cellClassName,
         cellStyle,
-        // Store the cell function for lazy evaluation
         cellFn: column.cell,
       }
     })
-  }, [columns]) // Only recalculate when columns change
+  }, [columns])
 
   return (
     <Fragment>
@@ -497,13 +332,11 @@ function TableRowInner<TData>({
 }
 
 // Custom comparison for memo - KEY OPTIMIZATION
-// Only re-render when THIS ROW's state changes, not when any selection changes
 function arePropsEqual<TData>(
   prevProps: TableRowProps<TData>,
   nextProps: TableRowProps<TData>,
 ): boolean {
   // Fast path: check if THIS ROW's selection/expansion state changed
-  // This is the key optimization - we don't re-render if other rows change
   const prevSelected = !!prevProps.selectionState[prevProps.rowId]
   const nextSelected = !!nextProps.selectionState[nextProps.rowId]
   if (prevSelected !== nextSelected) return false

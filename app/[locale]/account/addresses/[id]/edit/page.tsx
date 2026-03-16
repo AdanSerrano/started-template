@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 import { requireAuth } from '@/lib/auth-server'
-import { addressRepository } from '@/modules/account/repositories/address-repository'
+import { getAddress } from '@/modules/account/services/account-service'
 import { AddressForm } from '@/modules/account/components/address-form.client'
 
 interface EditAddressPageProps {
@@ -15,7 +15,7 @@ export default async function EditAddressPage({
   const { id } = await params
   const [t, address] = await Promise.all([
     getTranslations('account.addresses'),
-    addressRepository.findById(id, session.user.id),
+    getAddress(id, session.user.id),
   ])
 
   if (!address) notFound()

@@ -26,7 +26,7 @@ import {
   Quote,
   Minus,
 } from 'lucide-react'
-import DOMPurify from 'dompurify'
+import { sanitizeMarkdownHtml } from '@/lib/sanitize'
 import { cn } from '@/lib/utils'
 import type { BaseFormFieldProps } from './form-field.types'
 
@@ -119,27 +119,7 @@ const MarkdownPreview = memo(function MarkdownPreview({
       .replace(/^\- (.*$)/gim, '<li>$1</li>')
       .replace(/^\d+\. (.*$)/gim, '<li>$1</li>')
       .replace(/\n/gim, '<br />')
-    return DOMPurify.sanitize(result, {
-      ALLOWED_TAGS: [
-        'h1',
-        'h2',
-        'h3',
-        'strong',
-        'em',
-        'code',
-        'blockquote',
-        'hr',
-        'a',
-        'img',
-        'li',
-        'ul',
-        'ol',
-        'br',
-        'p',
-      ],
-      ALLOWED_ATTR: ['href', 'target', 'rel', 'alt', 'src'],
-      ALLOW_DATA_ATTR: false,
-    })
+    return sanitizeMarkdownHtml(result)
   }, [content])
 
   return (

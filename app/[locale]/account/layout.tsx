@@ -4,6 +4,7 @@ import { Link } from '@/i18n/navigation'
 import { ThemeSwitcher } from '@/components/theme-switcher.client'
 import { LanguageSwitcher } from '@/components/language-switcher.client'
 import { Zap } from 'lucide-react'
+import { appConfig } from '@/lib/config'
 
 export default async function AccountLayout({
   children,
@@ -21,7 +22,7 @@ export default async function AccountLayout({
               <Zap className="size-5 text-white" />
             </div>
             <span className="text-lg font-bold tracking-tight">
-              Starter App
+              {appConfig.name}
             </span>
           </Link>
           <div className="flex items-center gap-3">

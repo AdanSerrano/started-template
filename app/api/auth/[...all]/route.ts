@@ -12,7 +12,7 @@ import { toNextJsHandler } from 'better-auth/next-js'
 import {
   checkAccountLockByEmail,
   checkAccountLockByUsername,
-  extractCredentialsFromRequest,
+  extractCredentials,
   handleFailedLogin,
 } from '@/modules/auth/services/auth-rate-limit'
 
@@ -31,7 +31,13 @@ async function handleLogin(
   }
 
   // Check account lock before attempting login
-  const creds = await extractCredentialsFromRequest(request)
+  let body: Record<string, unknown> = {}
+  try {
+    body = await request.clone().json()
+  } catch {
+    // If body parsing fails, continue without credentials
+  }
+  const creds = extractCredentials(body)
   let userId: string | null = null
 
   if (creds?.email || creds?.username) {
