@@ -278,6 +278,12 @@ import { db } from '../../lib/db' // PROHIBIDO
 
 ### Limite de lineas — 250 maximo por archivo
 
+**Excepciones aceptables:**
+
+- `components/ui/` — shadcn/ui se mantiene como viene del CLI
+- `messages/*.d.json.ts` — auto-generado por next-intl
+- Componentes complejos (datatable, forms avanzados) — dividir en sub-componentes si supera 400 lineas
+
 ### Emails — Sin iconos/emojis decorativos
 
 ```tsx

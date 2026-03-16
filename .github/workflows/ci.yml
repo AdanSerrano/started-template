@@ -26,7 +26,7 @@ jobs:
       - name: Lint
         run: bun run lint
 
-      - name: Test
+      - name: Unit Tests
         run: bun run test
 
       - name: Dead Code Check
@@ -42,3 +42,12 @@ jobs:
           BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
           NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+
+      - name: Bundle Size Check
+        run: |
+          echo "## Bundle Analysis" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          du -sh .next/static/chunks/*.js 2>/dev/null | sort -rh | head -20 >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          TOTAL=$(du -sh .next/static/ 2>/dev/null | cut -f1)
+          echo "**Total static size:** $TOTAL" >> $GITHUB_STEP_SUMMARY
