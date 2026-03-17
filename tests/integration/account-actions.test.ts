@@ -22,14 +22,12 @@ vi.mock('@/lib/db', () => ({
 
 // Mock rate limit — always allow
 vi.mock('@/lib/rate-limit', () => ({
-  checkRateLimit: vi
-    .fn()
-    .mockReturnValue({
-      success: true,
-      remaining: 19,
-      reset: Date.now() + 300000,
-      limit: 20,
-    }),
+  checkRateLimit: vi.fn().mockReturnValue({
+    success: true,
+    remaining: 19,
+    reset: Date.now() + 300000,
+    limit: 20,
+  }),
 }))
 
 // Mock auth
