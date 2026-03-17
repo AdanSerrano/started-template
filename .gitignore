@@ -44,10 +44,9 @@ next-env.d.ts
 # next-intl auto-generated type declarations
 messages/*.d.json.ts
 
-# locks
+# locks (keep bun.lock for deterministic CI builds)
 bun.lockb
 pnpm-lock.yaml
-bun.lock
 
 # serwist (PWA service worker build output)
 public/sw.js

@@ -46,6 +46,10 @@ jobs:
       - name: Dead Code Check
         run: bun run knip
 
+      - name: Security Audit
+        run: bun audit --production
+        continue-on-error: true
+
       - name: Build
         run: bun run build
         env:
