@@ -5,10 +5,26 @@ interface CacheEntry<T = unknown> {
   expiresAt: number | null
 }
 
+/** Max entries before evicting oldest keys. */
+const MAX_SIZE = 10_000
+
 /** Implementacion de ICache usando Map en memoria con TTL. */
 export class MemoryCacheService implements ICache {
   private store = new Map<string, CacheEntry>()
   private hashes = new Map<string, Map<string, unknown>>()
+
+  /** Evict oldest entries when store exceeds MAX_SIZE. */
+  private evictIfNeeded(): void {
+    if (this.store.size <= MAX_SIZE) return
+    const keysToDelete = this.store.size - MAX_SIZE
+    let deleted = 0
+    for (const key of this.store.keys()) {
+      if (deleted >= keysToDelete) break
+      this.store.delete(key)
+      this.hashes.delete(key)
+      deleted++
+    }
+  }
 
   private isExpired(entry: CacheEntry): boolean {
     return entry.expiresAt !== null && Date.now() > entry.expiresAt
@@ -26,6 +42,7 @@ export class MemoryCacheService implements ICache {
   async set<T>(key: string, value: T, ttlSeconds?: number): Promise<void> {
     const expiresAt = ttlSeconds ? Date.now() + ttlSeconds * 1000 : null
     this.store.set(key, { value, expiresAt })
+    this.evictIfNeeded()
   }
 
   async delete(key: string): Promise<void> {
