@@ -253,7 +253,14 @@
     "cityRequired": "Ciutat requerida",
     "postalCodeRequired": "Codi postal requerit",
     "currentPasswordRequired": "Contrasenya actual requerida",
-    "confirmPasswordRequired": "Confirma la teva contrasenya"
+    "confirmPasswordRequired": "Confirma la teva contrasenya",
+    "invalid": "Dades invalides",
+    "fileRequired": "Fitxer requerit",
+    "fileTypeNotAllowed": "Tipus de fitxer no permes",
+    "fileTooLarge": "El fitxer supera la mida maxima",
+    "addressIdRequired": "ID d'adreca requerit",
+    "deleteConfirmationRequired": "Has d'escriure DELETE per confirmar",
+    "tooManyRequests": "Massa sol·licituds. Torna-ho a intentar en uns minuts."
   },
   "errors": {
     "notFoundTitle": "Pagina no trobada",

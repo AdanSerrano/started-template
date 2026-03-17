@@ -1,5 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
+// Mock db with transaction support
+vi.mock('@/lib/db', () => ({
+  db: {
+    transaction: vi.fn(async (fn: (tx: unknown) => Promise<unknown>) => fn({})),
+  },
+}))
+
 vi.mock('@/modules/account/repositories/address-repository', () => ({
   addressRepository: {
     findByUserId: vi.fn(),
@@ -61,7 +68,12 @@ describe('AccountService', () => {
       } as never)
 
       expect(addressRepository.create).toHaveBeenCalled()
-      expect(addressRepository.setDefault).toHaveBeenCalledWith('a1', 'u1')
+      // With transaction, tx is passed as third arg
+      expect(addressRepository.setDefault).toHaveBeenCalledWith(
+        'a1',
+        'u1',
+        expect.anything(),
+      )
     })
 
     it('should not set default when isDefault is false', async () => {

@@ -83,19 +83,24 @@ export const addressRepository: IAddressRepository = {
   },
 
   async setDefault(id: string, userId: string, tx?: DbOrTx) {
-    const client = tx ?? db
-    // Unset all defaults for user
-    await client
-      .update(addresses)
-      .set({ isDefault: false, updatedAt: new Date() })
-      .where(eq(addresses.userId, userId))
-    // Set the selected one as default
-    const [address] = await client
-      .update(addresses)
-      .set({ isDefault: true, updatedAt: new Date() })
-      .where(and(eq(addresses.id, id), eq(addresses.userId, userId)))
-      .returning()
-    return address ?? null
+    const run = async (client: DbOrTx) => {
+      // Unset all defaults for user
+      await client
+        .update(addresses)
+        .set({ isDefault: false, updatedAt: new Date() })
+        .where(eq(addresses.userId, userId))
+      // Set the selected one as default
+      const [address] = await client
+        .update(addresses)
+        .set({ isDefault: true, updatedAt: new Date() })
+        .where(and(eq(addresses.id, id), eq(addresses.userId, userId)))
+        .returning()
+      return address ?? null
+    }
+
+    // If already inside a transaction, reuse it; otherwise wrap in one
+    if (tx) return run(tx)
+    return db.transaction(async (newTx) => run(newTx))
   },
 
   async countByUserId(userId: string) {

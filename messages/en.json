@@ -253,7 +253,14 @@
     "cityRequired": "City required",
     "postalCodeRequired": "Postal code required",
     "currentPasswordRequired": "Current password required",
-    "confirmPasswordRequired": "Confirm your password"
+    "confirmPasswordRequired": "Confirm your password",
+    "invalid": "Invalid data",
+    "fileRequired": "File is required",
+    "fileTypeNotAllowed": "File type not allowed",
+    "fileTooLarge": "File exceeds maximum size",
+    "addressIdRequired": "Address ID required",
+    "deleteConfirmationRequired": "You must type DELETE to confirm",
+    "tooManyRequests": "Too many requests. Please try again in a few minutes."
   },
   "errors": {
     "notFoundTitle": "Page not found",

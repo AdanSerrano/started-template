@@ -26,6 +26,18 @@ vi.mock('@/lib/auth-server', () => ({
   requireAuth: vi.fn().mockResolvedValue(mockSession),
 }))
 
+// Mock rate limit — always allow
+vi.mock('@/lib/rate-limit', () => ({
+  checkRateLimit: vi
+    .fn()
+    .mockReturnValue({
+      success: true,
+      remaining: 2,
+      reset: Date.now() + 3600000,
+      limit: 3,
+    }),
+}))
+
 // Mock audit
 vi.mock('@/lib/audit', () => ({
   createAuditLog: vi.fn().mockResolvedValue(undefined),
@@ -176,7 +188,7 @@ describe('GDPR Actions', () => {
       const result = await deleteMyAccountAction('delete')
 
       expect(result.success).toBe(false)
-      expect(result.error).toBe('Debes escribir DELETE para confirmar')
+      expect(result.error).toBe('validation.deleteConfirmationRequired')
     })
 
     it('should not call gdprService when confirmation is wrong', async () => {
@@ -206,7 +218,7 @@ describe('GDPR Actions', () => {
       const result = await deleteMyAccountAction('')
 
       expect(result.success).toBe(false)
-      expect(result.error).toBe('Debes escribir DELETE para confirmar')
+      expect(result.error).toBe('validation.deleteConfirmationRequired')
     })
 
     it('should create audit log with critical severity before deleting', async () => {

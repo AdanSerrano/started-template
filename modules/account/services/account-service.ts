@@ -1,3 +1,4 @@
+import { db } from '@/lib/db'
 import { profileRepository } from '../repositories/profile-repository'
 import { addressRepository } from '../repositories/address-repository'
 import type { ProfileUpdateData, AddressInsert } from '../types'
@@ -21,11 +22,16 @@ export async function getAddress(id: string, userId: string) {
 }
 
 export async function createAddress(data: AddressInsert) {
-  const address = await addressRepository.create(data)
-  if (data.isDefault && address) {
-    await addressRepository.setDefault(address.id, data.userId)
+  if (data.isDefault) {
+    return db.transaction(async (tx) => {
+      const address = await addressRepository.create(data, tx)
+      if (address) {
+        await addressRepository.setDefault(address.id, data.userId, tx)
+      }
+      return address
+    })
   }
-  return address
+  return addressRepository.create(data)
 }
 
 export async function updateAddress(

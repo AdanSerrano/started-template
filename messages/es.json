@@ -253,7 +253,14 @@
     "cityRequired": "Ciudad requerida",
     "postalCodeRequired": "Codigo postal requerido",
     "currentPasswordRequired": "Contrasena actual requerida",
-    "confirmPasswordRequired": "Confirma tu contrasena"
+    "confirmPasswordRequired": "Confirma tu contrasena",
+    "invalid": "Datos invalidos",
+    "fileRequired": "Archivo requerido",
+    "fileTypeNotAllowed": "Tipo de archivo no permitido",
+    "fileTooLarge": "El archivo excede el tamano maximo",
+    "addressIdRequired": "ID de direccion requerido",
+    "deleteConfirmationRequired": "Debes escribir DELETE para confirmar",
+    "tooManyRequests": "Demasiadas solicitudes. Intenta de nuevo en unos minutos."
   },
   "errors": {
     "notFoundTitle": "Pagina no encontrada",

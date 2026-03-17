@@ -20,6 +20,18 @@ vi.mock('@/lib/db', () => ({
   db: {},
 }))
 
+// Mock rate limit — always allow
+vi.mock('@/lib/rate-limit', () => ({
+  checkRateLimit: vi
+    .fn()
+    .mockReturnValue({
+      success: true,
+      remaining: 19,
+      reset: Date.now() + 300000,
+      limit: 20,
+    }),
+}))
+
 // Mock auth
 vi.mock('@/lib/auth-server', () => ({
   requireAuth: vi.fn().mockResolvedValue({
@@ -74,7 +86,7 @@ describe('Account Actions - Integration', () => {
 
     const result = await createAddressAction({}) // Invalid data
     expect(result.success).toBe(false)
-    expect(result.error).toBe('Datos invalidos')
+    expect(result.error).toBe('validation.invalid')
     expect(result.fieldErrors).toBeDefined()
   })
 

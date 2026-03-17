@@ -315,6 +315,52 @@ No requiere autenticacion. El proxy de Next.js ya permite todas las rutas `/api`
 
 ---
 
+## Proxy (Middleware) — `proxy.ts`
+
+En **Next.js 16**, el middleware se renombro de `middleware.ts` a **`proxy.ts`**. Este archivo intercepta TODAS las requests antes de llegar a las paginas.
+
+### Orden de evaluacion
+
+```
+Request entrante
+  │
+  ├─ /api/* → Skip i18n, inyectar x-request-id, pasar directo
+  │
+  ├─ Ruta publica (landing, legal, etc.) → Pasar a next-intl
+  │
+  ├─ Ruta de auth (login, register, etc.)
+  │   ├─ Con session cookie → Redirect a dashboard
+  │   └─ Sin session → Pasar a next-intl
+  │
+  └─ Ruta protegida (account, dashboard, etc.)
+      ├─ Con session cookie → Pasar a next-intl
+      └─ Sin session → Redirect a login
+```
+
+### Responsabilidades
+
+1. **Request ID** — Inyecta `x-request-id` en headers para tracing (todas las requests)
+2. **i18n** — Procesa rutas con `next-intl/middleware` (ES/EN/CA)
+3. **Auth guards** — Redirige rutas protegidas a login si no hay session cookie
+4. **Auth redirect** — Redirige rutas de auth a dashboard si ya autenticado
+5. **Server actions** — Nunca redirige requests con header `next-action` (POST de Server Actions)
+
+### Configuracion de rutas
+
+Las rutas publicas y protegidas se configuran en **`routes.ts`**, NO en `proxy.ts`:
+
+```typescript
+// routes.ts
+export const publicRoutes = ['/', '/legal/terms', '/legal/privacy', ...]
+export const authRoutes = ['/login', '/register', '/forgot-password', ...]
+export const DEFAULT_LOGIN_REDIRECT = '/account'
+export const DEFAULT_LOGOUT_REDIRECT = '/login'
+```
+
+> **Para agregar rutas nuevas:** Modificar `routes.ts`. El proxy las reconoce automaticamente.
+
+---
+
 ## Instrumentacion — `instrumentation.ts`
 
 Hook de Next.js 16 que se ejecuta una vez al iniciar el servidor.

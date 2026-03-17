@@ -155,10 +155,34 @@ starter-template/
 ├── emails/                 # Templates React Email (sin emojis/iconos decorativos)
 ├── messages/               # Traducciones (es.json, en.json, ca.json)
 ├── tests/                  # Vitest setup + tests unitarios
+├── proxy.ts                # Middleware Next.js 16 (antes middleware.ts) — i18n, auth, request ID
+├── routes.ts               # Configuracion de rutas auth/public/protected
 ├── instrumentation.ts      # Next.js 16 — OpenTelemetry + error monitoring hook
 ├── .github/workflows/      # CI: type-check + lint + build
 └── docs/                   # DOCUMENTACION COMPLETA DEL SISTEMA
 ```
+
+### Middleware — `proxy.ts` (cambio de Next.js 16)
+
+En **Next.js 16**, el middleware se renombro de `middleware.ts` a **`proxy.ts`**. Este es el nombre oficial en Next.js 16 — no es un nombre custom. Si ves documentacion antigua que referencia `middleware.ts`, en este proyecto el equivalente es `proxy.ts`.
+
+Responsabilidades:
+
+1. **Request ID** — Inyecta `x-request-id` en headers para tracing
+2. **i18n** — Procesa rutas con `next-intl/middleware` (ES/EN/CA)
+3. **Auth guards** — Redirige rutas protegidas a login si no hay session cookie
+4. **Auth redirect** — Redirige rutas de auth (login/register) a dashboard si ya autenticado
+5. **API bypass** — Rutas `/api/*` no pasan por i18n
+
+```ts
+// proxy.ts — Orden de evaluacion:
+// 1. API routes → skip i18n, inject request ID
+// 2. Public routes → allow always
+// 3. Auth routes → redirect to dashboard if authenticated
+// 4. Protected routes → redirect to login if no session
+```
+
+> **IMPORTANTE:** Al agregar nuevas rutas publicas o protegidas, modificar `routes.ts`, NO `proxy.ts`.
 
 **Estructura de modulos:** `docs/architecture.md`
 
