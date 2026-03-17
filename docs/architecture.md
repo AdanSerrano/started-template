@@ -67,7 +67,10 @@ starter-app/
 
 ```
 modules/[nombre-modulo]/
-├── actions/                    # Server Actions — uno por accion
+├── actions/                    # Server Actions — dividir por dominio
+│   ├── account-actions.ts      #   CRUD principal (profile, addresses)
+│   ├── avatar-actions.ts       #   Upload de imagenes (rate limit estricto)
+│   └── gdpr-actions.ts         #   Operaciones GDPR (rate limit estricto)
 ├── services/                   # Logica de negocio PURA
 ├── repositories/               # Acceso a datos — SOLO Drizzle
 ├── components/                 # UI especifica del modulo
@@ -97,6 +100,52 @@ app/pages → modules/actions + modules/components
 ```
 
 **NUNCA:** repository importa service, service importa action, modulo importa de capas internas de otro modulo.
+
+### Dividir actions por dominio
+
+Si un archivo de actions supera **250 lineas**, dividir por dominio funcional:
+
+```
+actions/
+├── account-actions.ts    # Profile + address CRUD (< 250 lineas)
+├── avatar-actions.ts     # Upload con rate limit estricto (< 100 lineas)
+└── gdpr-actions.ts       # Export/delete con rate limit estricto (< 100 lineas)
+```
+
+**Regla:** Cada archivo de actions exporta su propio `ActionResult` o importa del archivo principal.
+
+### Rate limiting en Server Actions — OBLIGATORIO en writes
+
+Toda action que mute datos DEBE tener rate limiting por `userId`:
+
+```typescript
+import { checkRateLimit } from '@/lib/rate-limit'
+
+// Definir constantes al nivel del archivo
+const WRITE_RATE_LIMIT = { maxAttempts: 20, windowMs: 5 * 60 * 1000 } // 20/5min
+const UPLOAD_RATE_LIMIT = { maxAttempts: 5, windowMs: 5 * 60 * 1000 } // 5/5min
+const GDPR_RATE_LIMIT = { maxAttempts: 3, windowMs: 60 * 60 * 1000 } // 3/hora
+
+// Verificar ANTES de cualquier operacion
+export async function myWriteAction(data: unknown): Promise<ActionResult> {
+  const session = await requireAuth()
+  const rl = checkRateLimit(
+    `mymodule:write:${session.user.id}`,
+    WRITE_RATE_LIMIT,
+  )
+  if (!rl.success) {
+    return { success: false, error: 'validation.tooManyRequests' }
+  }
+  // ... resto de la action
+}
+```
+
+| Tipo de operacion     | Limite recomendado | Ejemplo                       |
+| --------------------- | ------------------ | ----------------------------- |
+| Writes generales      | 20 req / 5 min     | Profile update, address CRUD  |
+| File uploads          | 5 req / 5 min      | Avatar, documentos            |
+| Operaciones GDPR      | 3 req / hora       | Data export, account deletion |
+| Operaciones sensibles | 5 req / 15 min     | Password change, 2FA toggle   |
 
 ---
 

@@ -136,6 +136,8 @@ it('action valida input con Zod', async () => {
 
 ### 3. Component test — React Testing Library
 
+#### 3a. Form fields simples (sin dependencias externas)
+
 Renderizar con FormProvider, interactuar, verificar.
 
 ```tsx
@@ -159,6 +161,66 @@ it('muestra label y acepta input', async () => {
   expect(screen.getByRole('textbox')).toHaveValue('Test')
 })
 ```
+
+#### 3b. Componentes con next-intl, auth-client, navigation — Mocks OBLIGATORIOS
+
+Los componentes client que usan `useTranslations`, `authClient`, o `useRouter` de i18n necesitan mocks.
+
+> **IMPORTANTE:** `vi.mock()` se hoistea al top del archivo. NO usar variables externas en la factory — usar `vi.fn()` directamente.
+
+```tsx
+// CORRECTO — mock inline sin variables externas
+vi.mock('next-intl', () => ({
+  useTranslations: () => (key: string) => key, // Retorna el key como traduccion
+}))
+
+vi.mock('@/i18n/navigation', () => ({
+  Link: ({ href, children }: { href: string; children: React.ReactNode }) => (
+    <a href={href}>{children}</a>
+  ),
+  useRouter: () => ({
+    push: vi.fn(),
+    replace: vi.fn(),
+    refresh: vi.fn(),
+  }),
+}))
+
+vi.mock('next/navigation', () => ({
+  useSearchParams: () => ({ get: () => null }),
+}))
+
+vi.mock('@/lib/auth-client', () => ({
+  authClient: {
+    signIn: {
+      email: vi.fn().mockResolvedValue({ data: {}, error: null }),
+      username: vi.fn().mockResolvedValue({ data: {}, error: null }),
+    },
+  },
+}))
+
+vi.mock('@/routes', () => ({
+  DEFAULT_LOGIN_REDIRECT: '/account',
+  DEFAULT_LOGOUT_REDIRECT: '/login',
+}))
+
+// PROHIBIDO — ReferenceError por hoisting de vi.mock
+const mockFn = vi.fn()
+vi.mock('@/lib/auth-client', () => ({
+  authClient: { signIn: { email: mockFn } }, // ✗ mockFn no existe aun
+}))
+```
+
+**Mocks por dependencia:**
+
+| Dependencia                             | Mock necesario                                 | Cuando                         |
+| --------------------------------------- | ---------------------------------------------- | ------------------------------ |
+| `next-intl`                             | `useTranslations: () => (key) => key`          | Componentes con traducciones   |
+| `@/i18n/navigation`                     | `Link` como `<a>`, `useRouter` mock            | Componentes con Link o router  |
+| `next/navigation`                       | `useSearchParams: () => ({ get: () => null })` | Componentes con search params  |
+| `@/lib/auth-client`                     | `authClient` con metodos mock                  | Forms de auth                  |
+| `@/routes`                              | Constantes de rutas                            | Componentes con redirects      |
+| `sonner`                                | `toast: { success: vi.fn(), error: vi.fn() }`  | Componentes con notificaciones |
+| `@/components/password-strength.client` | `PasswordStrengthField: () => null`            | Forms con campo de password    |
 
 ### 4. E2E test — Playwright
 

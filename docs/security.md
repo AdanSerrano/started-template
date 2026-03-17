@@ -97,27 +97,59 @@ base-uri 'self';
 
 ## Rate limiting
 
-### In-memory (desarrollo)
+### En Server Actions — OBLIGATORIO en writes
+
+Toda action que mute datos usa `checkRateLimit()` de `lib/rate-limit.ts`:
 
 ```ts
-import { getRateLimitService } from '@/lib/providers'
+import { checkRateLimit } from '@/lib/rate-limit'
 
-const result = await getRateLimitService().check('login:192.168.1.1', {
-  limit: 5,
-  windowSeconds: 300,
-})
+const WRITE_RATE_LIMIT = { maxAttempts: 20, windowMs: 5 * 60 * 1000 }
+
+export async function myAction(data: unknown): Promise<ActionResult> {
+  const session = await requireAuth()
+  const rl = checkRateLimit(
+    `mymodule:write:${session.user.id}`,
+    WRITE_RATE_LIMIT,
+  )
+  if (!rl.success) {
+    return { success: false, error: 'validation.tooManyRequests' }
+  }
+  // ... resto de la action
+}
 ```
 
-### Distribuido (produccion)
+### Limites configurados en el proyecto
 
-Configurar Upstash Redis:
+| Scope                               | Limite                     | Ventana | Archivo              |
+| ----------------------------------- | -------------------------- | ------- | -------------------- |
+| Writes generales (profile, address) | 20 req                     | 5 min   | `account-actions.ts` |
+| File uploads (avatar)               | 5 req                      | 5 min   | `avatar-actions.ts`  |
+| Operaciones GDPR (export, delete)   | 3 req                      | 1 hora  | `gdpr-actions.ts`    |
+| Login/register                      | Configurado en Better Auth | —       | `auth-server.ts`     |
+
+### `checkRateLimit()` — API
+
+```ts
+import { checkRateLimit } from '@/lib/rate-limit'
+
+const result = checkRateLimit(key: string, config: { maxAttempts: number, windowMs: number })
+// result.success: boolean — si se permite el request
+// result.remaining: number — intentos restantes
+// result.reset: number — timestamp de reset de la ventana
+// result.limit: number — limite configurado
+```
+
+### In-memory vs Distribuido
+
+**In-memory (default):** `lib/rate-limit.ts` usa un Map con sliding window. Valido para single-instance.
+
+**Distribuido (produccion multi-instancia):** Usar Upstash Redis:
 
 ```env
 UPSTASH_REDIS_REST_URL=https://xxx.upstash.io
 UPSTASH_REDIS_REST_TOKEN=xxx
 ```
-
-Cambiar provider:
 
 ```ts
 import { UpstashRateLimitService } from '@/lib/adapters'

@@ -134,6 +134,13 @@ starter-template/
 ├── modules/                # Domain — modulos con arquitectura limpia
 │   ├── auth/               # Login, registro, OAuth, magic links, 2FA
 │   └── account/            # Perfil, direcciones del usuario
+│       ├── actions/
+│       │   ├── account-actions.ts   # Profile + address CRUD
+│       │   ├── avatar-actions.ts    # Upload avatar (rate limit: 5/5min)
+│       │   └── gdpr-actions.ts      # Data export/deletion (rate limit: 3/hora)
+│       ├── services/
+│       ├── repositories/
+│       └── components/
 ├── components/
 │   ├── ui/                 # shadcn/ui
 │   └── forms/              # 40+ campos de formulario reutilizables
