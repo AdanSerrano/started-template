@@ -14,6 +14,12 @@
 
 ---
 
+## Auth Plugins — `lib/auth-plugins.ts`
+
+La configuracion de plugins de Better Auth vive en `lib/auth-plugins.ts` y es importada por `lib/auth.ts`. Para agregar o modificar plugins (username, twoFactor, admin, magicLink, etc.), editar `auth-plugins.ts`.
+
+---
+
 ## Optimizaciones de Rendimiento
 
 ### 1. Cookie Cache — Evita llamadas a DB

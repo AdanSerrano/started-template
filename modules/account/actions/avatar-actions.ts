@@ -3,6 +3,7 @@
 import { createAuditLog } from '@/lib/audit'
 import { getRequestMetadata } from '@/lib/audit-helpers'
 import { requireAuth } from '@/lib/auth-server'
+import { TooManyRequestsError, ValidationError } from '@/lib/errors'
 import type { RateLimitConfig } from '@/lib/interfaces'
 import { checkRateLimit } from '@/lib/rate-limit'
 import type { ActionResult } from '@/lib/safe-action'
@@ -10,6 +11,20 @@ import * as accountService from '../services/account-service'
 
 // Rate limit: 5 upload operations per user per 5 minutes
 const UPLOAD_RATE_LIMIT: RateLimitConfig = { limit: 5, windowSeconds: 300 }
+
+const ALLOWED_MIME_TYPES = [
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+  'image/gif',
+]
+const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
+const MIME_TO_EXT: Record<string, string> = {
+  'image/jpeg': 'jpg',
+  'image/png': 'png',
+  'image/webp': 'webp',
+  'image/gif': 'gif',
+}
 
 export async function uploadAvatarAction(
   formData: FormData,
@@ -20,35 +35,19 @@ export async function uploadAvatarAction(
     UPLOAD_RATE_LIMIT,
   )
   if (!rl.success) {
-    return { success: false, error: 'validation.tooManyRequests' }
+    throw new TooManyRequestsError('validation.tooManyRequests')
   }
   const metadata = await getRequestMetadata()
 
   const file = formData.get('file') as File | null
   if (!file) {
-    return { success: false, error: 'validation.fileRequired' }
+    throw new ValidationError('validation.fileRequired')
   }
-
-  const ALLOWED_MIME_TYPES = [
-    'image/jpeg',
-    'image/png',
-    'image/webp',
-    'image/gif',
-  ]
-  const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
-  const MIME_TO_EXT: Record<string, string> = {
-    'image/jpeg': 'jpg',
-    'image/png': 'png',
-    'image/webp': 'webp',
-    'image/gif': 'gif',
-  }
-
   if (!ALLOWED_MIME_TYPES.includes(file.type)) {
-    return { success: false, error: 'validation.fileTypeNotAllowed' }
+    throw new ValidationError('validation.fileTypeNotAllowed')
   }
-
   if (file.size > MAX_FILE_SIZE) {
-    return { success: false, error: 'validation.fileTooLarge' }
+    throw new ValidationError('validation.fileTooLarge')
   }
 
   const { getStorageService } = await import('@/lib/providers')

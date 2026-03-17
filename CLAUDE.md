@@ -161,17 +161,20 @@ z.string().refine(fn, { error: 'Required' }) // CORRECTO (Zod 4)
 
 ### Utilidades disponibles — NO reimplementar
 
-| Util                                                    | Import                                   |
-| ------------------------------------------------------- | ---------------------------------------- |
-| `cn()`, `formatCurrency()`, `formatDate()`, `slugify()` | `@/lib/utils`                            |
-| `apiSuccess()`, `apiError()`, `apiNotFound()`           | `@/lib/api-response`                     |
-| `paginationSchema`, `createPaginatedResult()`           | `@/lib/pagination`                       |
-| `corsHeaders()`, `handleCorsPreflight()`                | `@/lib/cors`                             |
-| `getRequestId()`                                        | `@/lib/request-context`                  |
-| `getTranslatedField()`, `createI18nField()`             | `@/lib/i18n-helpers`                     |
-| `sanitizeHtml()`, `sanitizeText()`                      | `@/lib/sanitize`                         |
-| `validateFile()`                                        | `@/lib/upload-validation`                |
-| `ac` (access control), `requireRole()`                  | `@/lib/permissions`, `@/lib/auth-server` |
+| Util                                                                                   | Import                                   |
+| -------------------------------------------------------------------------------------- | ---------------------------------------- |
+| `cn()`, `formatCurrency()`, `formatDate()`, `slugify()`                                | `@/lib/utils`                            |
+| `apiSuccess()`, `apiError()`, `apiNotFound()`                                          | `@/lib/api-response`                     |
+| `paginationSchema`, `createPaginatedResult()`                                          | `@/lib/pagination`                       |
+| `corsHeaders()`, `handleCorsPreflight()`                                               | `@/lib/cors`                             |
+| `getRequestId()`                                                                       | `@/lib/request-context`                  |
+| `getTranslatedField()`, `createI18nField()`                                            | `@/lib/i18n-helpers`                     |
+| `sanitizeHtml()`, `sanitizeText()`                                                     | `@/lib/sanitize`                         |
+| `validateFile()`                                                                       | `@/lib/upload-validation`                |
+| `ac` (access control), `requireRole()`                                                 | `@/lib/permissions`, `@/lib/auth-server` |
+| `createSafeAction()`, `ActionResult<T>`                                                | `@/lib/safe-action`                      |
+| `notDeleted()`, `byId()`, `activeById()`, `withLimit()`, `withOffset()`, `countRows()` | `@/lib/query-helpers`                    |
+| `generateRequestId()`, `getRequestId()`, `withRequestContext()`                        | `@/lib/request-context`                  |
 
 ### Auth (`docs/auth.md`) — Quick ref
 
@@ -261,6 +264,13 @@ Automatico en cada commit: `prettier --write` + `eslint --fix --cache`. NUNCA us
 | `bun run knip`                                                                          | Codigo muerto         |
 | `bun run db:generate` / `db:push` / `db:migrate` / `db:studio` / `db:seed` / `db:reset` | DB ops                |
 | `bun run email:preview`                                                                 | Preview emails (3001) |
+| `bun run start`                                                                         | Iniciar produccion    |
+| `bun run test:watch`                                                                    | Tests en modo watch   |
+| `bun run test:unit` / `test:integration` / `test:components`                            | Tests por tipo        |
+| `bun run test:coverage`                                                                 | Tests con cobertura   |
+| `bun run test:ui`                                                                       | UI de Vitest          |
+| `bun run test:all`                                                                      | Unit + E2E            |
+| `bun run lint:fix`                                                                      | ESLint con auto-fix   |
 | `bun run generate:module` / `generate:icons`                                            | Generadores           |
 
 ---

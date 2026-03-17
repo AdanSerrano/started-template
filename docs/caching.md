@@ -40,9 +40,9 @@ interface ICache {
 ## Uso desde Services
 
 ```ts
-import { getCache } from '@/lib/providers'
+import { getCacheService } from '@/lib/providers'
 
-const cache = getCache()
+const cache = getCacheService()
 
 // Basico: get/set con TTL
 const user = await cache.get<User>(`user:${userId}`)
@@ -105,7 +105,7 @@ await cache.delete(`user:${userId}`)
 // En el service, despues de mutar
 async updateProfile(userId: string, data: ProfileData) {
   const result = await profileRepo.update(userId, data)
-  await getCache().delete(`user:${userId}`)  // Invalidar cache
+  await getCacheService().delete(`user:${userId}`)  // Invalidar cache
   return result
 }
 ```
@@ -114,12 +114,12 @@ async updateProfile(userId: string, data: ProfileData) {
 
 ```ts
 async getProfile(userId: string) {
-  const cached = await getCache().get<Profile>(`user:${userId}`)
+  const cached = await getCacheService().get<Profile>(`user:${userId}`)
   if (cached) return cached
 
   const profile = await profileRepo.findById(userId)
   if (profile) {
-    await getCache().set(`user:${userId}`, profile, 300)
+    await getCacheService().set(`user:${userId}`, profile, 300)
   }
   return profile
 }
@@ -141,7 +141,7 @@ async getProfile(userId: string) {
 
 ## Reglas
 
-- **NUNCA importar Redis/Upstash directamente** — usar `getCache()` via provider
+- **NUNCA importar Redis/Upstash directamente** — usar `getCacheService()` via provider
 - **Siempre definir TTL** — cache sin TTL es memory leak potencial
 - **Invalidar al mutar** — si cambias un dato, borra su cache
 - **No cachear datos sensibles sin encriptar** — passwords, tokens, PII
