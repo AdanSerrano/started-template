@@ -12,5 +12,9 @@ export async function uploadAvatar(
 
   if (!result.success || !result.data) return null
 
-  return (result.data as { url: string }).url
+  const data = result.data
+  if (typeof data === 'object' && data !== null && 'url' in data) {
+    return (data as { url: string }).url
+  }
+  return null
 }

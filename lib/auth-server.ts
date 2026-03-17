@@ -55,6 +55,9 @@ export async function requireAuth(redirectTo = '/login') {
   return session
 }
 
+/** User role type matching userRoleEnum */
+type UserRole = 'super_admin' | 'admin' | 'user'
+
 /**
  * Get user from session with role check.
  *
@@ -69,17 +72,14 @@ export async function requireAuth(redirectTo = '/login') {
  * ```
  */
 export async function requireRole(
-  allowedRoles: ('super_admin' | 'admin' | 'user')[],
+  allowedRoles: UserRole[],
   redirectTo = '/account',
 ) {
   const session = await requireAuth()
 
-  const userRole = (session.user as { role?: string }).role
+  const userRole = session.user.role as UserRole | undefined
 
-  if (
-    !userRole ||
-    !allowedRoles.includes(userRole as (typeof allowedRoles)[number])
-  ) {
+  if (!userRole || !allowedRoles.includes(userRole)) {
     redirect(redirectTo)
   }
 

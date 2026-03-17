@@ -27,13 +27,6 @@ interface CreateAuditLogParams {
  *
  * Metadata (IP, userAgent) must be passed explicitly — use
  * getRequestMetadata() from '@/lib/audit-helpers' in actions.
- */
-/**
- * Creates an audit log entry for tracking mutations.
- * Should be called in every server action that modifies data.
- *
- * Metadata (IP, userAgent) must be passed explicitly — use
- * getRequestMetadata() from '@/lib/audit-helpers' in actions.
  *
  * Fire-and-forget: nunca lanza error para no romper la accion principal.
  */

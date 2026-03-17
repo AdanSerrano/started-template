@@ -4,6 +4,7 @@ import {
   uuidCol,
   varchar,
   boolean,
+  timestampCol,
   index,
   timestamps,
 } from '@/db/dialect'
@@ -29,6 +30,9 @@ export const addresses = createTable(
     postalCode: varchar('postal_code', { length: 20 }).notNull(),
     country: varchar('country', { length: 2 }).default('ES').notNull(),
     phone: varchar('phone', { length: 50 }),
+
+    // Soft delete
+    deletedAt: timestampCol('deleted_at'),
 
     // Timestamps
     ...timestamps(),

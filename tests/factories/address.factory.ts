@@ -15,6 +15,7 @@ interface MockAddress {
   postalCode: string
   country: string
   phone: string | null
+  deletedAt: Date | null
   createdAt: Date
   updatedAt: Date
 }
@@ -38,6 +39,7 @@ export function createMockAddress(
     postalCode: '08001',
     country: 'ES',
     phone: null,
+    deletedAt: null,
     createdAt: new Date(),
     updatedAt: new Date(),
     ...overrides,

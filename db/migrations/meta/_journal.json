@@ -8,6 +8,13 @@
       "when": 1773671000599,
       "tag": "0000_tranquil_runaways",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1773754933605,
+      "tag": "0001_old_hellfire_club",
+      "breakpoints": true
     }
   ]
 }

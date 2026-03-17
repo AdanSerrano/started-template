@@ -30,4 +30,24 @@ test.describe('SEO & Metadata', () => {
     const canonical = page.locator('link[rel="canonical"]')
     await expect(canonical).toBeAttached()
   })
+
+  test('login page has proper meta tags', async ({ page }) => {
+    await page.goto('/login')
+    const title = await page.title()
+    expect(title.length).toBeGreaterThan(0)
+  })
+
+  test('viewport meta tag is configured', async ({ page }) => {
+    await page.goto('/')
+    const viewport = page.locator('meta[name="viewport"]')
+    await expect(viewport).toBeAttached()
+  })
+
+  test('lang attribute matches locale', async ({ page }) => {
+    await page.goto('/en')
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en')
+
+    await page.goto('/ca')
+    await expect(page.locator('html')).toHaveAttribute('lang', 'ca')
+  })
 })

@@ -1,7 +1,7 @@
 import { z } from 'zod/v4'
 import { getRequestMetadata } from '@/lib/audit-helpers'
 import { requireAuth } from '@/lib/auth-server'
-import { AppError } from '@/lib/errors'
+import { AppError, TooManyRequestsError } from '@/lib/errors'
 import { getLogger } from '@/lib/providers'
 
 /**
@@ -13,6 +13,7 @@ export type ActionResult<T = void> = {
   error?: string | undefined
   code?: string | undefined
   fieldErrors?: Record<string, string[]> | undefined
+  retryAfterMs?: number | undefined
 }
 
 interface SafeActionConfig<TSchema extends z.ZodType> {
@@ -84,6 +85,9 @@ export function createSafeAction<TSchema extends z.ZodType, TResult = void>(
           error: error.message,
           code: error.code,
           fieldErrors: error.fieldErrors,
+          ...(error instanceof TooManyRequestsError && error.retryAfterMs
+            ? { retryAfterMs: error.retryAfterMs }
+            : {}),
         }
       }
 
@@ -138,6 +142,9 @@ export function createSafeFormAction<TResult = void>(
           error: error.message,
           code: error.code,
           fieldErrors: error.fieldErrors,
+          ...(error instanceof TooManyRequestsError && error.retryAfterMs
+            ? { retryAfterMs: error.retryAfterMs }
+            : {}),
         }
       }
 
