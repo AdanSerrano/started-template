@@ -19,7 +19,10 @@ const WRITE_RATE_LIMIT: RateLimitConfig = { limit: 20, windowSeconds: 300 }
 function enforceWriteLimit(userId: string): void {
   const result = checkRateLimit(`account:write:${userId}`, WRITE_RATE_LIMIT)
   if (!result.success) {
-    throw new TooManyRequestsError('validation.tooManyRequests')
+    throw new TooManyRequestsError(
+      'validation.tooManyRequests',
+      result.reset - Date.now(),
+    )
   }
 }
 

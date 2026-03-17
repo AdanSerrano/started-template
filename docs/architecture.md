@@ -83,20 +83,26 @@ modules/[nombre-modulo]/
 
 ### Reglas de dependencia
 
-```
-app/pages → modules/actions + modules/components
-              ↓
-         modules/services
-              ↓
-         modules/repositories
-              ↓
-         lib/providers.ts (Factory)
-              ↓
-         lib/adapters/ (Implementaciones)
-              ↓
-         lib/interfaces/ (Contratos)
-              ↓
-         Servicios externos
+```mermaid
+graph TD
+    A[app/pages] --> B[modules/actions]
+    A --> C[modules/components]
+    B --> D[modules/services]
+    D --> E[modules/repositories]
+    E --> F[lib/providers.ts]
+    F --> G[lib/adapters/]
+    G --> H[lib/interfaces/]
+    H --> I[Servicios externos]
+
+    style A fill:#4CAF50,color:#fff
+    style B fill:#2196F3,color:#fff
+    style C fill:#2196F3,color:#fff
+    style D fill:#FF9800,color:#fff
+    style E fill:#9C27B0,color:#fff
+    style F fill:#607D8B,color:#fff
+    style G fill:#607D8B,color:#fff
+    style H fill:#795548,color:#fff
+    style I fill:#F44336,color:#fff
 ```
 
 **NUNCA:** repository importa service, service importa action, modulo importa de capas internas de otro modulo.

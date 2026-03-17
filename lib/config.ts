@@ -27,6 +27,9 @@ export const appConfig = {
   /** Moneda y locale por defecto para formateo */
   currency: 'EUR' as const,
   currencyLocale: 'es-ES' as const,
+
+  /** Prefijo para numeros de orden — usado en generateOrderNumber() */
+  orderPrefix: 'PH' as const,
 } as const
 
 export type AppLocale = (typeof appConfig.locales)[number]

@@ -13,6 +13,7 @@ vi.mock('@/lib/config', () => ({
     currency: 'EUR',
     currencyLocale: 'es-ES',
     timezone: 'Europe/Madrid',
+    orderPrefix: 'PH',
   },
 }))
 

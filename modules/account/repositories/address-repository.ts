@@ -1,6 +1,7 @@
 import { eq, and, count, sql } from 'drizzle-orm'
 import { addresses } from '@/db/schema'
 import { db, type DbOrTx } from '@/lib/db'
+import { notDeleted } from '@/lib/query-helpers'
 import type { Address, AddressInsert } from '../types'
 
 // ── Interface ───────────────────────────────────────────────
@@ -25,7 +26,12 @@ export interface IAddressRepository {
 const findByUserIdPrepared = db
   .select()
   .from(addresses)
-  .where(eq(addresses.userId, sql.placeholder('userId')))
+  .where(
+    and(
+      eq(addresses.userId, sql.placeholder('userId')),
+      notDeleted(addresses.deletedAt),
+    ),
+  )
   .orderBy(addresses.createdAt)
   .prepare('address_find_by_user_id')
 
@@ -36,6 +42,7 @@ const findByIdPrepared = db
     and(
       eq(addresses.id, sql.placeholder('id')),
       eq(addresses.userId, sql.placeholder('userId')),
+      notDeleted(addresses.deletedAt),
     ),
   )
   .prepare('address_find_by_id')
@@ -68,7 +75,13 @@ export const addressRepository: IAddressRepository = {
     const [address] = await client
       .update(addresses)
       .set({ ...data, updatedAt: new Date() })
-      .where(and(eq(addresses.id, id), eq(addresses.userId, userId)))
+      .where(
+        and(
+          eq(addresses.id, id),
+          eq(addresses.userId, userId),
+          notDeleted(addresses.deletedAt),
+        ),
+      )
       .returning()
     return address ?? null
   },
@@ -76,24 +89,39 @@ export const addressRepository: IAddressRepository = {
   async remove(id: string, userId: string, tx?: DbOrTx) {
     const client = tx ?? db
     const [deleted] = await client
-      .delete(addresses)
-      .where(and(eq(addresses.id, id), eq(addresses.userId, userId)))
+      .update(addresses)
+      .set({ deletedAt: new Date(), updatedAt: new Date() })
+      .where(
+        and(
+          eq(addresses.id, id),
+          eq(addresses.userId, userId),
+          notDeleted(addresses.deletedAt),
+        ),
+      )
       .returning({ id: addresses.id })
     return !!deleted
   },
 
   async setDefault(id: string, userId: string, tx?: DbOrTx) {
     const run = async (client: DbOrTx) => {
-      // Unset all defaults for user
+      // Unset all defaults for user (only non-deleted)
       await client
         .update(addresses)
         .set({ isDefault: false, updatedAt: new Date() })
-        .where(eq(addresses.userId, userId))
+        .where(
+          and(eq(addresses.userId, userId), notDeleted(addresses.deletedAt)),
+        )
       // Set the selected one as default
       const [address] = await client
         .update(addresses)
         .set({ isDefault: true, updatedAt: new Date() })
-        .where(and(eq(addresses.id, id), eq(addresses.userId, userId)))
+        .where(
+          and(
+            eq(addresses.id, id),
+            eq(addresses.userId, userId),
+            notDeleted(addresses.deletedAt),
+          ),
+        )
         .returning()
       return address ?? null
     }
@@ -107,7 +135,7 @@ export const addressRepository: IAddressRepository = {
     const [result] = await db
       .select({ total: count() })
       .from(addresses)
-      .where(eq(addresses.userId, userId))
+      .where(and(eq(addresses.userId, userId), notDeleted(addresses.deletedAt)))
     return result?.total ?? 0
   },
 }

@@ -20,29 +20,15 @@ export const ac = createAccessControl(statement)
 /**
  * Roles matching userRoleEnum values exactly.
  * super_admin: Full access to everything
- * admin: Manages store (no impersonate/delete users)
+ * admin: Manages store (no impersonate/delete users, no delete sessions)
  * user: Browse and purchase
  */
-export const superAdmin = ac.newRole({
-  poster: ['create', 'read', 'update', 'delete', 'publish'],
-  category: ['create', 'read', 'update', 'delete'],
-  order: ['create', 'read', 'update', 'cancel', 'refund'],
-  coupon: ['create', 'read', 'update', 'delete'],
-  report: ['create', 'read', 'export'],
-  user: ['create', 'list', 'set-role', 'ban', 'impersonate', 'delete'],
-  session: ['list', 'revoke', 'delete'],
-  settings: ['read', 'update'],
-})
+export const superAdmin = ac.newRole(statement)
 
 export const adminRole = ac.newRole({
-  poster: ['create', 'read', 'update', 'delete', 'publish'],
-  category: ['create', 'read', 'update', 'delete'],
-  order: ['create', 'read', 'update', 'cancel', 'refund'],
-  coupon: ['create', 'read', 'update', 'delete'],
-  report: ['create', 'read', 'export'],
+  ...statement,
   user: ['create', 'list', 'set-role', 'ban'],
   session: ['list', 'revoke'],
-  settings: ['read', 'update'],
 })
 
 export const userRole = ac.newRole({

@@ -151,6 +151,46 @@ docker compose -f docker-compose.prod.yml up -d --pull never
 - Vercel Analytics — Web Vitals y rendimiento
 - Logs estructurados — JSON en produccion
 
+## Troubleshooting de deployment
+
+### Vercel
+
+| Problema                          | Solucion                                                                                     |
+| --------------------------------- | -------------------------------------------------------------------------------------------- |
+| Build falla con "env var missing" | Verificar que TODAS las env vars criticas estan en Vercel > Settings > Environment Variables |
+| Build falla con "type error"      | Ejecutar `bun run type-check` local antes de push                                            |
+| Funciones serverless timeout      | Verificar que queries DB tienen timeout. Considerar connection pooling (Neon)                |
+| Cold starts lentos                | Reducir bundle size. Usar `serverExternalPackages` en next.config.ts para libs pesadas       |
+| Preview deployments no funcionan  | Verificar que env vars estan marcadas para "Preview" environment                             |
+
+### Docker
+
+| Problema                   | Solucion                                                                         |
+| -------------------------- | -------------------------------------------------------------------------------- |
+| Container no arranca       | Verificar `.env` con todas las vars. `docker logs <container>` para errores      |
+| Base de datos no accesible | Verificar network: el servicio DB debe estar en la misma docker network          |
+| Build lento                | Usar multi-stage build (ya configurado en Dockerfile). Verificar `.dockerignore` |
+| Out of memory en build     | Aumentar memoria del builder: `docker build --memory=4g`                         |
+
+### Rollback de emergencia
+
+**Procedimiento completo:**
+
+1. **Identificar** — Verificar `/api/health` y Sentry para confirmar el problema
+2. **Comunicar** — Notificar al equipo del rollback
+3. **Ejecutar rollback:**
+   - Vercel: Dashboard > Deployments > seleccionar deploy anterior > "Promote to Production"
+   - Docker: `docker compose -f docker-compose.prod.yml down && git checkout <tag-anterior> && docker compose -f docker-compose.prod.yml up -d --build`
+4. **Verificar** — Confirmar que `/api/health` retorna `healthy`
+5. **Investigar** — Revisar logs y Sentry para root cause
+6. **Fix forward** — Crear nuevo deploy con la correccion, no quedarse en el rollback
+
+### Estrategia de zero-downtime deployment
+
+1. **Blue-green** (recomendado con Vercel): El nuevo deploy se promueve solo cuando el health check pasa
+2. **Migraciones backward-compatible**: Agregar columnas como nullable, nunca eliminar columnas en el mismo deploy
+3. **Feature flags**: Usar `EnvFeatureFlagService` para activar features gradualmente
+
 ---
 
 _Ultima actualizacion: Marzo 2026_

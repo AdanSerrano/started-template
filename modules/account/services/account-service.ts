@@ -25,9 +25,7 @@ export async function createAddress(data: AddressInsert) {
   if (data.isDefault) {
     return db.transaction(async (tx) => {
       const address = await addressRepository.create(data, tx)
-      if (address) {
-        await addressRepository.setDefault(address.id, data.userId, tx)
-      }
+      await addressRepository.setDefault(address.id, data.userId, tx)
       return address
     })
   }

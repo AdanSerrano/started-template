@@ -1,14 +1,16 @@
 import { getTranslations } from 'next-intl/server'
-import { requireAuth } from '@/lib/auth-server'
-import * as accountService from '../services/account-service'
+import type { AuthenticatedSession } from '@/lib/auth-server'
 import { ChangePasswordForm } from './change-password-form.client'
 import { ProfileForm } from './profile-form.client'
+import type { ProfileUpdateData } from '../types'
 
-export async function ProfilePage() {
-  const session = await requireAuth()
+interface ProfilePageProps {
+  session: AuthenticatedSession
+  profile: (ProfileUpdateData & { email: string; image?: string | null }) | null
+}
 
-  const [profile, t, tPassword] = await Promise.all([
-    accountService.getProfile(session.user.id),
+export async function ProfilePage({ session, profile }: ProfilePageProps) {
+  const [t, tPassword] = await Promise.all([
     getTranslations('account.profile'),
     getTranslations('account.password'),
   ])

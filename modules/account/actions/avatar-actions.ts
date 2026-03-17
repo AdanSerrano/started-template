@@ -5,6 +5,7 @@ import { TooManyRequestsError, ValidationError } from '@/lib/errors'
 import type { RateLimitConfig } from '@/lib/interfaces'
 import { checkRateLimit } from '@/lib/rate-limit'
 import { createSafeFormAction } from '@/lib/safe-action'
+import { validateFile } from '@/lib/upload-validation'
 import * as accountService from '../services/account-service'
 
 // Rate limit: 5 upload operations per user per 5 minutes
@@ -16,6 +17,7 @@ const ALLOWED_MIME_TYPES = [
   'image/webp',
   'image/gif',
 ]
+const ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'gif']
 const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
 const MIME_TO_EXT: Record<string, string> = {
   'image/jpeg': 'jpg',
@@ -31,18 +33,25 @@ export const uploadAvatarAction = createSafeFormAction(
       UPLOAD_RATE_LIMIT,
     )
     if (!rl.success) {
-      throw new TooManyRequestsError('validation.tooManyRequests')
+      throw new TooManyRequestsError(
+        'validation.tooManyRequests',
+        rl.reset - Date.now(),
+      )
     }
 
     const file = formData.get('file') as File | null
     if (!file) {
       throw new ValidationError('validation.fileRequired')
     }
-    if (!ALLOWED_MIME_TYPES.includes(file.type)) {
-      throw new ValidationError('validation.fileTypeNotAllowed')
-    }
-    if (file.size > MAX_FILE_SIZE) {
-      throw new ValidationError('validation.fileTooLarge')
+
+    // Validacion completa: MIME, extension y magic bytes
+    const validation = await validateFile(file, {
+      maxSizeBytes: MAX_FILE_SIZE,
+      allowedMimeTypes: ALLOWED_MIME_TYPES,
+      allowedExtensions: ALLOWED_EXTENSIONS,
+    })
+    if (!validation.valid) {
+      throw new ValidationError(validation.error!)
     }
 
     const { getStorageService } = await import('@/lib/providers')
