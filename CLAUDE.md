@@ -406,10 +406,15 @@ return addressRepository.update(id, userId, data) // ...y esto falla → inconsi
 | Component  | Component    | Renderizado, interaccion, estados             | `tests/components/mi-componente.test.tsx` |
 
 ```bash
-# SIEMPRE ejecutar tests despues de implementar
+# SIEMPRE ejecutar ANTES de commit — el CI verifica todo esto
+bun run format:check      # Prettier — formato correcto
+bun run lint              # ESLint — sin errores
+bun run type-check        # TypeScript — sin errores de tipos
 bun run test              # Todos los tests
 bun run test:coverage     # Verificar cobertura >= 50%
 ```
+
+> **Si `format:check` falla**, corregir con `bun run format` y volver a hacer commit.
 
 **Reglas:**
 
@@ -559,9 +564,11 @@ import { Link, useRouter } from '@/i18n/navigation' // SIEMPRE
 
 ### Calidad
 
+- [ ] `bun run format:check` pasa sin errores (Prettier)
+- [ ] `bun run lint` pasa sin errores (ESLint)
+- [ ] `bun run type-check` pasa sin errores (TypeScript)
 - [ ] Imports con @/
 - [ ] Archivos < 250 lineas
-- [ ] TypeScript strict sin errores
 - [ ] Nuevos textos en es.json, en.json Y ca.json
 - [ ] Documentacion actualizada en `docs/`
 
