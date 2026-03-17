@@ -184,8 +184,13 @@ export async function myWriteAction(data: unknown): Promise<ActionResult> {
 | `IJobsService`            | `TriggerJobsService`        | BullMQJobsService                            |
 | `IAnalyticsService`       | `GA4AnalyticsService`       | PostHog, Mixpanel                            |
 | `IErrorMonitoringService` | `ConsoleMonitoringAdapter`  | SentryMonitoringAdapter                      |
-| `IRateLimitService`       | `InMemoryRateLimitService`  | RedisRateLimitService                        |
+| `IRateLimitService`       | `InMemoryRateLimitService`  | UpstashRateLimitService                      |
 | `ICache`                  | `MemoryCacheService`        | RedisCacheService                            |
+| `INotificationService`    | `InAppNotificationService`  | EmailNotificationService, PushNotification   |
+| `ISearchService`          | `PgSearchService`           | AlgoliaSearchService, MeiliSearch            |
+| `IWebhookService`         | `WebhookService`            | --                                           |
+| `IFeatureFlagService`     | `EnvFeatureFlagService`     | LaunchDarkly, Unleash                        |
+| `IGDPRService`            | `GDPRService`               | --                                           |
 
 ### Uso correcto
 

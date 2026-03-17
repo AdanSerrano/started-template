@@ -26,7 +26,7 @@
 
 ### Factory Pattern
 
-> **Estado: No implementado** — Ejemplo de referencia para uso futuro. El patron Factory SI se usa en `lib/providers.ts`.
+> **Estado: Implementado** — Usado en `lib/providers.ts` con `createProvider<T>()` para lazy singleton de todos los adapters. El ejemplo siguiente muestra como extenderlo para logica de negocio.
 
 ```typescript
 // lib/factories/notification-factory.ts
@@ -67,7 +67,7 @@ export const db = getDb()
 
 ### Builder Pattern
 
-> **Estado: No implementado** — Ejemplo de referencia para uso futuro.
+> **Estado: Referencia** — Ejemplo para uso futuro. No implementado aun en el proyecto.
 
 ```typescript
 // lib/builders/email-builder.ts
@@ -270,7 +270,7 @@ function createValidationChain(): IValidationHandler {
 
 ### Observer Pattern
 
-> **Estado: No implementado** — Ejemplo de referencia para uso futuro.
+> **Estado: Referencia** — Ejemplo para uso futuro. No implementado aun en el proyecto.
 
 ```typescript
 // lib/events/event-emitter.ts

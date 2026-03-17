@@ -44,7 +44,7 @@ next-env.d.ts
 # next-intl auto-generated type declarations
 messages/*.d.json.ts
 
-
+# locks
 bun.lockb
 pnpm-lock.yaml
 bun.lock
@@ -54,8 +54,13 @@ public/sw.js
 public/sw.js.map
 public/swe-worker-*.js
 
-.claude/*
+# AI editors — ignorar settings locales pero commitear commands y config compartida
+.claude/settings.local.json
 .cursor/*
 .agents/*
+
+# Workflow task artifacts (generados por /brainstorm, /spec-task, etc.)
+docs/tasks/*.md
+docs/tasks/.gitkeep
 
 package-lock.json

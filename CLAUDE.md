@@ -44,6 +44,9 @@ La **UX es prioridad #1**. Toda decision optimiza:
 | `docs/deployment.md`    | Deploy a Vercel/Docker/Node, env vars, migraciones, rollback    | Despliegas o configuras entorno                       |
 | `docs/monitoring.md`    | Logging estructurado, Sentry, health check, request IDs         | Configuras observabilidad o depuras produccion        |
 | `docs/security.md`      | OWASP Top 10, rate limiting, CORS, GDPR, file upload            | Implementas seguridad o revisas vulnerabilidades      |
+| `docs/api-routes.md`    | Convencion para API routes, proteccion, validacion, respuestas  | Creas o modificas endpoints en app/api/               |
+| `docs/jobs.md`          | Background jobs con Trigger.dev, retry, scheduling, errores     | Implementas tareas asincronas o programadas           |
+| `docs/caching.md`       | ICache interface, memoria vs Redis, TTL, naming, invalidacion   | Implementas cache o tocas datos con alta frecuencia   |
 | `docs/official-docs.md` | URLs documentacion oficial de TODOS los paquetes del stack      | Usas cualquier paquete — SIEMPRE consultar primero    |
 
 ### Regla: Documentar componentes nuevos — OBLIGATORIO
@@ -129,7 +132,7 @@ Cada componente, modulo o utilidad nueva DEBE tener documentacion en `docs/`:
 
 ```
 starter-template/
-├── app/[locale]/           # Routing — paginas thin con loading.tsx
+├── app/[locale]/           # Routing — paginas thin con loading.tsx + error.tsx
 ├── app/api/health/         # Health check endpoint (DB connectivity)
 ├── modules/                # Domain — modulos con arquitectura limpia
 │   ├── auth/               # Login, registro, OAuth, magic links, 2FA
@@ -142,30 +145,57 @@ starter-template/
 │       ├── repositories/
 │       └── components/
 ├── components/
-│   ├── ui/                 # shadcn/ui
-│   └── forms/              # 40+ campos de formulario reutilizables
+│   ├── ui/                 # shadcn/ui (35 componentes)
+│   ├── forms/              # 63 campos de formulario reutilizables
+│   ├── custom-datatable/   # DataTable avanzado con Zustand, hooks, smart variant
+│   └── sidebar/            # Sidebar navegacion (nav-content, header, user-menu)
+├── hooks/                  # Custom hooks (use-in-view, use-mobile)
 ├── lib/
-│   ├── interfaces/         # Contratos TypeScript (auth, email, storage, logger, etc.)
-│   ├── adapters/           # Implementaciones (UNICO lugar con libs externas)
-│   ├── providers.ts        # Factory (Singleton) — 14 providers con createProvider<T>
+│   ├── interfaces/         # 17 contratos TypeScript (auth, email, storage, logger, etc.)
+│   ├── adapters/           # 22+ implementaciones (UNICO lugar con libs externas)
+│   ├── providers.ts        # Factory (Singleton) — 20 providers con createProvider<T>
 │   ├── safe-action.ts      # createSafeAction() — wrapper estandar para actions
+│   ├── errors.ts           # Jerarquia de errores (AppError, NotFoundError, etc.)
 │   ├── audit.ts            # Audit log (framework-agnostic)
 │   ├── audit-helpers.ts    # getRequestMetadata() — Next.js specific
 │   ├── db.ts               # Cliente Drizzle + tipos DbOrTx
-│   ├── rate-limit.ts       # Rate limiter in-memory
+│   ├── db-types.ts         # DbClient, DbTransaction, DbOrTx (union para tx opcional)
+│   ├── rate-limit.ts       # Rate limiter in-memory (sliding window)
 │   ├── api-response.ts     # Helpers estandar para API routes (apiSuccess, apiError)
 │   ├── pagination.ts       # Tipos, schemas Zod, y helpers de paginacion
 │   ├── sanitize.ts         # DOMPurify centralizado (sanitizeHtml, sanitizeText)
 │   ├── query-helpers.ts    # Helpers Drizzle (notDeleted para soft-delete)
+│   ├── upload-validation.ts # Validacion de archivos (tamano, MIME, magic bytes)
+│   ├── cors.ts             # CORS headers helper para API routes
+│   ├── request-context.ts  # AsyncLocalStorage para request ID propagation
+│   ├── permissions.ts      # Roles y access control (super_admin, admin, user)
+│   ├── i18n-helpers.ts     # Helpers para campos i18n en DB (getTranslatedField, etc.)
+│   ├── utils.ts            # cn(), formatCurrency(), formatDate(), slugify()
+│   ├── config.ts           # Branding centralizado (appConfig)
+│   ├── auth.ts             # Config Better Auth (plugins, session, hooks, rate limits)
+│   ├── auth-server.ts      # getServerSession(), requireAuth(), requireRole()
+│   ├── auth-client.ts      # authClient — Better Auth client-side (login, register, etc.)
+│   ├── email.ts            # sendEmail() — envio abstracto via provider
+│   ├── create-provider.ts  # createProvider<T>() — factory generico lazy singleton
+│   ├── fonts.ts            # Fuentes Google (Geist Sans + Geist Mono) con next/font
+│   ├── i18n-field.ts       # getI18n() — lee campo i18n desde JSON string o objeto
 │   └── env.ts              # Validacion de entorno (critical vs recommended vs paired)
-├── db/schema/              # Drizzle schemas + relaciones + indexes
+├── db/schema/              # 13 schemas Drizzle + relaciones + indexes
 ├── emails/                 # Templates React Email (sin emojis/iconos decorativos)
 ├── messages/               # Traducciones (es.json, en.json, ca.json)
-├── tests/                  # Vitest setup + tests unitarios
+├── tests/                  # Vitest setup + tests unitarios/integracion/componentes
+│   ├── unit/               # Tests de services, repositories, utils
+│   ├── integration/        # Tests de actions (flujo completo)
+│   ├── components/         # Tests de componentes React
+│   ├── factories/          # Factories de datos (user, session, address)
+│   └── mocks/              # MSW handlers + server setup
+├── e2e/                    # Playwright E2E tests
+├── scripts/                # Generadores (modulos, iconos) + validador de commits
 ├── proxy.ts                # Middleware Next.js 16 (antes middleware.ts) — i18n, auth, request ID
 ├── routes.ts               # Configuracion de rutas auth/public/protected
 ├── instrumentation.ts      # Next.js 16 — OpenTelemetry + error monitoring hook
-├── .github/workflows/      # CI: type-check + lint + build
+├── .claude/commands/       # 5 slash commands para workflow de desarrollo
+├── .github/workflows/      # CI: format + type-check + lint + test + build + e2e
 └── docs/                   # DOCUMENTACION COMPLETA DEL SISTEMA
 ```
 
@@ -208,6 +238,133 @@ Responsabilidades:
 | Adapter    | Implementa interfaces           | NO logica de negocio  |
 
 **Detalles y ejemplos:** `docs/architecture.md` y `docs/patterns.md`
+
+### Server Actions — `createSafeAction()` OBLIGATORIO
+
+Toda server action DEBE usar `createSafeAction()`. Este wrapper automatiza validacion Zod, autenticacion, metadata de request y error handling estandarizado.
+
+```ts
+// CORRECTO — siempre via createSafeAction
+import { createSafeAction } from '@/lib/safe-action'
+
+export const updateProfileAction = createSafeAction(
+  { schema: updateProfileSchema, auth: true },
+  async ({ data, session, metadata }) => {
+    const result = await accountService.updateProfile(session.user.id, data)
+    await createAuditLog({
+      action: 'profile.updated',
+      entityType: 'user',
+      entityId: session.user.id,
+      userId: session.user.id,
+      metadata,
+    })
+    return result
+  },
+)
+
+// PROHIBIDO — action manual sin wrapper
+export async function updateProfile(input: unknown) {
+  const session = await requireAuth() // manual
+  const data = schema.parse(input) // manual
+  // ... sin error handling estandarizado
+}
+```
+
+`createSafeAction` provee automaticamente:
+
+- **Validacion Zod** — retorna `fieldErrors` si falla
+- **Auth** — llama `requireAuth()` (desactivable con `auth: false`)
+- **Metadata** — `{ ip, userAgent }` para audit logs
+- **Error handling** — captura `AppError`, re-throws Next.js redirects, loggea errores inesperados
+
+### Error Handling — Jerarquia de errores `lib/errors.ts`
+
+SIEMPRE usar las clases de error existentes. `createSafeAction()` las captura automaticamente y retorna el mensaje al cliente.
+
+```ts
+import { NotFoundError, ForbiddenError, ConflictError } from '@/lib/errors'
+
+// En services — lanzar errores tipados
+throw new NotFoundError('User', userId) // 404
+throw new ForbiddenError('Sin permisos') // 403
+throw new ConflictError('Email ya registrado') // 409
+throw new ValidationError('Datos invalidos', { email: ['Email invalido'] }) // 422
+throw new TooManyRequestsError('Intenta mas tarde', retryAfterMs) // 429
+
+// PROHIBIDO — errores genericos
+throw new Error('Not found') // createSafeAction no sabe el status code
+```
+
+| Clase                     | Status | Cuando usar                            |
+| ------------------------- | ------ | -------------------------------------- |
+| `AppError`                | 500    | Base — nunca usar directamente         |
+| `NotFoundError`           | 404    | Entidad no existe                      |
+| `ValidationError`         | 422    | Datos invalidos con fieldErrors        |
+| `UnauthorizedError`       | 401    | No autenticado                         |
+| `ForbiddenError`          | 403    | Sin permisos                           |
+| `ConflictError`           | 409    | Duplicado o conflicto                  |
+| `AccountLockedError`      | 423    | Cuenta bloqueada por intentos fallidos |
+| `TooManyRequestsError`    | 429    | Rate limit excedido                    |
+| `ServiceUnavailableError` | 503    | Servicio externo caido                 |
+
+### Rate Limiting — OBLIGATORIO en actions sensibles
+
+Toda action publica o que maneje datos sensibles DEBE tener rate limit.
+
+```ts
+import { checkRateLimit } from '@/lib/rate-limit'
+import { TooManyRequestsError } from '@/lib/errors'
+
+// En el service o al inicio del handler
+const limit = checkRateLimit(`avatar:${userId}`, {
+  maxAttempts: 5,
+  windowMs: 5 * 60 * 1000, // 5 minutos
+})
+if (!limit.success) {
+  throw new TooManyRequestsError()
+}
+```
+
+| Tipo de action         | Rate limit recomendado |
+| ---------------------- | ---------------------- |
+| Upload (avatar, docs)  | 5 / 5 min              |
+| GDPR (export, delete)  | 3 / 1 hora             |
+| Auth (login, register) | 10 / 15 min            |
+| Mutaciones normales    | 30 / 1 min             |
+| APIs publicas          | 60 / 1 min             |
+
+### Soft Delete — `notDeleted()` helper OBLIGATORIO
+
+Tablas con `deletedAt` DEBEN usar `notDeleted()` en todas las queries de lectura.
+
+```ts
+import { notDeleted } from '@/lib/query-helpers'
+
+// CORRECTO — helper centralizado
+db.select().from(users).where(notDeleted(users.deletedAt))
+
+// PROHIBIDO — condicion manual
+db.select().from(users).where(isNull(users.deletedAt))
+```
+
+### Rutas — Configuracion en `routes.ts`
+
+Al agregar nuevas rutas, modificar **`routes.ts`**, NUNCA `proxy.ts`.
+
+```ts
+// routes.ts — arrays de rutas por tipo
+export const publicRoutes = ['/'] // Sin auth requerida
+export const authRoutes = ['/login', '/register'] // Solo sin sesion
+export const apiAuthPrefix = '/api/auth' // Better Auth catch-all
+export const DEFAULT_LOGIN_REDIRECT = '/account' // Redirect post-login
+export const DEFAULT_LOGOUT_REDIRECT = '/login' // Redirect post-logout
+```
+
+**Para agregar una ruta nueva:**
+
+- **Ruta publica** (landing, about) → agregar a `publicRoutes`
+- **Ruta de auth** (login, register) → agregar a `authRoutes`
+- **Ruta protegida** → no agregar a ningun array (por defecto son protegidas)
 
 ### Adapters — OBLIGATORIO
 
@@ -426,6 +583,221 @@ bun run test:coverage     # Verificar cobertura >= 50%
 
 **Patrones completos:** `docs/testing.md`
 
+### API Routes — Helpers estandar `lib/api-response.ts`
+
+Las API routes (`app/api/`) DEBEN usar los helpers estandar para respuestas consistentes.
+
+```ts
+import {
+  apiSuccess,
+  apiError,
+  apiNotFound,
+  apiUnauthorized,
+  apiRateLimited,
+} from '@/lib/api-response'
+
+export async function GET() {
+  const data = await getItems()
+  return apiSuccess(data) // { success: true, data: [...] }
+}
+
+export async function POST(req: Request) {
+  return apiError('Datos invalidos', 422) // { success: false, error: '...' }
+  return apiNotFound('User') // { success: false, error: 'User not found', code: 'NOT_FOUND' }
+  return apiUnauthorized() // 401
+  return apiRateLimited(60) // 429 + Retry-After header
+}
+
+// PROHIBIDO — Response manual
+return new Response(JSON.stringify({ error: '...' }), { status: 400 })
+```
+
+### Special Pages — OBLIGATORIAS por ruta
+
+| Archivo            | Proposito                         | Obligatorio en...  |
+| ------------------ | --------------------------------- | ------------------ |
+| `loading.tsx`      | Skeleton mientras carga la pagina | CADA pagina        |
+| `error.tsx`        | Error boundary del route group    | CADA route group   |
+| `not-found.tsx`    | Pagina 404 personalizada          | `app/[locale]/`    |
+| `global-error.tsx` | Ultimo recurso si error.tsx falla | `app/` (ya existe) |
+
+```tsx
+// error.tsx — SIEMPRE 'use client'
+'use client'
+
+export default function Error({
+  error,
+  reset,
+}: {
+  error: Error
+  reset: () => void
+}) {
+  return (
+    <div>
+      <h2>Algo salio mal</h2>
+      <button onClick={reset}>Reintentar</button>
+    </div>
+  )
+}
+```
+
+> `global-error.tsx` ya existe en `app/` y NO usa el design system (renderiza HTML inline porque el layout puede estar roto).
+
+### Utilidades — `lib/utils.ts`
+
+Usar las utilidades centralizadas. NO reimplementar.
+
+```ts
+import { cn, formatCurrency, formatDate, slugify } from '@/lib/utils'
+
+cn('px-4', isActive && 'bg-primary') // clsx + tailwind-merge
+formatCurrency(29.99) // "$29.99" (usa appConfig.currency)
+formatDate(new Date()) // "17 mar 2026, 10:30" (usa appConfig.timezone)
+slugify('Hola Mundo!') // "hola-mundo"
+```
+
+### Paginacion — `lib/pagination.ts`
+
+Usar el sistema de paginacion estandar. NO crear schemas o tipos custom.
+
+```ts
+import {
+  paginationSchema,
+  paginatedSortSchema,
+  createPaginatedResult,
+  getPaginationOffset,
+} from '@/lib/pagination'
+
+// En action — validar params
+const params = paginatedSortSchema.parse(searchParams)
+
+// En repository — calcular offset
+const offset = getPaginationOffset(params) // (page - 1) * pageSize
+
+// En service — construir resultado
+return createPaginatedResult(items, totalCount, params)
+// → { items: [...], pagination: { page, pageSize, totalItems, totalPages, hasNext, hasPrev } }
+```
+
+Defaults: `page=1`, `pageSize=20`, `maxPageSize=100`, `sortBy=createdAt`, `sortOrder=desc`
+
+### File Upload Validation — `lib/upload-validation.ts`
+
+Toda subida de archivos DEBE validar con `validateFile()`. Verifica tamano, MIME type, extension Y magic bytes (previene MIME spoofing).
+
+```ts
+import { validateFile } from '@/lib/upload-validation'
+
+const result = await validateFile(file) // Default: 5MB, imagenes + PDF + CSV + XLSX
+const result = await validateFile(file, {
+  maxSizeBytes: 10 * 1024 * 1024, // 10MB
+  allowedMimeTypes: ['image/jpeg', 'image/png'],
+  allowedExtensions: ['jpg', 'jpeg', 'png'],
+})
+
+if (!result.valid) {
+  throw new ValidationError(result.error!)
+}
+
+// PROHIBIDO — validar solo por extension o MIME sin magic bytes
+if (file.type === 'image/jpeg') { ... }  // Spoofeable
+```
+
+### CORS — `lib/cors.ts`
+
+Para API routes que necesiten CORS (integraciones externas):
+
+```ts
+import { corsHeaders, handleCorsPreflight } from '@/lib/cors'
+
+export function OPTIONS(request: Request) {
+  return handleCorsPreflight(request) // Lee CORS_ALLOWED_ORIGINS de env
+}
+
+export function GET(request: Request) {
+  const origin = request.headers.get('origin')
+  return Response.json(data, { headers: corsHeaders(origin) })
+}
+```
+
+### Request Context — `lib/request-context.ts`
+
+El request ID se propaga automaticamente via AsyncLocalStorage. Disponible en todo el stack sin pasarlo como parametro.
+
+```ts
+import { getRequestId } from '@/lib/request-context'
+
+// En cualquier parte del stack
+const requestId = getRequestId() // "a1b2c3d4" (8 chars)
+logger.info('Processing', { requestId })
+```
+
+> El `proxy.ts` inyecta el request ID automaticamente. NO generar IDs manuales.
+
+### Permisos y Roles — `lib/permissions.ts`
+
+3 roles con access control granular. Definidos con Better Auth `createAccessControl()`.
+
+| Rol           | Acceso                                            |
+| ------------- | ------------------------------------------------- |
+| `super_admin` | Todo — incluyendo impersonate y delete users      |
+| `admin`       | Gestion completa excepto impersonate/delete users |
+| `user`        | Solo lectura + crear ordenes                      |
+
+```ts
+// En actions — verificar rol
+const session = await requireRole(['admin', 'super_admin'])
+
+// Para permisos granulares — usar ac (access control)
+import { ac } from '@/lib/permissions'
+```
+
+> Al agregar un recurso nuevo, agregar sus acciones en `lib/permissions.ts` y definir permisos por rol.
+
+### Campos i18n en DB — `lib/i18n-helpers.ts`
+
+Para campos multi-idioma almacenados como JSONB en la base de datos:
+
+```ts
+import {
+  getTranslatedField,
+  createI18nField,
+  mergeI18nField,
+} from '@/lib/i18n-helpers'
+
+// Leer — obtiene el idioma o fallback a 'es'
+const name = getTranslatedField(product.name, locale)
+
+// Crear — genera campo i18n
+const field = createI18nField('Posters de pelicula', 'es')
+// → { es: 'Posters de pelicula' }
+
+// Actualizar — merge parcial
+const updated = mergeI18nField(existing, { en: 'Movie Posters' })
+```
+
+> Tipo `I18nField`: `{ es: string, en?: string, ca?: string }`
+
+### Env Vars — Validacion categorizada `lib/env.ts`
+
+Las variables de entorno se validan al iniciar la app con 4 niveles:
+
+| Categoria       | Comportamiento             | Variables                               |
+| --------------- | -------------------------- | --------------------------------------- |
+| **Critical**    | App NO arranca sin ellas   | `DATABASE_URL`, `BETTER_AUTH_SECRET`    |
+| **Recommended** | Warn en dev, throw en prod | `NEXT_PUBLIC_APP_URL`, `RESEND_API_KEY` |
+| **Paired**      | Ambas o ninguna            | Google OAuth, Upstash Redis, R2 Storage |
+| **Optional**    | Solo warn en dev           | `SENTRY_DSN`, `CORS_ALLOWED_ORIGINS`    |
+
+```ts
+// Importar para acceso tipado
+import { env } from '@/lib/env'
+env.DATABASE_URL // string (validado)
+env.APP_URL // string (con fallback localhost)
+```
+
+> Al agregar una env var nueva, clasificarla en `lib/env.ts` segun su categoria.
+
 ### Logging — via ILogger provider
 
 ```ts
@@ -517,9 +889,127 @@ import { Link, useRouter } from '@/i18n/navigation' // SIEMPRE
 
 **Como crear modulos nuevos:** `docs/architecture.md` > Arquitectura de Modulos
 
+### Generador de modulos — `bun run generate:module`
+
+Para crear un modulo nuevo con toda la estructura, usa el generador:
+
+```bash
+bun run generate:module
+# Interactivo — pregunta nombre del modulo y genera:
+# modules/[nombre]/
+#   ├── actions/
+#   ├── services/
+#   ├── repositories/
+#   ├── components/
+#   ├── types.ts
+#   └── validations.ts
+```
+
+> **NO crear la estructura manualmente** — el generador garantiza consistencia con la arquitectura del proyecto.
+
 ---
 
-## 13. CHECKLIST PRE-COMMIT
+## 13. CI/CD Y HOOKS
+
+### Husky + lint-staged — Pre-commit automatico
+
+El proyecto tiene **pre-commit hooks** que se ejecutan automaticamente. No intentar bypasearlos.
+
+**En cada commit, Husky ejecuta lint-staged que:**
+
+1. `prettier --write` en archivos staged (`.ts`, `.tsx`, `.json`, `.md`, `.css`)
+2. `eslint --fix --cache` en archivos staged (`.ts`, `.tsx`)
+
+> Si el commit falla por el hook, corregir el error y volver a hacer commit. NUNCA usar `--no-verify`.
+
+### GitHub Actions CI Pipeline
+
+El CI ejecuta en cada push a `main`/`develop` y en PRs:
+
+```
+Format Check → Type Check → Lint → Unit Tests → Coverage → Dead Code (Knip) → Security Audit → Build → Bundle Size
+```
+
+E2E tests (Playwright) se ejecutan solo en PRs despues de que pase el quality check.
+
+**Scripts disponibles:**
+
+| Script                    | Proposito                       |
+| ------------------------- | ------------------------------- |
+| `bun run dev`             | Servidor de desarrollo          |
+| `bun run build`           | Build de produccion             |
+| `bun run test`            | Tests unitarios + integracion   |
+| `bun run test:watch`      | Tests en modo watch             |
+| `bun run test:coverage`   | Tests con reporte de cobertura  |
+| `bun run test:e2e`        | Tests E2E (Playwright)          |
+| `bun run lint`            | ESLint                          |
+| `bun run lint:fix`        | ESLint con autofix              |
+| `bun run format`          | Prettier format                 |
+| `bun run format:check`    | Verificar formato               |
+| `bun run type-check`      | TypeScript strict               |
+| `bun run knip`            | Deteccion de codigo muerto      |
+| `bun run db:generate`     | Generar migracion Drizzle       |
+| `bun run db:push`         | Push schema a DB                |
+| `bun run db:migrate`      | Ejecutar migraciones            |
+| `bun run db:studio`       | Drizzle Studio (visual)         |
+| `bun run db:seed`         | Seed data                       |
+| `bun run db:reset`        | Reset DB + seed                 |
+| `bun run email:preview`   | Preview de emails (puerto 3001) |
+| `bun run generate:module` | Generar modulo nuevo            |
+| `bun run generate:icons`  | Generar iconos SVG              |
+
+---
+
+## 14. WORKFLOW DE DESARROLLO — Slash Commands
+
+Este proyecto usa **5 slash commands** que convierten Claude Code en un flujo de ingenieria real. Cada comando genera artefactos en `docs/tasks/` que el siguiente comando consume.
+
+### Flujo completo
+
+```
+/brainstorm → /spec-task → /plan-task → /implement-task → /review-task
+```
+
+| Comando           | Proposito                               | Input                    | Output                                   |
+| ----------------- | --------------------------------------- | ------------------------ | ---------------------------------------- |
+| `/brainstorm`     | Explorar codebase, proponer enfoques    | Descripcion del feature  | `brainstorm.md` + `sprint.md`            |
+| `/spec-task`      | Definir QUE construir (no como)         | Brainstorm o descripcion | `spec.md`                                |
+| `/plan-task`      | Disenar COMO construirlo, fase por fase | Spec                     | `plan.md` + `decisions.md` + `status.md` |
+| `/implement-task` | Ejecutar implementacion fase por fase   | Plan                     | Codigo + tests + `status.md` actualizado |
+| `/review-task`    | Auditar codigo contra spec              | Codigo implementado      | `audit.md`                               |
+
+### Cuando usar cada comando
+
+- **Tarea simple (< 30 min):** Salta directo a `/implement-task` con la descripcion
+- **Tarea mediana (1-3 horas):** `/spec-task` → `/plan-task` → `/implement-task`
+- **Tarea compleja (> 3 horas):** Flujo completo desde `/brainstorm`
+- **Revision post-implementacion:** `/review-task` en cualquier momento
+
+### Continuidad entre sesiones
+
+Si el contexto se llena o necesitas retomar en otra sesion:
+
+1. `/implement-task` guarda progreso en `docs/tasks/status.md`
+2. Una sesion nueva lee `status.md` y retoma desde la ultima fase completada
+3. Usa `/implement-task continuar` para retomar
+
+### Agentes automaticos
+
+Los commands lanzan agentes en paralelo cuando es necesario:
+
+- **Exploracion de codebase** — schema, adapters, componentes, modules
+- **Documentacion oficial** — via context7 MCP para docs actualizados
+- **Revision de seguridad** — OWASP Top 10 en codigo nuevo
+- **Revision de performance** — N+1, Promise.all, ISR, server components
+- **Compliance con spec** — compara implementacion vs especificacion
+
+### Artefactos (`docs/tasks/`)
+
+Los archivos en `docs/tasks/` son **temporales por feature** — se regeneran con cada nuevo feature. Estan en `.gitignore` porque son artefactos de trabajo, no documentacion permanente.
+
+---
+
+## 15. CHECKLIST PRE-COMMIT
 
 ### Protocolo
 
@@ -530,28 +1020,43 @@ import { Link, useRouter } from '@/i18n/navigation' // SIEMPRE
 ### Arquitectura
 
 - [ ] Paginas solo componen, sin logica
-- [ ] Server Actions: Zod + requireAuth() + rate limit + service
-- [ ] Services NO usan Next.js APIs
+- [ ] Server Actions usan `createSafeAction()` (Zod + auth + metadata automaticos)
+- [ ] Services NO usan Next.js APIs, lanzan errores tipados (`lib/errors.ts`)
+- [ ] Repositories tienen interface explicita + `tx?: DbOrTx` en mutaciones
 - [ ] `db.transaction()` en operaciones multi-paso (ver `docs/database.md`)
 - [ ] Audit log en cada mutacion
+- [ ] Rate limit en actions sensibles (`checkRateLimit`)
 
 ### Adapters
 
 - [ ] NUNCA importar libs externas fuera de adapters/
 - [ ] Usar providers para obtener servicios
+- [ ] Nuevos roles/recursos agregados a `lib/permissions.ts`
 
 ### Componentes
 
 - [ ] Server Components por default
 - [ ] React Hook Form + zodResolver + useTransition para forms
 - [ ] Loading skeletons con `<Skeleton>` de shadcn/ui
+- [ ] `loading.tsx` en cada pagina nueva
+- [ ] `error.tsx` en cada route group nuevo
 - [ ] Componente nuevo documentado en `docs/`
+
+### Seguridad
+
+- [ ] File uploads validados con `validateFile()` (magic bytes)
+- [ ] Queries soft-delete usan `notDeleted()` helper
+- [ ] CORS configurado si es API publica (`lib/cors.ts`)
+- [ ] Validacion Zod en toda entrada de usuario
+- [ ] No hay secrets hardcodeados
+- [ ] Env vars nuevas clasificadas en `lib/env.ts`
 
 ### Rendimiento
 
 - [ ] Promise.all para fetching paralelo
 - [ ] ISR con `revalidate` en paginas publicas
 - [ ] Zustand con selectores atomicos
+- [ ] Paginacion con `lib/pagination.ts` (no custom)
 
 ### Tests — OBLIGATORIO
 
@@ -562,6 +1067,12 @@ import { Link, useRouter } from '@/i18n/navigation' // SIEMPRE
 - [ ] `bun run test` pasa sin errores
 - [ ] Coverage >= 50% en archivos nuevos
 
+### i18n
+
+- [ ] Nuevos textos en es.json, en.json Y ca.json
+- [ ] Campos i18n en DB usan `lib/i18n-helpers.ts` (getTranslatedField, etc.)
+- [ ] Links usan `@/i18n/navigation` (no `next/link`)
+
 ### Calidad
 
 - [ ] `bun run format:check` pasa sin errores (Prettier)
@@ -569,7 +1080,7 @@ import { Link, useRouter } from '@/i18n/navigation' // SIEMPRE
 - [ ] `bun run type-check` pasa sin errores (TypeScript)
 - [ ] Imports con @/
 - [ ] Archivos < 250 lineas
-- [ ] Nuevos textos en es.json, en.json Y ca.json
+- [ ] Utilidades existentes reutilizadas (`cn`, `formatCurrency`, `slugify`, etc.)
 - [ ] Documentacion actualizada en `docs/`
 
 ---

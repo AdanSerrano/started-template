@@ -165,13 +165,22 @@
 
 ## Dev Tools
 
-| Paquete         | Version | Documentacion Oficial                      | Notas                                     |
-| --------------- | ------- | ------------------------------------------ | ----------------------------------------- |
-| **ESLint**      | 9.x     | https://eslint.org/docs/latest/            | Flat config (eslint.config.mjs)           |
-| **Prettier**    | 3.x     | https://prettier.io/docs/en/               | Con plugin tailwindcss para class sorting |
-| **Husky**       | 9.x     | https://typicode.github.io/husky/          | Git hooks                                 |
-| **lint-staged** | 16.x    | https://github.com/lint-staged/lint-staged | Pre-commit linting                        |
-| **Knip**        | 5.x     | https://knip.dev                           | Deteccion de codigo muerto                |
+| Paquete                         | Version | Documentacion Oficial                                       | Notas                                     |
+| ------------------------------- | ------- | ----------------------------------------------------------- | ----------------------------------------- |
+| **ESLint**                      | 9.x     | https://eslint.org/docs/latest/                             | Flat config (eslint.config.mjs)           |
+| **Prettier**                    | 3.x     | https://prettier.io/docs/en/                                | Con plugin tailwindcss para class sorting |
+| **Husky**                       | 9.x     | https://typicode.github.io/husky/                           | Git hooks                                 |
+| **lint-staged**                 | 16.x    | https://github.com/lint-staged/lint-staged                  | Pre-commit linting                        |
+| **Knip**                        | 5.x     | https://knip.dev                                            | Deteccion de codigo muerto                |
+| **Vite**                        | 8.x     | https://vite.dev/guide/                                     | Bundler para tests (Vitest lo usa)        |
+| **vite-tsconfig-paths**         | 6.x     | https://github.com/aleclarson/vite-tsconfig-paths           | Resuelve @/ aliases en Vitest             |
+| **@vitejs/plugin-react**        | 6.x     | https://github.com/vitejs/vite-plugin-react                 | React transform para Vitest               |
+| **jsdom**                       | 28.x    | https://github.com/jsdom/jsdom                              | DOM environment para component tests      |
+| **pino-pretty**                 | 13.x    | https://github.com/pinojs/pino-pretty                       | Pretty print de logs Pino en desarrollo   |
+| **babel-plugin-react-compiler** | 1.x     | https://react.dev/learn/react-compiler                      | React Compiler — optimizacion automatica  |
+| **@tailwindcss/postcss**        | 4.x     | https://tailwindcss.com/docs/installation/using-postcss     | PostCSS plugin para Tailwind v4           |
+| **@react-email/components**     | 1.x     | https://react.email/docs/components/html                    | Componentes individuales de React Email   |
+| **prettier-plugin-tailwindcss** | 0.7.x   | https://github.com/tailwindlabs/prettier-plugin-tailwindcss | Ordena clases Tailwind automaticamente    |
 
 ---
 
