@@ -363,6 +363,29 @@ export interface IAddressRepository {
 export const addressRepository: IAddressRepository = { ... }
 ```
 
+### Transacciones — `db.transaction()` OBLIGATORIO en operaciones multi-paso
+
+Si una operacion toca **mas de una fila o tabla**, DEBE usar `db.transaction()`. Sin transaccion, si el paso 2 falla, el paso 1 ya se ejecuto y la DB queda en estado inconsistente.
+
+```ts
+// CORRECTO — atomico en el service
+return db.transaction(async (tx) => {
+  await addressRepository.setDefault(id, userId, tx)
+  return addressRepository.update(id, userId, data, tx)
+})
+
+// PROHIBIDO — race condition
+await addressRepository.setDefault(id, userId) // si esto pasa...
+return addressRepository.update(id, userId, data) // ...y esto falla → inconsistente
+```
+
+**Reglas:**
+
+- **Services** orquestan transacciones cuando coordinan multiples repos
+- **Repositories** aceptan `tx?: DbOrTx` y reusan transaccion si ya existe (`if (tx) return run(tx)`)
+- **Reads** NO necesitan transaccion
+- **Detalles completos y tabla de cuando usar:** `docs/database.md`
+
 ### Tests Automaticos — OBLIGATORIO en toda implementacion
 
 **Cada service, action, utilidad o componente nuevo DEBE tener tests unitarios.**
@@ -495,8 +518,9 @@ import { Link, useRouter } from '@/i18n/navigation' // SIEMPRE
 ### Arquitectura
 
 - [ ] Paginas solo componen, sin logica
-- [ ] Server Actions: Zod + requireAuth() + service
+- [ ] Server Actions: Zod + requireAuth() + rate limit + service
 - [ ] Services NO usan Next.js APIs
+- [ ] `db.transaction()` en operaciones multi-paso (ver `docs/database.md`)
 - [ ] Audit log en cada mutacion
 
 ### Adapters

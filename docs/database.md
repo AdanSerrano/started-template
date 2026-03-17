@@ -79,24 +79,93 @@ bun run db:push       # Push directo sin archivo de migracion
 
 ---
 
-## Transacciones (`DbOrTx`)
+## Transacciones (`DbOrTx`) — OBLIGATORIO en operaciones multi-paso
+
+### Regla: Si una operacion toca mas de una fila o tabla, DEBE usar `db.transaction()`
+
+Sin transaccion, si el paso 2 falla, el paso 1 ya se ejecuto y la DB queda inconsistente.
+
+### Patron 1: Service orquesta la transaccion
 
 ```typescript
-import { db, type DbOrTx } from '@/lib/db'
+// services/account-service.ts — CORRECTO
+import { db } from '@/lib/db'
 
-// Repository acepta transaccion opcional
-async function create(data: ProductInsert, tx?: DbOrTx) {
-  const client = tx ?? db
-  const [product] = await client.insert(products).values(data).returning()
-  return product
+export async function createAddress(data: AddressInsert) {
+  if (data.isDefault) {
+    // Dos operaciones → transaccion obligatoria
+    return db.transaction(async (tx) => {
+      const address = await addressRepository.create(data, tx)
+      if (address) {
+        await addressRepository.setDefault(address.id, data.userId, tx)
+      }
+      return address
+    })
+  }
+  // Una sola operacion → no necesita transaccion
+  return addressRepository.create(data)
 }
+```
 
-// Service usa transaccion cuando necesita atomicidad
-async function createWithInventory(data: ProductData) {
+### Patron 2: Repository envuelve operaciones internas
+
+```typescript
+// repositories/address-repository.ts — CORRECTO
+async setDefault(id: string, userId: string, tx?: DbOrTx) {
+  const run = async (client: DbOrTx) => {
+    await client.update(addresses).set({ isDefault: false }).where(eq(addresses.userId, userId))
+    const [address] = await client.update(addresses).set({ isDefault: true }).where(...)
+    return address ?? null
+  }
+
+  // Si ya viene dentro de una transaccion, reusar; si no, crear una nueva
+  if (tx) return run(tx)
+  return db.transaction(async (newTx) => run(newTx))
+}
+```
+
+### Patron 3: Repository acepta `tx?` en mutaciones
+
+```typescript
+// OBLIGATORIO: toda mutacion en repository acepta tx opcional
+export interface IProductRepository {
+  create(data: ProductInsert, tx?: DbOrTx): Promise<Product>
+  update(
+    id: string,
+    data: Partial<Product>,
+    tx?: DbOrTx,
+  ): Promise<Product | null>
+  remove(id: string, tx?: DbOrTx): Promise<boolean>
+  // Reads NO necesitan tx
+  findById(id: string): Promise<Product | null>
+}
+```
+
+### Cuando usar transaccion
+
+| Escenario                           | Transaccion? | Ejemplo                            |
+| ----------------------------------- | ------------ | ---------------------------------- |
+| Insert/update una sola fila         | NO           | `create(data)`                     |
+| Read sin mutacion                   | NO           | `findById(id)`                     |
+| Dos updates que deben ser atomicos  | **SI**       | `unsetDefault` + `setDefault`      |
+| Insert + insert relacionado         | **SI**       | `createOrder` + `createOrderItems` |
+| Update condicional (check + update) | **SI**       | `checkStock` + `decrementStock`    |
+| Delete cascada manual               | **SI**       | `deleteUser` + `deleteAddresses`   |
+
+### Anti-patron: operaciones separadas sin transaccion
+
+```typescript
+// PROHIBIDO — race condition si otra request modifica entre ambas
+if (data.isDefault) {
+  await addressRepository.setDefault(id, userId) // paso 1 ✗
+}
+return addressRepository.update(id, userId, data) // paso 2 ✗
+
+// CORRECTO — atomico
+if (data.isDefault) {
   return db.transaction(async (tx) => {
-    const product = await productRepo.create(data.product, tx)
-    await inventoryRepo.create({ productId: product.id, ...data.stock }, tx)
-    return product
+    await addressRepository.setDefault(id, userId, tx) // paso 1 ✓
+    return addressRepository.update(id, userId, data, tx) // paso 2 ✓
   })
 }
 ```
