@@ -1,5 +1,5 @@
 import { defineConfig } from 'drizzle-kit'
-import { DIALECT } from '@/db/dialect'
+import { DIALECT } from './db/dialect'
 
 export default defineConfig({
   schema: './db/schema/index.ts',
