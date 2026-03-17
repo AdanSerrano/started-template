@@ -5,19 +5,16 @@ import {
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
-  MoreHorizontal,
 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { memo, useCallback, useMemo } from 'react'
 import { Button } from '@/components/ui/button'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import { cn } from '@/lib/utils'
+import {
+  PageSizeSelector,
+  PageNumbers,
+  usePageNumbers,
+} from './page-size-selector'
 import type { PaginationConfig } from '../types'
 
 interface TablePaginationProps {
@@ -54,29 +51,24 @@ function TablePaginationInner({
   const handleFirstPage = useCallback(() => {
     onPaginationChange({ pageIndex: 0, pageSize })
   }, [onPaginationChange, pageSize])
-
   const handlePreviousPage = useCallback(() => {
     onPaginationChange({ pageIndex: Math.max(0, pageIndex - 1), pageSize })
   }, [onPaginationChange, pageIndex, pageSize])
-
   const handleNextPage = useCallback(() => {
     onPaginationChange({
       pageIndex: Math.min(totalPages - 1, pageIndex + 1),
       pageSize,
     })
   }, [onPaginationChange, pageIndex, pageSize, totalPages])
-
   const handleLastPage = useCallback(() => {
     onPaginationChange({ pageIndex: totalPages - 1, pageSize })
   }, [onPaginationChange, pageSize, totalPages])
-
   const handlePageChange = useCallback(
     (page: number) => {
       onPaginationChange({ pageIndex: page, pageSize })
     },
     [onPaginationChange, pageSize],
   )
-
   const handlePageSizeChange = useCallback(
     (value: string) => {
       onPaginationChange({ pageIndex: 0, pageSize: Number(value) })
@@ -90,47 +82,7 @@ function TablePaginationInner({
     return { start, end }
   }, [pageIndex, pageSize, total])
 
-  // Generate page numbers to display - optimized with Set for O(1) lookups
-  const pageNumbers = useMemo(() => {
-    if (totalPages <= 7) {
-      return Array.from({ length: totalPages }, (_, i) => i)
-    }
-
-    const pages: (number | 'ellipsis')[] = []
-    const addedPages = new Set<number>() // O(1) lookup instead of O(n)
-    const current = pageIndex
-
-    // Always show first page
-    pages.push(0)
-    addedPages.add(0)
-
-    if (current > 3) {
-      pages.push('ellipsis')
-    }
-
-    // Pages around current
-    const start = Math.max(1, current - 1)
-    const end = Math.min(totalPages - 2, current + 1)
-
-    for (let i = start; i <= end; i++) {
-      if (!addedPages.has(i)) {
-        pages.push(i)
-        addedPages.add(i)
-      }
-    }
-
-    if (current < totalPages - 4) {
-      pages.push('ellipsis')
-    }
-
-    // Always show last page
-    const lastPage = totalPages - 1
-    if (totalPages > 1 && !addedPages.has(lastPage)) {
-      pages.push(lastPage)
-    }
-
-    return pages
-  }, [pageIndex, totalPages])
+  const pageNumbers = usePageNumbers(pageIndex, totalPages)
 
   return (
     <nav
@@ -142,7 +94,6 @@ function TablePaginationInner({
       role="navigation"
       aria-label={t('ariaLabel')}
     >
-      {/* Left side: Info */}
       <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-4">
         {showRowsInfo && (
           <span className="text-muted-foreground text-sm">
@@ -159,34 +110,15 @@ function TablePaginationInner({
           </span>
         )}
       </div>
-
-      {/* Right side: Controls */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
-        {/* Rows per page */}
-        <div className="flex items-center gap-2">
-          <span className="text-muted-foreground text-sm whitespace-nowrap">
-            {t('rowsPerPage')}
-          </span>
-          <Select value={String(pageSize)} onValueChange={handlePageSizeChange}>
-            <SelectTrigger
-              className="h-8 w-[70px]"
-              aria-label={t('selectRowsPerPage')}
-            >
-              <SelectValue placeholder={pageSize} />
-            </SelectTrigger>
-            <SelectContent side="top">
-              {pageSizeOptions.map((size) => (
-                <SelectItem key={size} value={String(size)}>
-                  {size}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Page navigation */}
+        <PageSizeSelector
+          pageSize={pageSize}
+          pageSizeOptions={pageSizeOptions}
+          onPageSizeChange={handlePageSizeChange}
+          rowsPerPageLabel={t('rowsPerPage')}
+          selectAriaLabel={t('selectRowsPerPage')}
+        />
         <div className="flex items-center gap-1">
-          {/* First page */}
           {showFirstLast && (
             <Button
               variant="outline"
@@ -199,8 +131,6 @@ function TablePaginationInner({
               <ChevronsLeft className="h-4 w-4" />
             </Button>
           )}
-
-          {/* Previous page */}
           <Button
             variant="outline"
             size="icon"
@@ -211,48 +141,25 @@ function TablePaginationInner({
             <span className="sr-only">{t('previousPage')}</span>
             <ChevronLeft className="h-4 w-4" />
           </Button>
-
-          {/* Page numbers */}
           {showPageNumbers && (
             <div
               className="hidden items-center gap-1 sm:flex"
               role="group"
               aria-label={t('pages')}
             >
-              {pageNumbers.map((page, index) =>
-                page === 'ellipsis' ? (
-                  <span
-                    key={`ellipsis-${index}`}
-                    className="flex h-8 w-8 items-center justify-center"
-                    aria-hidden="true"
-                  >
-                    <MoreHorizontal className="text-muted-foreground h-4 w-4" />
-                  </span>
-                ) : (
-                  <Button
-                    key={page}
-                    variant={pageIndex === page ? 'default' : 'outline'}
-                    size="icon"
-                    className="h-8 w-8"
-                    onClick={() => handlePageChange(page)}
-                    aria-label={t('goToPage', { page: page + 1 })}
-                    aria-current={pageIndex === page ? 'page' : undefined}
-                  >
-                    {page + 1}
-                  </Button>
-                ),
-              )}
+              <PageNumbers
+                pageNumbers={pageNumbers}
+                pageIndex={pageIndex}
+                onPageChange={handlePageChange}
+                goToPageLabel={(p) => t('goToPage', p)}
+              />
             </div>
           )}
-
-          {/* Mobile page indicator */}
           {showPageNumbers && (
             <span className="flex items-center justify-center px-2 text-sm font-medium sm:hidden">
               {pageIndex + 1} / {totalPages || 1}
             </span>
           )}
-
-          {/* Next page */}
           <Button
             variant="outline"
             size="icon"
@@ -263,8 +170,6 @@ function TablePaginationInner({
             <span className="sr-only">{t('nextPage')}</span>
             <ChevronRight className="h-4 w-4" />
           </Button>
-
-          {/* Last page */}
           {showFirstLast && (
             <Button
               variant="outline"

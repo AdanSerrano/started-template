@@ -1,14 +1,7 @@
 'use client'
 
 import { Check, X, Copy, CheckCheck } from 'lucide-react'
-import {
-  memo,
-  useMemo,
-  useCallback,
-  useRef,
-  useState,
-  type ReactNode,
-} from 'react'
+import { memo, useMemo, type ReactNode } from 'react'
 import { Button } from '@/components/ui/button'
 import {
   FormControl,
@@ -21,7 +14,12 @@ import {
 import { PasswordInput } from '@/components/ui/password-input.client'
 import { cn } from '@/lib/utils'
 import { FormFieldTooltip } from './form-field-tooltip'
-import { calculatePasswordStrength } from './form-field.types'
+import {
+  STRENGTH_COLORS,
+  STRENGTH_WIDTHS,
+  usePasswordCopy,
+  usePasswordStrength,
+} from './use-password-strength'
 import type { BaseFormFieldProps } from './form-field.types'
 import type {
   FieldPath,
@@ -52,16 +50,6 @@ export interface FormPasswordFieldProps<
   onCopied?: (() => void) | undefined
 }
 
-const STRENGTH_COLORS = [
-  'bg-destructive',
-  'bg-destructive',
-  'bg-orange-500',
-  'bg-yellow-500',
-  'bg-green-500',
-]
-
-const STRENGTH_WIDTHS = ['w-0', 'w-1/5', 'w-2/5', 'w-3/5', 'w-4/5', 'w-full']
-
 interface PasswordContentProps {
   field: ControllerRenderProps<FieldValues, string>
   hasError: boolean
@@ -89,36 +77,9 @@ const PasswordContent = memo(function PasswordContent({
   inputClassName,
   onCopied,
 }: PasswordContentProps) {
-  const [copied, setCopied] = useState(false)
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
-
-  const { level, requirements } = useMemo(
-    () => calculatePasswordStrength(field.value ?? ''),
-    [field.value],
-  )
-
+  const { copied, handleCopy } = usePasswordCopy(field.value, onCopied)
+  const { level, requirements } = usePasswordStrength(field.value ?? '')
   const hasValue = Boolean(field.value)
-
-  const handleCopy = useCallback(async () => {
-    if (!field.value) return
-
-    try {
-      await navigator.clipboard.writeText(field.value)
-      setCopied(true)
-
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current)
-      }
-
-      timeoutRef.current = setTimeout(() => {
-        setCopied(false)
-      }, 2000)
-
-      onCopied?.()
-    } catch {
-      // Clipboard API not available
-    }
-  }, [field.value, onCopied])
 
   const inputClasses = useMemo(
     () =>
@@ -159,7 +120,6 @@ const PasswordContent = memo(function PasswordContent({
           </Button>
         )}
       </div>
-
       {showStrengthIndicator && hasValue && (
         <div className="space-y-2">
           <div className="bg-muted h-1.5 w-full overflow-hidden rounded-full">
@@ -173,7 +133,6 @@ const PasswordContent = memo(function PasswordContent({
           </div>
         </div>
       )}
-
       {showRequirements && hasValue && (
         <div className="border-border bg-muted/30 rounded-lg border p-4">
           <p className="mb-3 text-sm font-medium">{labels.requirements}</p>
@@ -275,7 +234,6 @@ function FormPasswordFieldComponent<
               onCopied={onCopied}
             />
           </FormControl>
-
           {description && (
             <FormDescription className="text-xs">{description}</FormDescription>
           )}

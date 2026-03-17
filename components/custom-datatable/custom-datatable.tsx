@@ -1,6 +1,5 @@
 'use client'
 
-import { Loader2 } from 'lucide-react'
 import {
   forwardRef,
   useEffect,
@@ -11,9 +10,9 @@ import {
 } from 'react'
 import { toast } from 'sonner'
 import { Table } from '@/components/ui/table'
-import { cn } from '@/lib/utils'
 import { CustomTableBody } from './components/table-body'
 import { CustomTableHeader } from './components/table-header'
+import { TableLoadingIndicator } from './components/table-loading-indicator'
 import { CustomTablePagination } from './components/table-pagination'
 import { CustomTableToolbar } from './components/table-toolbar'
 import { useCopyClipboard } from './hooks/use-copy-clipboard'
@@ -38,7 +37,6 @@ function CustomDataTableInner<TData>(
     columns,
     getRowId,
     selection,
-    expansion: _expansion,
     pagination,
     columnVisibility,
     style,
@@ -56,11 +54,9 @@ function CustomDataTableInner<TData>(
 
   const tableRef = useRef<HTMLDivElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
-
   const [internalDensity, setInternalDensity] = useState<DensityType>(
     style?.density ?? 'default',
   )
-  const currentDensity = internalDensity
 
   const { isFullscreen, toggleFullscreen } = useFullscreen({
     enabled: fullscreenConfig?.enabled ?? false,
@@ -117,7 +113,6 @@ function CustomDataTableInner<TData>(
     },
     [onExportFn, processedData],
   )
-
   const handleDensityChange = useCallback((density: DensityType) => {
     setInternalDensity(density)
   }, [])
@@ -126,7 +121,6 @@ function CustomDataTableInner<TData>(
   useEffect(() => {
     toolbarConfigRef.current = toolbarConfig
   }, [toolbarConfig])
-
   const handleRefresh = useCallback(() => {
     toolbarConfigRef.current?.onRefresh?.()
   }, [])
@@ -139,7 +133,6 @@ function CustomDataTableInner<TData>(
     selectedRows: selectedRowsSet,
     getRowId,
   })
-
   const { printAll, isPrintEnabled } = usePrint({
     enabled: printConfig?.enabled ?? false,
     config: printConfig,
@@ -151,13 +144,9 @@ function CustomDataTableInner<TData>(
 
   const handleCopy = useCallback(async () => {
     const success = await copyAll()
-    if (success) {
-      toast.success('Datos copiados al portapapeles')
-    } else {
-      toast.error('Error al copiar datos')
-    }
+    if (success) toast.success('Datos copiados al portapapeles')
+    else toast.error('Error al copiar datos')
   }, [copyAll])
-
   const handlePrint = useCallback(() => {
     printAll()
   }, [printAll])
@@ -198,7 +187,7 @@ function CustomDataTableInner<TData>(
     props,
     visibleColumns,
     processedData,
-    currentDensity,
+    currentDensity: internalDensity,
     isFullscreen,
     selectedCount,
     bulkActionsContent,
@@ -227,7 +216,6 @@ function CustomDataTableInner<TData>(
       {showToolbar && (
         <>{toolbar ?? <CustomTableToolbar {...toolbarProps} />}</>
       )}
-
       <div
         ref={tableRef}
         className={tableContainerClass}
@@ -237,26 +225,7 @@ function CustomDataTableInner<TData>(
         aria-label={props.ariaLabel ?? 'Tabla de datos'}
         aria-busy={isLoading || isPending}
       >
-        <div
-          className={cn(
-            'absolute top-2 right-2 z-10 transition-all duration-200 ease-out',
-            isPending && !isLoading
-              ? 'translate-y-0 opacity-100'
-              : 'pointer-events-none -translate-y-2 opacity-0',
-          )}
-          role="status"
-          aria-live="polite"
-        >
-          <div className="bg-primary/10 border-primary/20 flex items-center gap-1.5 rounded-full border px-2.5 py-1 shadow-xs backdrop-blur-xs">
-            <Loader2
-              className="text-primary h-3 w-3 animate-spin"
-              aria-hidden="true"
-            />
-            <span className="text-primary text-xs font-medium">
-              {props.isLoading ? undefined : 'Actualizando'}
-            </span>
-          </div>
-        </div>
+        <TableLoadingIndicator isPending={isPending} isLoading={isLoading} />
         <Table
           aria-label={props.ariaLabel ?? 'Tabla de datos'}
           aria-rowcount={pagination?.totalRows ?? data.length}
@@ -265,9 +234,7 @@ function CustomDataTableInner<TData>(
           <CustomTableBody {...bodyProps} />
         </Table>
       </div>
-
       {paginationProps && <CustomTablePagination {...paginationProps} />}
-
       {footer}
     </div>
   )

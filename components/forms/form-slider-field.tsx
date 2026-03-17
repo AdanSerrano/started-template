@@ -1,6 +1,6 @@
 'use client'
 
-import { memo, useMemo, useCallback } from 'react'
+import { memo, useMemo } from 'react'
 import {
   FormControl,
   FormDescription,
@@ -9,7 +9,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { Slider } from '@/components/ui/slider'
+import { SliderContent, RangeSliderContent } from './slider-marks'
 import type { BaseFormFieldProps } from './form-field.types'
 import type {
   FieldPath,
@@ -29,55 +29,6 @@ export interface FormSliderFieldProps<
   showMinMax?: boolean | undefined
   sliderClassName?: string | undefined
 }
-
-interface SliderContentProps {
-  field: ControllerRenderProps<FieldValues, string>
-  disabled?: boolean | undefined
-  min: number
-  max: number
-  step: number
-  showMinMax: boolean
-  sliderClassName?: string | undefined
-  format: (v: number) => string
-}
-
-const SliderContent = memo(function SliderContent({
-  field,
-  disabled,
-  min,
-  max,
-  step,
-  showMinMax,
-  sliderClassName,
-  format,
-}: SliderContentProps) {
-  const handleValueChange = useCallback(
-    ([value]: number[]) => {
-      field.onChange(value)
-    },
-    [field],
-  )
-
-  return (
-    <div className="space-y-2">
-      <Slider
-        min={min}
-        max={max}
-        step={step}
-        disabled={disabled ?? false}
-        value={[field.value ?? min]}
-        onValueChange={handleValueChange}
-        className={sliderClassName}
-      />
-      {showMinMax && (
-        <div className="text-muted-foreground flex justify-between text-xs">
-          <span>{format(min)}</span>
-          <span>{format(max)}</span>
-        </div>
-      )}
-    </div>
-  )
-})
 
 function FormSliderFieldComponent<
   TFieldValues extends FieldValues = FieldValues,
@@ -157,60 +108,6 @@ export interface FormRangeSliderFieldProps<
   sliderClassName?: string | undefined
 }
 
-interface RangeSliderContentProps {
-  field: ControllerRenderProps<FieldValues, string>
-  disabled?: boolean | undefined
-  min: number
-  max: number
-  step: number
-  showMinMax: boolean
-  sliderClassName?: string | undefined
-  format: (v: number) => string
-}
-
-const RangeSliderContent = memo(function RangeSliderContent({
-  field,
-  disabled,
-  min,
-  max,
-  step,
-  showMinMax,
-  sliderClassName,
-  format,
-}: RangeSliderContentProps) {
-  const values: [number, number] = useMemo(
-    () => field.value ?? [min, max],
-    [field.value, min, max],
-  )
-
-  const handleValueChange = useCallback(
-    (newValues: number[]) => {
-      field.onChange(newValues as [number, number])
-    },
-    [field],
-  )
-
-  return (
-    <div className="space-y-2">
-      <Slider
-        min={min}
-        max={max}
-        step={step}
-        disabled={disabled ?? false}
-        value={values}
-        onValueChange={handleValueChange}
-        className={sliderClassName}
-      />
-      {showMinMax && (
-        <div className="text-muted-foreground flex justify-between text-xs">
-          <span>{format(min)}</span>
-          <span>{format(max)}</span>
-        </div>
-      )}
-    </div>
-  )
-})
-
 function FormRangeSliderFieldComponent<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
@@ -240,7 +137,6 @@ function FormRangeSliderFieldComponent<
       name={name}
       render={({ field }) => {
         const values: [number, number] = field.value ?? [min, max]
-
         return (
           <FormItem className={className}>
             <div className="flex items-center justify-between">

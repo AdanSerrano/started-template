@@ -1,69 +1,41 @@
 import { useMemo } from 'react'
-import { cn } from '@/lib/utils'
-import type {
-  CustomColumnDef,
-  CustomDataTableProps,
-  DensityType,
-  ExportFormat,
-} from '../types'
+import {
+  useShowToolbar,
+  useContainerClasses,
+  useEffectiveStyle,
+  type DataTablePropsParams,
+} from './datatable-defaults'
 
-interface UseDataTablePropsParams<TData> {
-  props: CustomDataTableProps<TData>
-  visibleColumns: CustomColumnDef<TData>[]
-  processedData: TData[]
-  currentDensity: DensityType
-  isFullscreen: boolean
-  selectedCount: number
-  bulkActionsContent: React.ReactNode | null
-  // Handlers
-  handleExport: (format: ExportFormat) => void
-  handleDensityChange: (density: DensityType) => void
-  handleRefresh: () => void
-  handleCopy: () => Promise<void>
-  handlePrint: () => void
-  clearSelection: () => void
-  toggleFullscreen: () => void
-  isCopyEnabled: boolean | undefined
-  isPrintEnabled: boolean | undefined
-  // State from useDataTableState
-  selectionState: Record<string, boolean>
-  expansionState: Record<string, boolean>
-  toggleRowSelection: (rowId: string) => void
-  toggleRowExpansion: (rowId: string) => void
-  toggleSort: (columnId: string) => void
-  getSortDirection: (columnId: string) => 'asc' | 'desc' | false
-  isAllSelected: boolean
-  isSomeSelected: boolean
-  selectAllRows: () => void
-}
-
-export function useDataTableMemoizedProps<TData>({
-  props,
-  visibleColumns,
-  processedData,
-  currentDensity,
-  isFullscreen,
-  selectedCount,
-  bulkActionsContent,
-  handleExport,
-  handleDensityChange,
-  handleRefresh,
-  handleCopy,
-  handlePrint,
-  clearSelection,
-  toggleFullscreen,
-  isCopyEnabled,
-  isPrintEnabled,
-  selectionState,
-  expansionState,
-  toggleRowSelection,
-  toggleRowExpansion,
-  toggleSort,
-  getSortDirection,
-  isAllSelected,
-  isSomeSelected,
-  selectAllRows,
-}: UseDataTablePropsParams<TData>) {
+export function useDataTableMemoizedProps<TData>(
+  p: DataTablePropsParams<TData>,
+) {
+  const {
+    props,
+    visibleColumns,
+    processedData,
+    currentDensity,
+    isFullscreen,
+    selectedCount,
+    bulkActionsContent,
+    handleExport,
+    handleDensityChange,
+    handleRefresh,
+    handleCopy,
+    handlePrint,
+    clearSelection,
+    toggleFullscreen,
+    isCopyEnabled,
+    isPrintEnabled,
+    selectionState,
+    expansionState,
+    toggleRowSelection,
+    toggleRowExpansion,
+    toggleSort,
+    getSortDirection,
+    isAllSelected,
+    isSomeSelected,
+    selectAllRows,
+  } = p
   const {
     data,
     columns,
@@ -75,7 +47,7 @@ export function useDataTableMemoizedProps<TData>({
     filter,
     columnVisibility,
     style,
-    export: exportConfig,
+    export: xCfg,
     isLoading,
     isPending,
     emptyMessage,
@@ -83,7 +55,6 @@ export function useDataTableMemoizedProps<TData>({
     onRowClick,
     onRowDoubleClick,
     onRowContextMenu,
-    toolbar,
     toolbarConfig,
     headerActions,
     className,
@@ -93,51 +64,24 @@ export function useDataTableMemoizedProps<TData>({
     rowClassName,
     paginationClassName,
     toolbarClassName,
-    fullscreen: fullscreenConfig,
+    fullscreen: fsCfg,
   } = props
 
-  const showExpander = expansion?.enabled ?? false
-
-  const showToolbar = useMemo(
-    () =>
-      toolbarConfig?.show !== false &&
-      (filter ||
-        exportConfig?.enabled ||
-        headerActions ||
-        toolbar ||
-        toolbarConfig?.showColumnVisibility ||
-        toolbarConfig?.showDensityToggle ||
-        toolbarConfig?.showRefresh ||
-        toolbarConfig?.showCopy ||
-        toolbarConfig?.showPrint ||
-        toolbarConfig?.showFullscreen),
-    [
-      toolbarConfig?.show,
-      toolbarConfig?.showColumnVisibility,
-      toolbarConfig?.showDensityToggle,
-      toolbarConfig?.showRefresh,
-      toolbarConfig?.showCopy,
-      toolbarConfig?.showPrint,
-      toolbarConfig?.showFullscreen,
-      filter,
-      exportConfig?.enabled,
-      headerActions,
-      toolbar,
-    ],
-  )
-
-  const effectiveStyle = useMemo(
-    () => ({
-      ...style,
-      density: currentDensity,
-    }),
-    [style, currentDensity],
-  )
+  const showToolbar = useShowToolbar(props)
+  const effectiveStyle = useEffectiveStyle(style, currentDensity)
+  const { containerClass, tableContainerClass, containerStyle } =
+    useContainerClasses(
+      isFullscreen,
+      className,
+      containerClassName,
+      style?.maxHeight,
+      style?.minHeight,
+    )
 
   const toolbarProps = useMemo(
     () => ({
       filter,
-      exportConfig,
+      exportConfig: xCfg,
       onExport: handleExport,
       columnVisibility,
       columns,
@@ -156,15 +100,13 @@ export function useDataTableMemoizedProps<TData>({
       onPrint: isPrintEnabled ? handlePrint : undefined,
       isPrintEnabled,
       isFullscreen,
-      onToggleFullscreen: fullscreenConfig?.enabled
-        ? toggleFullscreen
-        : undefined,
-      isFullscreenEnabled: fullscreenConfig?.enabled ?? false,
+      onToggleFullscreen: fsCfg?.enabled ? toggleFullscreen : undefined,
+      isFullscreenEnabled: fsCfg?.enabled ?? false,
       className: toolbarClassName,
     }),
     [
       filter,
-      exportConfig,
+      xCfg,
       handleExport,
       columnVisibility,
       columns,
@@ -184,7 +126,7 @@ export function useDataTableMemoizedProps<TData>({
       isPrintEnabled,
       handlePrint,
       isFullscreen,
-      fullscreenConfig?.enabled,
+      fsCfg?.enabled,
       toggleFullscreen,
       toolbarClassName,
     ],
@@ -194,7 +136,7 @@ export function useDataTableMemoizedProps<TData>({
     () => ({
       columns: visibleColumns,
       selection,
-      showExpander,
+      showExpander: expansion?.enabled ?? false,
       sorting: sorting?.sorting,
       onSort: toggleSort,
       getSortDirection,
@@ -208,7 +150,7 @@ export function useDataTableMemoizedProps<TData>({
     [
       visibleColumns,
       selection,
-      showExpander,
+      expansion?.enabled,
       sorting?.sorting,
       toggleSort,
       getSortDirection,
@@ -277,30 +219,6 @@ export function useDataTableMemoizedProps<TData>({
       className: paginationClassName,
     }
   }, [pagination, selectedCount, paginationClassName])
-
-  const containerClass = useMemo(
-    () =>
-      cn(
-        'w-full',
-        isFullscreen && 'fixed inset-0 z-50 bg-background p-4 overflow-auto',
-        className,
-      ),
-    [isFullscreen, className],
-  )
-
-  const tableContainerClass = useMemo(
-    () => cn('relative overflow-auto rounded-md border', containerClassName),
-    [containerClassName],
-  )
-
-  const styleMaxHeight = style?.maxHeight
-  const styleMinHeight = style?.minHeight
-  const containerStyle = useMemo(() => {
-    const styles: React.CSSProperties = {}
-    if (styleMaxHeight) styles.maxHeight = styleMaxHeight
-    if (styleMinHeight) styles.minHeight = styleMinHeight
-    return styles
-  }, [styleMaxHeight, styleMinHeight])
 
   return {
     showToolbar,

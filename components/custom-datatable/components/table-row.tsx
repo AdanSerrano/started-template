@@ -4,32 +4,12 @@ import { memo, useCallback, useRef, Fragment, useMemo } from 'react'
 import { TableCell, TableRow } from '@/components/ui/table'
 import { cn } from '@/lib/utils'
 import { DENSITY_HEIGHT, CLICK_DELAY_MS } from '../constants'
+import {
+  useComputedCellStyles,
+  computeExpandedColSpan,
+} from './table-cell-renderers'
 import { SelectionCell, DataCell, ExpanderCell } from './table-row-cells'
-import type {
-  CustomColumnDef,
-  SelectionConfig,
-  ExpansionConfig,
-  StyleConfig,
-} from '../types'
-
-interface TableRowProps<TData> {
-  row: TData
-  rowId: string
-  rowIndex: number
-  columns: CustomColumnDef<TData>[]
-  selection?: SelectionConfig<TData> | undefined
-  expansion?: ExpansionConfig<TData> | undefined
-  style?: StyleConfig | undefined
-  // State objects for direct lookup - avoids callback recreation
-  selectionState: Record<string, boolean>
-  expansionState: Record<string, boolean>
-  onToggleSelection: (rowId: string) => void
-  onToggleExpansion: (rowId: string) => void
-  onRowClick?: ((row: TData, event: React.MouseEvent) => void) | undefined
-  onRowDoubleClick?: ((row: TData, event: React.MouseEvent) => void) | undefined
-  onRowContextMenu?: ((row: TData, event: React.MouseEvent) => void) | undefined
-  rowClassName?: string | undefined
-}
+import { areRowPropsEqual, type TableRowProps } from './table-row-memo'
 
 function TableRowInner<TData>({
   row,
@@ -48,8 +28,6 @@ function TableRowInner<TData>({
   onRowContextMenu,
   rowClassName,
 }: TableRowProps<TData>) {
-  // Derive selection/expansion from state objects - this is the key optimization
-  // Each row only re-renders when ITS OWN state changes
   const isSelected = !!selectionState[rowId]
   const isExpanded = !!expansionState[rowId]
   const clickTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -58,25 +36,20 @@ function TableRowInner<TData>({
   const density = style?.density ?? 'default'
   const enableHover = style?.hover ?? true
   const enableStriped = style?.striped ?? false
-
   const canExpand = expansion?.enabled
     ? expansion.canExpand
       ? expansion.canExpand(row)
       : true
     : false
-
   const hasCheckbox = selection?.enabled && selection.showCheckbox
 
-  // Stable toggle handlers
   const handleToggleSelection = useCallback(() => {
     onToggleSelection(rowId)
   }, [onToggleSelection, rowId])
-
   const handleToggleExpansion = useCallback(() => {
     onToggleExpansion(rowId)
   }, [onToggleExpansion, rowId])
 
-  // Refs for stable click handler
   const propsRef = useRef({
     row,
     rowId,
@@ -88,7 +61,6 @@ function TableRowInner<TData>({
     onRowClick,
     onRowDoubleClick,
   })
-
   propsRef.current = {
     row,
     rowId,
@@ -103,7 +75,7 @@ function TableRowInner<TData>({
 
   const handleClick = useCallback((e: React.MouseEvent) => {
     const target = e.target as HTMLElement
-    const isInteractiveElement =
+    const isInteractive =
       target.closest('button') ||
       target.closest("[role='checkbox']") ||
       target.closest("[role='menuitem']") ||
@@ -111,26 +83,20 @@ function TableRowInner<TData>({
       target.closest('input') ||
       target.closest('a') ||
       target.closest('[data-stop-propagation]')
-
-    if (isInteractiveElement) return
+    if (isInteractive) return
 
     clickCountRef.current += 1
-
     if (clickCountRef.current === 1) {
       clickTimeoutRef.current = setTimeout(() => {
         if (clickCountRef.current === 1) {
-          const props = propsRef.current
-
-          if (props.expansion?.expandOnClick && props.canExpand) {
-            props.onToggleExpansion(props.rowId)
+          const p = propsRef.current
+          if (p.expansion?.expandOnClick && p.canExpand)
+            p.onToggleExpansion(p.rowId)
+          if (p.selection?.selectOnRowClick && p.selection.enabled) {
+            p.onToggleSelection(p.rowId)
+            p.selection.onRowSelect?.(p.row)
           }
-
-          if (props.selection?.selectOnRowClick && props.selection.enabled) {
-            props.onToggleSelection(props.rowId)
-            props.selection.onRowSelect?.(props.row)
-          }
-
-          props.onRowClick?.(props.row, e)
+          p.onRowClick?.(p.row, e)
         }
         clickCountRef.current = 0
       }, CLICK_DELAY_MS)
@@ -157,13 +123,11 @@ function TableRowInner<TData>({
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault()
-      const props = propsRef.current
-      if (props.expansion?.expandOnClick && props.canExpand) {
-        props.onToggleExpansion(props.rowId)
-      }
-      if (props.selection?.selectOnRowClick && props.selection.enabled) {
-        props.onToggleSelection(props.rowId)
-      }
+      const p = propsRef.current
+      if (p.expansion?.expandOnClick && p.canExpand)
+        p.onToggleExpansion(p.rowId)
+      if (p.selection?.selectOnRowClick && p.selection.enabled)
+        p.onToggleSelection(p.rowId)
     }
   }, [])
 
@@ -174,12 +138,10 @@ function TableRowInner<TData>({
     selection?.selectOnRowClick
   )
 
-  // Memoize row class with smooth transitions
   const rowClass = useMemo(
     () =>
       cn(
         DENSITY_HEIGHT[density],
-        // Smooth transitions for all state changes
         'transition-all duration-150 ease-out',
         hasRowInteraction &&
           'cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset',
@@ -199,12 +161,9 @@ function TableRowInner<TData>({
     ],
   )
 
-  // Calculate colspan for expanded content
   const expandedColSpan = useMemo(
-    () =>
-      columns.length +
-      (selection?.enabled && selection.showCheckbox ? 1 : 0) +
-      (expansion?.enabled ? 1 : 0),
+    () => computeExpandedColSpan(columns.length, selection, expansion),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       columns.length,
       selection?.enabled,
@@ -213,54 +172,15 @@ function TableRowInner<TData>({
     ],
   )
 
-  // Ref for row data to avoid re-rendering expanded content unnecessarily
   const rowRef = useRef(row)
   rowRef.current = row
-
-  // Memoize expanded content - only re-render when isExpanded changes
   const expandedContent = useMemo(() => {
     if (!isExpanded || !expansion?.renderContent) return null
     return expansion.renderContent(rowRef.current)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isExpanded, expansion?.renderContent])
 
-  // Pre-compute cell STYLES only - stable across selection/expansion changes
-  const cellStyles = useMemo(() => {
-    return columns.map((column) => {
-      const cellStyle: React.CSSProperties = {}
-      if (column.width) {
-        cellStyle.width =
-          typeof column.width === 'number' ? `${column.width}px` : column.width
-      }
-      if (column.minWidth) cellStyle.minWidth = `${column.minWidth}px`
-      if (column.maxWidth) cellStyle.maxWidth = `${column.maxWidth}px`
-
-      const alignClass =
-        column.align === 'center'
-          ? 'text-center'
-          : column.align === 'right'
-            ? 'text-right'
-            : 'text-left'
-
-      const pinnedClass = column.pinned
-        ? cn(
-            'sticky z-10 bg-background will-change-transform',
-            column.pinned === 'left'
-              ? 'left-0 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]'
-              : 'right-0 shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)]',
-          )
-        : ''
-
-      return {
-        columnId: column.id,
-        alignClass,
-        pinnedClass,
-        cellClassName: column.cellClassName,
-        cellStyle,
-        cellFn: column.cell,
-      }
-    })
-  }, [columns])
+  const cellStyles = useComputedCellStyles(columns)
 
   return (
     <Fragment>
@@ -276,7 +196,6 @@ function TableRowInner<TData>({
         onKeyDown={hasRowInteraction ? handleKeyDown : undefined}
         onContextMenu={onRowContextMenu ? handleContextMenu : undefined}
       >
-        {/* Selection cell */}
         {hasCheckbox && selection && (
           <SelectionCell
             isSelected={isSelected}
@@ -285,8 +204,6 @@ function TableRowInner<TData>({
             rowIndex={rowIndex}
           />
         )}
-
-        {/* Expander cell */}
         {expansion?.enabled && (
           <ExpanderCell
             isExpanded={isExpanded}
@@ -296,8 +213,6 @@ function TableRowInner<TData>({
             rowIndex={rowIndex}
           />
         )}
-
-        {/* Data cells - cellFn executes inside DataCell memo boundary */}
         {cellStyles.map((cellData) => (
           <DataCell
             key={cellData.columnId}
@@ -315,8 +230,6 @@ function TableRowInner<TData>({
           />
         ))}
       </TableRow>
-
-      {/* Expanded content */}
       {isExpanded && expansion?.renderContent && (
         <TableRow className="bg-muted/20">
           <TableCell colSpan={expandedColSpan} className="p-0">
@@ -328,62 +241,7 @@ function TableRowInner<TData>({
   )
 }
 
-// Custom comparison for memo - KEY OPTIMIZATION
-function arePropsEqual<TData>(
-  prevProps: TableRowProps<TData>,
-  nextProps: TableRowProps<TData>,
-): boolean {
-  // Fast path: check if THIS ROW's selection/expansion state changed
-  const prevSelected = !!prevProps.selectionState[prevProps.rowId]
-  const nextSelected = !!nextProps.selectionState[nextProps.rowId]
-  if (prevSelected !== nextSelected) return false
-
-  const prevExpanded = !!prevProps.expansionState[prevProps.rowId]
-  const nextExpanded = !!nextProps.expansionState[nextProps.rowId]
-  if (prevExpanded !== nextExpanded) return false
-
-  // Check identity props
-  if (prevProps.rowId !== nextProps.rowId) return false
-  if (prevProps.rowIndex !== nextProps.rowIndex) return false
-  if (prevProps.row !== nextProps.row) return false
-  if (prevProps.rowClassName !== nextProps.rowClassName) return false
-
-  // Check style props
-  if (prevProps.style?.density !== nextProps.style?.density) return false
-  if (prevProps.style?.striped !== nextProps.style?.striped) return false
-  if (prevProps.style?.hover !== nextProps.style?.hover) return false
-
-  // Check selection config
-  if (prevProps.selection?.enabled !== nextProps.selection?.enabled)
-    return false
-  if (prevProps.selection?.mode !== nextProps.selection?.mode) return false
-  if (
-    prevProps.selection?.selectOnRowClick !==
-    nextProps.selection?.selectOnRowClick
-  )
-    return false
-  if (prevProps.selection?.showCheckbox !== nextProps.selection?.showCheckbox)
-    return false
-
-  // Check expansion config
-  if (prevProps.expansion?.enabled !== nextProps.expansion?.enabled)
-    return false
-  if (prevProps.expansion?.expandOnClick !== nextProps.expansion?.expandOnClick)
-    return false
-
-  // Check callbacks (should be stable with useCallback)
-  if (prevProps.onToggleSelection !== nextProps.onToggleSelection) return false
-  if (prevProps.onToggleExpansion !== nextProps.onToggleExpansion) return false
-  if (prevProps.onRowClick !== nextProps.onRowClick) return false
-  if (prevProps.onRowDoubleClick !== nextProps.onRowDoubleClick) return false
-
-  // Check columns reference (should be stable)
-  if (prevProps.columns !== nextProps.columns) return false
-
-  return true
-}
-
 export const CustomTableRow = memo(
   TableRowInner,
-  arePropsEqual,
+  areRowPropsEqual,
 ) as typeof TableRowInner
