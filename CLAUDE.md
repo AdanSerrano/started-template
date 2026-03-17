@@ -343,6 +343,34 @@ Artefactos en `docs/tasks/` son temporales por feature (en `.gitignore`).
 - [ ] `bun run format:check` + `bun run lint` + `bun run type-check` pasan
 - [ ] Imports con `@/` — Archivos < 250 lineas — Docs actualizados
 
+### CI/CD — OBLIGATORIO antes de merge
+
+> **NINGÚN PR se mergea si CI falla.** Ambos jobs deben pasar en verde.
+
+#### Code Quality (cada push a main/develop y PRs)
+
+- [ ] `bun run format:check` — Prettier formatting
+- [ ] `bun run type-check` — TypeScript strict, 0 errores
+- [ ] `bun run lint` — ESLint, 0 errores, 0 warnings
+- [ ] `bun run test` — Todos los unit/integration/component tests pasan
+- [ ] `bun run test:coverage` — Coverage >= 50% en archivos nuevos
+- [ ] `bun run knip` — 0 codigo muerto
+- [ ] `bun run build` — Build de produccion exitoso
+
+#### E2E Tests (cada PR a main)
+
+- [ ] `bun run test:e2e` — Todos los tests Playwright pasan (Chromium + Firefox)
+- [ ] Navegacion y rutas protegidas funcionan
+- [ ] Health endpoint responde correctamente
+- [ ] SEO metadata (robots.txt, sitemap.xml, canonical) presente
+- [ ] Auth flow (redirect a login, locale switching) funciona
+
+#### Reglas de proteccion de branch
+
+- `main` esta protegido — **cambios solo via Pull Request**
+- Code Quality y E2E deben pasar antes de merge
+- Dependabot mantiene dependencias actualizadas automaticamente
+
 ---
 
 _Starter Template — Ultima actualizacion: Marzo 2026_
