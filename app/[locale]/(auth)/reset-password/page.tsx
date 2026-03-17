@@ -1,8 +1,8 @@
-import { Suspense } from 'react'
-import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
-import { ResetPasswordForm } from '@/modules/auth/components'
+import { Suspense } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
+import { ResetPasswordForm } from '@/modules/auth/components'
+import type { Metadata } from 'next'
 
 export const revalidate = 3600
 

@@ -3,18 +3,15 @@
  *
  * No Redis/Upstash needed — uses a simple Map with periodic cleanup.
  * Suitable for single-instance deployments.
+ *
+ * Uses the SAME RateLimitConfig as IRateLimitService (limit + windowSeconds).
  */
 
-import type { RateLimitResult } from '@/lib/interfaces'
+import type { RateLimitConfig, RateLimitResult } from '@/lib/interfaces'
 
 interface RateLimitEntry {
   count: number
   resetAt: number
-}
-
-export interface RateLimitConfig {
-  maxAttempts: number
-  windowMs: number
 }
 
 const store = new Map<string, RateLimitEntry>()
@@ -40,36 +37,37 @@ export function checkRateLimit(
   config: RateLimitConfig,
 ): RateLimitResult {
   const now = Date.now()
+  const windowMs = config.windowSeconds * 1000
   const entry = store.get(key)
 
   // First request or window expired — start fresh
   if (!entry || entry.resetAt <= now) {
-    store.set(key, { count: 1, resetAt: now + config.windowMs })
+    store.set(key, { count: 1, resetAt: now + windowMs })
     return {
       success: true,
-      remaining: config.maxAttempts - 1,
-      reset: now + config.windowMs,
-      limit: config.maxAttempts,
+      remaining: config.limit - 1,
+      reset: now + windowMs,
+      limit: config.limit,
     }
   }
 
   entry.count++
 
   // Over limit
-  if (entry.count > config.maxAttempts) {
+  if (entry.count > config.limit) {
     return {
       success: false,
       remaining: 0,
       reset: entry.resetAt,
-      limit: config.maxAttempts,
+      limit: config.limit,
     }
   }
 
   return {
     success: true,
-    remaining: config.maxAttempts - entry.count,
+    remaining: config.limit - entry.count,
     reset: entry.resetAt,
-    limit: config.maxAttempts,
+    limit: config.limit,
   }
 }
 
@@ -81,22 +79,23 @@ export function peekRateLimit(
   config: RateLimitConfig,
 ): RateLimitResult {
   const now = Date.now()
+  const windowMs = config.windowSeconds * 1000
   const entry = store.get(key)
 
   if (!entry || entry.resetAt <= now) {
     return {
       success: true,
-      remaining: config.maxAttempts,
-      reset: now + config.windowMs,
-      limit: config.maxAttempts,
+      remaining: config.limit,
+      reset: now + windowMs,
+      limit: config.limit,
     }
   }
 
   return {
-    success: entry.count <= config.maxAttempts,
-    remaining: Math.max(0, config.maxAttempts - entry.count),
+    success: entry.count <= config.limit,
+    remaining: Math.max(0, config.limit - entry.count),
     reset: entry.resetAt,
-    limit: config.maxAttempts,
+    limit: config.limit,
   }
 }
 

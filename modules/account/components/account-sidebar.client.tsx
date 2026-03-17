@@ -1,11 +1,10 @@
 'use client'
 
-import { useTranslations } from 'next-intl'
-import { Link, usePathname } from '@/i18n/navigation'
 import { LogOut } from 'lucide-react'
-import { useRouter } from '@/i18n/navigation'
-import { authClient } from '@/lib/auth-client'
+import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
+import { Link, usePathname, useRouter } from '@/i18n/navigation'
+import { authClient } from '@/lib/auth-client'
 import { cn } from '@/lib/utils'
 import { accountNavItems } from '../config/account-nav-config'
 

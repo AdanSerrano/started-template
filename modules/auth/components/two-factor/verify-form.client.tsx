@@ -1,15 +1,12 @@
 'use client'
 
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Loader2, Copy, Check } from 'lucide-react'
+import Image from 'next/image'
+import { useTranslations } from 'next-intl'
 import { memo, useCallback, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useTranslations } from 'next-intl'
-import {
-  createTwoFactorVerifySchema,
-  type TwoFactorVerifyInput,
-} from '@/modules/auth/validations'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import {
   Form,
   FormControl,
@@ -18,8 +15,11 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import Image from 'next/image'
-import { Loader2, Copy, Check } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import {
+  createTwoFactorVerifySchema,
+  type TwoFactorVerifyInput,
+} from '@/modules/auth/validations'
 
 interface VerifyFormProps {
   totpUri: string | null

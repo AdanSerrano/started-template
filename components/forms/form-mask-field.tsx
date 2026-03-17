@@ -1,11 +1,6 @@
 'use client'
 
 import { memo, useCallback, useMemo, useRef } from 'react'
-import type {
-  FieldPath,
-  FieldValues,
-  ControllerRenderProps,
-} from 'react-hook-form'
 import {
   FormControl,
   FormDescription,
@@ -17,6 +12,11 @@ import {
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
 import type { BaseFormFieldProps } from './form-field.types'
+import type {
+  FieldPath,
+  FieldValues,
+  ControllerRenderProps,
+} from 'react-hook-form'
 
 export interface MaskDefinition {
   pattern: string

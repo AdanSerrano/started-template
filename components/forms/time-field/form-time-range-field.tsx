@@ -1,11 +1,8 @@
 'use client'
 
 import { memo, useMemo } from 'react'
-import type {
-  FieldPath,
-  FieldValues,
-  ControllerRenderProps,
-} from 'react-hook-form'
+import { FormFieldTooltip } from '@/components/forms/form-field-tooltip'
+import type { BaseFormFieldProps } from '@/components/forms/form-field.types'
 import {
   FormControl,
   FormDescription,
@@ -15,10 +12,13 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { cn } from '@/lib/utils'
-import type { BaseFormFieldProps } from '@/components/forms/form-field.types'
-import { FormFieldTooltip } from '@/components/forms/form-field-tooltip'
-import { generateHours, generateMinutes } from './time-utils'
 import { TimeRangeContent } from './time-range-content'
+import { generateHours, generateMinutes } from './time-utils'
+import type {
+  FieldPath,
+  FieldValues,
+  ControllerRenderProps,
+} from 'react-hook-form'
 
 export interface FormTimeRangeFieldProps<
   TFieldValues extends FieldValues = FieldValues,

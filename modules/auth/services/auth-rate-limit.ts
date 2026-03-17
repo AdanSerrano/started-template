@@ -5,8 +5,8 @@
  * Este archivo solo maneja account locking por intentos fallidos via DB.
  */
 
-import { getAuthSecurityService } from '@/modules/auth/services/auth-security-service'
 import { userRepository } from '@/modules/auth/repositories'
+import { getAuthSecurityService } from '@/modules/auth/services/auth-security-service'
 
 export type LockCheckResult = {
   locked: boolean

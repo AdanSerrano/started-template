@@ -1,15 +1,5 @@
 'use client'
 
-import { memo, useCallback } from 'react'
-import type { FieldValues, ArrayPath, FieldArray } from 'react-hook-form'
-import { useFieldArray, type Control } from 'react-hook-form'
-import {
-  FormDescription,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
-import { Button } from '@/components/ui/button'
 import {
   Plus,
   Trash2,
@@ -17,6 +7,21 @@ import {
   ChevronUp,
   ChevronDown,
 } from 'lucide-react'
+import { memo, useCallback } from 'react'
+import {
+  useFieldArray,
+  type Control,
+  FieldValues,
+  ArrayPath,
+  FieldArray,
+} from 'react-hook-form'
+import { Button } from '@/components/ui/button'
+import {
+  FormDescription,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
 import { cn } from '@/lib/utils'
 
 export interface FormArrayFieldProps<

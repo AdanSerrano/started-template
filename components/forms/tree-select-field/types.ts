@@ -1,9 +1,9 @@
+import type { BaseFormFieldProps, TreeNode } from '../form-field.types'
 import type {
   FieldPath,
   FieldValues,
   ControllerRenderProps,
 } from 'react-hook-form'
-import type { BaseFormFieldProps, TreeNode } from '../form-field.types'
 
 export interface FormTreeSelectFieldProps<
   TFieldValues extends FieldValues = FieldValues,

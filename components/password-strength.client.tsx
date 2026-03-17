@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import { useMemo } from 'react'
 import {
   useWatch,
@@ -7,7 +8,6 @@ import {
   type FieldValues,
   type Path,
 } from 'react-hook-form'
-import { useTranslations } from 'next-intl'
 import { cn } from '@/lib/utils'
 
 function calculateStrength(password: string): number {

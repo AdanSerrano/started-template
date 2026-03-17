@@ -1,11 +1,6 @@
 'use client'
 
 import { memo, useCallback, useMemo } from 'react'
-import type {
-  FieldPath,
-  FieldValues,
-  ControllerRenderProps,
-} from 'react-hook-form'
 import {
   FormControl,
   FormDescription,
@@ -16,8 +11,13 @@ import {
 } from '@/components/ui/form'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { cn } from '@/lib/utils'
-import type { BaseFormFieldProps, SelectOption } from './form-field.types'
 import { FormFieldTooltip } from './form-field-tooltip'
+import type { BaseFormFieldProps, SelectOption } from './form-field.types'
+import type {
+  FieldPath,
+  FieldValues,
+  ControllerRenderProps,
+} from 'react-hook-form'
 
 export interface FormToggleGroupFieldProps<
   TFieldValues extends FieldValues = FieldValues,

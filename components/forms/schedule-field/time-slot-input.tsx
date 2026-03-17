@@ -1,9 +1,9 @@
 'use client'
 
-import { memo, useCallback } from 'react'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
 import { Trash2 } from 'lucide-react'
+import { memo, useCallback } from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import type { TimeSlotInputProps } from './types'
 
 export const TimeSlotInput = memo(function TimeSlotInput({

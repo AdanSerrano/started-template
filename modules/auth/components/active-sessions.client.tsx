@@ -1,5 +1,7 @@
 'use client'
 
+import { Loader2, Monitor, Smartphone, Globe, Trash2 } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import {
   memo,
   useEffect,
@@ -8,11 +10,9 @@ import {
   useOptimistic,
   useCallback,
 } from 'react'
-import { useTranslations } from 'next-intl'
-import { authClient } from '@/lib/auth-client'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Loader2, Monitor, Smartphone, Globe, Trash2 } from 'lucide-react'
+import { authClient } from '@/lib/auth-client'
 
 interface SessionInfo {
   id: string

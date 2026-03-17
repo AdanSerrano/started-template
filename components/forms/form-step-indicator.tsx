@@ -1,8 +1,8 @@
 'use client'
 
+import { Check, Circle, Loader2 } from 'lucide-react'
 import { memo, useMemo, useCallback, type ReactNode } from 'react'
 import { cn } from '@/lib/utils'
-import { Check, Circle, Loader2 } from 'lucide-react'
 
 export interface FormStep {
   id: string

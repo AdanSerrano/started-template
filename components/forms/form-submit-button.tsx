@@ -1,9 +1,9 @@
 'use client'
 
+import { Loader2 } from 'lucide-react'
 import { memo, type ReactNode, type ComponentProps } from 'react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import { Loader2 } from 'lucide-react'
 
 type ButtonProps = ComponentProps<typeof Button>
 

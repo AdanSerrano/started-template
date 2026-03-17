@@ -1,15 +1,11 @@
 'use client'
 
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Loader2 } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { memo } from 'react'
 import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useTranslations } from 'next-intl'
-import {
-  createTwoFactorEnableSchema,
-  type TwoFactorEnableInput,
-} from '@/modules/auth/validations'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import {
   Form,
   FormControl,
@@ -18,7 +14,11 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { Loader2 } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import {
+  createTwoFactorEnableSchema,
+  type TwoFactorEnableInput,
+} from '@/modules/auth/validations'
 
 interface EnableFormProps {
   error: string | null

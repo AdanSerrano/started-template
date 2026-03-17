@@ -35,7 +35,7 @@ export const createTable = sqliteTable
  */
 export function createEnum<T extends string>(
   _name: string,
-  values: readonly [T, ...T[]],
+  _values: readonly [T, ...T[]],
 ) {
   return (columnName: string) => text(columnName).$type<T>()
 }

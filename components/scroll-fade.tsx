@@ -1,7 +1,7 @@
 'use client'
 
-import { useRef, useState, useEffect, type ReactNode } from 'react'
 import { ChevronDown } from 'lucide-react'
+import { useRef, useState, useEffect, type ReactNode } from 'react'
 
 interface ScrollFadeProps {
   maxHeight: string

@@ -1,11 +1,7 @@
 'use client'
 
+import { Star, Heart, ThumbsUp } from 'lucide-react'
 import { memo, useCallback, useMemo, useState } from 'react'
-import type {
-  FieldPath,
-  FieldValues,
-  ControllerRenderProps,
-} from 'react-hook-form'
 import {
   FormControl,
   FormDescription,
@@ -15,10 +11,14 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { cn } from '@/lib/utils'
-import { Star, Heart, ThumbsUp } from 'lucide-react'
-import type { LucideIcon } from 'lucide-react'
-import type { BaseFormFieldProps } from './form-field.types'
 import { FormFieldTooltip } from './form-field-tooltip'
+import type { BaseFormFieldProps } from './form-field.types'
+import type { LucideIcon } from 'lucide-react'
+import type {
+  FieldPath,
+  FieldValues,
+  ControllerRenderProps,
+} from 'react-hook-form'
 
 export interface FormRatingFieldProps<
   TFieldValues extends FieldValues = FieldValues,

@@ -8,10 +8,10 @@
  * por lo que no podemos usar los hooks de next-intl directamente.
  */
 
-import type { ReactNode } from 'react'
-import esMessages from '@/messages/es.json'
-import enMessages from '@/messages/en.json'
 import caMessages from '@/messages/ca.json'
+import enMessages from '@/messages/en.json'
+import esMessages from '@/messages/es.json'
+import type { ReactNode } from 'react'
 
 export type EmailLocale = 'es' | 'en' | 'ca'
 

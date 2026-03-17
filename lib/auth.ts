@@ -1,11 +1,10 @@
-import { betterAuth } from 'better-auth/minimal'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
+import { betterAuth } from 'better-auth/minimal'
 import { nextCookies } from 'better-auth/next-js'
-import { username } from 'better-auth/plugins'
-import { twoFactor } from 'better-auth/plugins'
-import { admin } from 'better-auth/plugins'
-import { magicLink } from 'better-auth/plugins'
-import { db } from '@/lib/db'
+import { username, twoFactor, admin, magicLink } from 'better-auth/plugins'
+import { eq } from 'drizzle-orm'
+import { cookies } from 'next/headers'
+import { DIALECT } from '@/db/dialect'
 import {
   users,
   sessions,
@@ -13,17 +12,15 @@ import {
   verifications,
   twoFactors,
 } from '@/db/schema'
-import { DIALECT } from '@/db/dialect'
-import { eq } from 'drizzle-orm'
-import { ac, roles } from '@/lib/permissions'
-import { sendEmail } from '@/lib/email'
-import { VerificationEmail } from '@/emails/verification'
-import { ResetPasswordEmail } from '@/emails/reset-password'
-import { MagicLinkEmail } from '@/emails/magic-link'
 import { getEmailTranslations, type EmailLocale } from '@/emails/i18n'
-import { cookies } from 'next/headers'
+import { MagicLinkEmail } from '@/emails/magic-link'
+import { ResetPasswordEmail } from '@/emails/reset-password'
+import { VerificationEmail } from '@/emails/verification'
 import { routing } from '@/i18n/routing'
 import { appConfig } from '@/lib/config'
+import { db } from '@/lib/db'
+import { sendEmail } from '@/lib/email'
+import { ac, roles } from '@/lib/permissions'
 import { getAuthSecurityService } from '@/modules/auth/services/auth-security-service'
 
 /**

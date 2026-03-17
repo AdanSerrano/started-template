@@ -1,4 +1,11 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
+import {
+  cn,
+  formatCurrency,
+  formatDate,
+  slugify,
+  generateOrderNumber,
+} from '@/lib/utils'
 
 // Mock appConfig before importing utils
 vi.mock('@/lib/config', () => ({
@@ -8,14 +15,6 @@ vi.mock('@/lib/config', () => ({
     timezone: 'Europe/Madrid',
   },
 }))
-
-import {
-  cn,
-  formatCurrency,
-  formatDate,
-  slugify,
-  generateOrderNumber,
-} from '@/lib/utils'
 
 describe('cn', () => {
   it('merges class names', () => {

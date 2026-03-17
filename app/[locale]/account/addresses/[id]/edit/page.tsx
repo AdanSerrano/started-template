@@ -1,8 +1,8 @@
 import { notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 import { requireAuth } from '@/lib/auth-server'
-import { getAddress } from '@/modules/account/services/account-service'
 import { AddressForm } from '@/modules/account/components/address-form.client'
+import { getAddress } from '@/modules/account/services/account-service'
 
 interface EditAddressPageProps {
   params: Promise<{ id: string }>

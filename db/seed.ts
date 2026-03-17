@@ -1,5 +1,5 @@
-import { db } from '@/lib/db'
 import * as schema from '@/db/schema'
+import { db } from '@/lib/db'
 
 /**
  * Database seed script — Starter Template
@@ -9,6 +9,7 @@ import * as schema from '@/db/schema'
  * Idempotente — usa onConflictDoNothing() para no duplicar datos.
  */
 async function main() {
+  // eslint-disable-next-line no-console
   console.log('Seeding database...')
 
   // ── Users ────────────────────────────────────────────────
@@ -49,6 +50,7 @@ async function main() {
       .values(user)
       .onConflictDoNothing({ target: schema.users.id })
   }
+  // eslint-disable-next-line no-console
   console.log(`  Users: ${seedUsers.length} seeded`)
 
   // ── Addresses ────────────────────────────────────────────
@@ -93,8 +95,10 @@ async function main() {
       .values(address)
       .onConflictDoNothing({ target: schema.addresses.id })
   }
+  // eslint-disable-next-line no-console
   console.log(`  Addresses: ${seedAddresses.length} seeded`)
 
+  // eslint-disable-next-line no-console
   console.log('Seeding complete.')
 }
 

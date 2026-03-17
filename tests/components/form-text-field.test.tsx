@@ -4,10 +4,10 @@
  * Patron: render con FormProvider, interactuar, verificar.
  */
 
-import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { useForm, FormProvider } from 'react-hook-form'
+import { describe, it, expect } from 'vitest'
 import { FormTextField } from '@/components/forms/form-text-field'
 
 function TestWrapper({

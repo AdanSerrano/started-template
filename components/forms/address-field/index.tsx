@@ -1,11 +1,6 @@
 'use client'
 
 import { memo, useMemo } from 'react'
-import type {
-  FieldPath,
-  FieldValues,
-  ControllerRenderProps,
-} from 'react-hook-form'
 import {
   FormControl,
   FormDescription,
@@ -16,12 +11,17 @@ import {
 } from '@/components/ui/form'
 import { cn } from '@/lib/utils'
 import { AddressContent } from './address-content'
-import type { FormAddressFieldProps } from './types'
 import {
   DEFAULT_LABELS,
   DEFAULT_PLACEHOLDERS,
   DEFAULT_COUNTRIES,
 } from './types'
+import type { FormAddressFieldProps } from './types'
+import type {
+  FieldPath,
+  FieldValues,
+  ControllerRenderProps,
+} from 'react-hook-form'
 
 function FormAddressFieldComponent<
   TFieldValues extends FieldValues = FieldValues,

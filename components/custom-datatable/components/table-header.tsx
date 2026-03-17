@@ -1,13 +1,11 @@
 'use client'
 
-import { memo, useCallback, useEffect, useMemo, useRef } from 'react'
 import { ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react'
-
-import { cn } from '@/lib/utils'
+import { memo, useCallback, useEffect, useMemo, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { TableHeader, TableHead, TableRow } from '@/components/ui/table'
-
+import { cn } from '@/lib/utils'
 import type { CustomColumnDef, SelectionConfig, SortingState } from '../types'
 
 // Memoized selection header cell - no generics, safe to memo

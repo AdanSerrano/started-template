@@ -1,7 +1,6 @@
 'use client'
 
 import { memo, useCallback, useMemo } from 'react'
-import type { FieldPath, FieldValues } from 'react-hook-form'
 import {
   FormControl,
   FormDescription,
@@ -10,9 +9,10 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import type { BaseFormFieldProps } from '../form-field.types'
 import { EMOJI_CATEGORIES } from './emoji-data'
 import { EmojiContent } from './emoji-picker'
+import type { BaseFormFieldProps } from '../form-field.types'
+import type { FieldPath, FieldValues } from 'react-hook-form'
 
 export type { EmojiCategory } from './emoji-data'
 export type { EmojiContentProps } from './emoji-picker'

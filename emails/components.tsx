@@ -11,9 +11,8 @@ import {
   Section,
   Text,
 } from '@react-email/components'
-import type { ReactNode } from 'react'
-import { getEmailTranslations, type EmailLocale } from './i18n'
 import { appConfig } from '@/lib/config'
+import { getEmailTranslations, type EmailLocale } from './i18n'
 import {
   body,
   accentBar,
@@ -37,6 +36,7 @@ import {
   footerCopyright,
   footerAddress,
 } from './styles'
+import type { ReactNode } from 'react'
 
 // Re-export styles for email templates
 export { styles } from './styles'

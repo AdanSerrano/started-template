@@ -1,14 +1,14 @@
+import { getSessionCookie } from 'better-auth/cookies'
 import { NextRequest, NextResponse } from 'next/server'
 import createIntlMiddleware from 'next-intl/middleware'
-import { getSessionCookie } from 'better-auth/cookies'
 import { routing } from '@/i18n/routing'
+import { generateRequestId } from '@/lib/request-context'
 import {
   authRoutes,
   publicRoutes,
   DEFAULT_LOGIN_REDIRECT,
   DEFAULT_LOGOUT_REDIRECT,
 } from '@/routes'
-import { generateRequestId } from '@/lib/request-context'
 
 const intlMiddleware = createIntlMiddleware(routing)
 

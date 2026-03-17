@@ -1,7 +1,9 @@
 'use client'
 
+import { Link2, ExternalLink, Check, X, Copy, Globe } from 'lucide-react'
 import { memo, useCallback, useMemo } from 'react'
-import type { FieldPath, FieldValues } from 'react-hook-form'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import {
   FormControl,
   FormDescription,
@@ -11,11 +13,9 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Link2, ExternalLink, Check, X, Copy, Globe } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { BaseFormFieldProps } from './form-field.types'
+import type { FieldPath, FieldValues } from 'react-hook-form'
 
 const DEFAULT_URL_MESSAGES = {
   protocolNotAllowed: 'Protocol "{protocol}" not allowed',

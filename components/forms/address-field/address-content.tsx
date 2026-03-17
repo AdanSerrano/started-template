@@ -1,7 +1,7 @@
 'use client'
 
-import { memo, useCallback, useMemo } from 'react'
 import { MapPin, Building2, Home, Hash, Globe, Map } from 'lucide-react'
+import { memo, useCallback, useMemo } from 'react'
 import { AddressInput, AddressSelect } from './address-inputs'
 import type { AddressValue, AddressContentProps } from './types'
 

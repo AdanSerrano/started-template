@@ -1,4 +1,7 @@
 import '@/lib/env'
+import { Pool, neonConfig } from '@neondatabase/serverless'
+import { drizzle } from 'drizzle-orm/neon-serverless'
+import ws from 'ws'
 import { DIALECT } from '@/db/dialect'
 import * as schema from '@/db/schema'
 
@@ -18,9 +21,6 @@ import * as schema from '@/db/schema'
 // ── PostgreSQL (Neon Serverless) ─────────────────────────────
 // Dependencias: @neondatabase/serverless, ws
 // Compatible con: Neon, Supabase, CockroachDB
-import ws from 'ws'
-import { Pool, neonConfig } from '@neondatabase/serverless'
-import { drizzle } from 'drizzle-orm/neon-serverless'
 
 neonConfig.webSocketConstructor = ws
 

@@ -1,14 +1,14 @@
 'use client'
 
-import { memo } from 'react'
 import { useTranslations } from 'next-intl'
-import { Link } from '@/i18n/navigation'
+import { memo } from 'react'
 import {
   SidebarHeader as SidebarHeaderPrimitive,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar'
+import { Link } from '@/i18n/navigation'
 
 export const SidebarBrandHeader = memo(function SidebarBrandHeader() {
   const tCommon = useTranslations('common')

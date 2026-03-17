@@ -1,8 +1,9 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, afterEach } from 'vitest'
+import type { RateLimitConfig } from '@/lib/interfaces'
 import { checkRateLimit, resetRateLimit } from '@/lib/rate-limit'
 
 describe('checkRateLimit', () => {
-  const config = { maxAttempts: 3, windowMs: 60000 }
+  const config: RateLimitConfig = { limit: 3, windowSeconds: 60 }
 
   afterEach(() => {
     resetRateLimit('test-key')

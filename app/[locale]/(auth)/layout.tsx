@@ -1,6 +1,6 @@
 import { Zap, CreditCard, Smartphone } from 'lucide-react'
-import { Link } from '@/i18n/navigation'
 import { getTranslations } from 'next-intl/server'
+import { Link } from '@/i18n/navigation'
 import { appConfig } from '@/lib/config'
 
 export default async function AuthLayout({

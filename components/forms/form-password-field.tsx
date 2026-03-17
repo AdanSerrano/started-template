@@ -1,5 +1,6 @@
 'use client'
 
+import { Check, X, Copy, CheckCheck } from 'lucide-react'
 import {
   memo,
   useMemo,
@@ -8,11 +9,7 @@ import {
   useState,
   type ReactNode,
 } from 'react'
-import type {
-  FieldPath,
-  FieldValues,
-  ControllerRenderProps,
-} from 'react-hook-form'
+import { Button } from '@/components/ui/button'
 import {
   FormControl,
   FormDescription,
@@ -22,12 +19,15 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { PasswordInput } from '@/components/ui/password-input.client'
-import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import { Check, X, Copy, CheckCheck } from 'lucide-react'
-import type { BaseFormFieldProps } from './form-field.types'
-import { calculatePasswordStrength } from './form-field.types'
 import { FormFieldTooltip } from './form-field-tooltip'
+import { calculatePasswordStrength } from './form-field.types'
+import type { BaseFormFieldProps } from './form-field.types'
+import type {
+  FieldPath,
+  FieldValues,
+  ControllerRenderProps,
+} from 'react-hook-form'
 
 export interface PasswordStrengthLabels {
   requirements?: string | undefined

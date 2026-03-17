@@ -1,7 +1,7 @@
 'use client'
 
+import { Clock } from 'lucide-react'
 import { memo, useCallback, useMemo } from 'react'
-import type { FieldPath, FieldValues } from 'react-hook-form'
 import {
   FormControl,
   FormDescription,
@@ -11,9 +11,9 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Clock } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { BaseFormFieldProps } from './form-field.types'
+import type { FieldPath, FieldValues } from 'react-hook-form'
 
 export interface DurationValue {
   hours: number

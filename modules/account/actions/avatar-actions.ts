@@ -1,18 +1,19 @@
 'use server'
 
-import { requireAuth } from '@/lib/auth-server'
 import { createAuditLog } from '@/lib/audit'
 import { getRequestMetadata } from '@/lib/audit-helpers'
+import { requireAuth } from '@/lib/auth-server'
+import type { RateLimitConfig } from '@/lib/interfaces'
 import { checkRateLimit } from '@/lib/rate-limit'
+import type { ActionResult } from '@/lib/safe-action'
 import * as accountService from '../services/account-service'
-import type { ActionResult } from './account-actions'
 
 // Rate limit: 5 upload operations per user per 5 minutes
-const UPLOAD_RATE_LIMIT = { maxAttempts: 5, windowMs: 5 * 60 * 1000 }
+const UPLOAD_RATE_LIMIT: RateLimitConfig = { limit: 5, windowSeconds: 300 }
 
 export async function uploadAvatarAction(
   formData: FormData,
-): Promise<ActionResult & { data?: unknown }> {
+): Promise<ActionResult<{ url: string }>> {
   const session = await requireAuth()
   const rl = checkRateLimit(
     `account:upload:${session.user.id}`,

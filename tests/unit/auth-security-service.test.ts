@@ -1,4 +1,10 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { userRepository } from '@/modules/auth/repositories'
+import {
+  getAuthSecurityService,
+  resetAuthSecurityInstance,
+} from '@/modules/auth/services/auth-security-service'
+import type { AuthSecurityService } from '@/modules/auth/services/auth-security-service'
 
 vi.mock('@/modules/auth/repositories', () => ({
   userRepository: {
@@ -8,13 +14,6 @@ vi.mock('@/modules/auth/repositories', () => ({
     getLockedUntil: vi.fn(),
   },
 }))
-
-import {
-  getAuthSecurityService,
-  resetAuthSecurityInstance,
-} from '@/modules/auth/services/auth-security-service'
-import type { AuthSecurityService } from '@/modules/auth/services/auth-security-service'
-import { userRepository } from '@/modules/auth/repositories'
 
 const LOCK_THRESHOLD = 5
 const LOCK_DURATION_SECONDS = 15 * 60

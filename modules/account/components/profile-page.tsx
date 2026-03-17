@@ -1,8 +1,8 @@
 import { getTranslations } from 'next-intl/server'
 import { requireAuth } from '@/lib/auth-server'
 import * as accountService from '../services/account-service'
-import { ProfileForm } from './profile-form.client'
 import { ChangePasswordForm } from './change-password-form.client'
+import { ProfileForm } from './profile-form.client'
 
 export async function ProfilePage() {
   const session = await requireAuth()

@@ -5,7 +5,7 @@
  * Este es el ultimo recurso cuando error.tsx no puede renderizar.
  */
 export default function GlobalError({
-  error,
+  error: _error,
   reset,
 }: {
   error: Error & { digest?: string }

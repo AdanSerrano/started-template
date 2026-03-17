@@ -1,6 +1,6 @@
 import { format } from 'date-fns'
-import type { RecurrenceValue } from './types'
 import { DAYS_OF_WEEK, FREQUENCY_LABELS } from './types'
+import type { RecurrenceValue } from './types'
 
 export function getRecurrenceDescription(value: RecurrenceValue): string {
   const freqLabel =

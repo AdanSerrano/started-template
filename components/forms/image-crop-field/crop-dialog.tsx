@@ -1,8 +1,9 @@
 'use client'
 
+import { ZoomIn, ZoomOut, RotateCw, Move, Check, Loader2 } from 'lucide-react'
+import NextImage from 'next/image'
 import { memo, useCallback, useRef } from 'react'
 import { Button } from '@/components/ui/button'
-import { Slider } from '@/components/ui/slider'
 import {
   Dialog,
   DialogContent,
@@ -10,8 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { ZoomIn, ZoomOut, RotateCw, Move, Check, Loader2 } from 'lucide-react'
-import NextImage from 'next/image'
+import { Slider } from '@/components/ui/slider'
 import { cn } from '@/lib/utils'
 import type { CropDialogProps } from './types'
 

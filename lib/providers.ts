@@ -7,6 +7,28 @@
  * Los services NUNCA importan directamente de adapters, siempre via este provider.
  */
 
+import {
+  BetterAuthProvider,
+  ResendEmailService,
+  R2StorageService,
+  XLSXExportService,
+  ReactPDFExportService,
+  XLSXImportService,
+  PapaParseCSVImportService,
+  TriggerJobsService,
+  AxiosHttpClient,
+  FetchHttpClient,
+  ConsoleMonitoringAdapter,
+  GA4AnalyticsService,
+  MemoryCacheService,
+  InMemoryRateLimitService,
+  PinoLogger,
+  InAppNotificationService,
+  PgSearchService,
+  WebhookService,
+  EnvFeatureFlagService,
+  GDPRService,
+} from '@/lib/adapters'
 import { createProvider } from '@/lib/create-provider'
 import type {
   IAuthProvider,
@@ -29,29 +51,6 @@ import type {
   IFeatureFlagService,
   IGDPRService,
 } from '@/lib/interfaces'
-
-import {
-  BetterAuthProvider,
-  ResendEmailService,
-  R2StorageService,
-  XLSXExportService,
-  ReactPDFExportService,
-  XLSXImportService,
-  PapaParseCSVImportService,
-  TriggerJobsService,
-  AxiosHttpClient,
-  FetchHttpClient,
-  ConsoleMonitoringAdapter,
-  GA4AnalyticsService,
-  MemoryCacheService,
-  InMemoryRateLimitService,
-  ConsoleLogger,
-  InAppNotificationService,
-  PgSearchService,
-  WebhookService,
-  EnvFeatureFlagService,
-  GDPRService,
-} from '@/lib/adapters'
 
 /**
  * Authentication provider — sessions, OAuth, magic links, 2FA.
@@ -196,7 +195,7 @@ export const setRateLimitService = rateLimit.set
  * Swap: `setLoggerInstance(new SilentLogger())`
  */
 // ── Logger ──────────────────────────────────────────────────
-const logger = createProvider<ILogger>(() => new ConsoleLogger())
+const logger = createProvider<ILogger>(() => new PinoLogger())
 export const getLogger = logger.get
 export const setLoggerInstance = logger.set
 

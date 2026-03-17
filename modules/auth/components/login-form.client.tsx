@@ -1,16 +1,12 @@
 'use client'
 
-import { useCallback, useState, useTransition } from 'react'
-import { useSearchParams } from 'next/navigation'
-import { useRouter } from '@/i18n/navigation'
-import { useTranslations } from 'next-intl'
-import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { authClient } from '@/lib/auth-client'
-import { createLoginSchema, type LoginInput } from '@/modules/auth/validations'
+import { CheckCircle, Loader2, Mail, Wand2 } from 'lucide-react'
+import { useSearchParams } from 'next/navigation'
+import { useTranslations } from 'next-intl'
+import { useCallback, useState, useTransition } from 'react'
+import { useForm } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { PasswordInput } from '@/components/ui/password-input.client'
 import {
   Form,
   FormControl,
@@ -19,8 +15,11 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { Link } from '@/i18n/navigation'
-import { CheckCircle, Loader2, Mail, Wand2 } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import { PasswordInput } from '@/components/ui/password-input.client'
+import { useRouter, Link } from '@/i18n/navigation'
+import { authClient } from '@/lib/auth-client'
+import { createLoginSchema, type LoginInput } from '@/modules/auth/validations'
 import { DEFAULT_LOGIN_REDIRECT } from '@/routes'
 import { MagicLinkForm } from './magic-link-form.client'
 

@@ -1,7 +1,7 @@
 'use client'
 
-import { memo, useCallback } from 'react'
 import { X } from 'lucide-react'
+import { memo, useCallback } from 'react'
 import { Badge } from '@/components/ui/badge'
 import type { SelectedBadgeProps } from './types'
 

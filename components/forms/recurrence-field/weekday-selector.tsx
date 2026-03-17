@@ -2,8 +2,8 @@
 
 import { memo, useCallback } from 'react'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import type { RecurrenceDayOfWeek } from './types'
 import { DAYS_OF_WEEK } from './types'
+import type { RecurrenceDayOfWeek } from './types'
 
 interface WeekdaySelectorProps {
   selected: RecurrenceDayOfWeek[]

@@ -1,7 +1,8 @@
 'use client'
 
+import { Check, X, AlertCircle } from 'lucide-react'
 import { memo, useMemo } from 'react'
-import type { FieldPath, FieldValues } from 'react-hook-form'
+import { Badge } from '@/components/ui/badge'
 import {
   FormControl,
   FormDescription,
@@ -11,10 +12,9 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
-import { Check, X, AlertCircle } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { BaseFormFieldProps, InputType } from './form-field.types'
+import type { FieldPath, FieldValues } from 'react-hook-form'
 
 export interface FormConfirmFieldProps<
   TFieldValues extends FieldValues = FieldValues,

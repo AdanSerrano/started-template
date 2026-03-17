@@ -1,10 +1,10 @@
 import { relations } from 'drizzle-orm'
-import { users } from '../users'
 import { accounts } from '../accounts'
+import { addresses } from '../addresses'
+import { auditLogs } from '../audit-logs'
 import { sessions } from '../sessions'
 import { twoFactors } from '../two-factors'
-import { auditLogs } from '../audit-logs'
-import { addresses } from '../addresses'
+import { users } from '../users'
 
 export const usersRelations = relations(users, ({ many }) => ({
   accounts: many(accounts),

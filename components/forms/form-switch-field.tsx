@@ -1,7 +1,6 @@
 'use client'
 
 import { memo } from 'react'
-import type { FieldPath, FieldValues } from 'react-hook-form'
 import {
   FormControl,
   FormDescription,
@@ -13,6 +12,7 @@ import {
 import { Switch } from '@/components/ui/switch'
 import { cn } from '@/lib/utils'
 import type { BaseFormFieldProps } from './form-field.types'
+import type { FieldPath, FieldValues } from 'react-hook-form'
 
 export interface FormSwitchFieldProps<
   TFieldValues extends FieldValues = FieldValues,

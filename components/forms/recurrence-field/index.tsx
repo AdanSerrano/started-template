@@ -1,11 +1,6 @@
 'use client'
 
 import { memo, useMemo } from 'react'
-import type {
-  FieldPath,
-  FieldValues,
-  ControllerRenderProps,
-} from 'react-hook-form'
 import {
   FormControl,
   FormDescription,
@@ -15,8 +10,13 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { RecurrenceContent } from './recurrence-content'
-import type { FormRecurrenceFieldProps } from './types'
 import { DEFAULT_LABELS } from './types'
+import type { FormRecurrenceFieldProps } from './types'
+import type {
+  FieldPath,
+  FieldValues,
+  ControllerRenderProps,
+} from 'react-hook-form'
 
 function FormRecurrenceFieldComponent<
   TFieldValues extends FieldValues = FieldValues,

@@ -1,10 +1,8 @@
 'use client'
 
-import { memo, useCallback, useMemo } from 'react'
-import { useTranslations } from 'next-intl'
-import { useRouter } from '@/i18n/navigation'
 import { ChevronsUpDown, LogOut, UserCircle } from 'lucide-react'
-import { authClient } from '@/lib/auth-client'
+import { useTranslations } from 'next-intl'
+import { memo, useCallback, useMemo } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   DropdownMenu,
@@ -21,6 +19,8 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar'
+import { useRouter } from '@/i18n/navigation'
+import { authClient } from '@/lib/auth-client'
 import type { ServerSession } from '@/lib/auth-server'
 
 interface SidebarUserMenuProps {

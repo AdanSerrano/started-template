@@ -1,9 +1,9 @@
 'use client'
 
-import { memo } from 'react'
-import { useTranslations } from 'next-intl'
-import { Button } from '@/components/ui/button'
 import { ShieldCheck, ShieldOff } from 'lucide-react'
+import { useTranslations } from 'next-intl'
+import { memo } from 'react'
+import { Button } from '@/components/ui/button'
 
 interface IdleStateProps {
   isEnabled: boolean

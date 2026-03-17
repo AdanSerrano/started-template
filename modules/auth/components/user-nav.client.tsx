@@ -1,10 +1,10 @@
 'use client'
 
-import { useCallback, useMemo } from 'react'
-import { useRouter } from '@/i18n/navigation'
+import { LogOut, Settings, User } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import { authClient } from '@/lib/auth-client'
+import { useCallback, useMemo } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,8 +13,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Button } from '@/components/ui/button'
-import { LogOut, Settings, User } from 'lucide-react'
+import { useRouter } from '@/i18n/navigation'
+import { authClient } from '@/lib/auth-client'
 
 export function UserNav() {
   const t = useTranslations('auth.userNav')

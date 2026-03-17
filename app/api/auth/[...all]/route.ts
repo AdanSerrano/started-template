@@ -6,9 +6,9 @@
  * - Account locking por intentos fallidos (via DB)
  */
 
+import { toNextJsHandler } from 'better-auth/next-js'
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
-import { toNextJsHandler } from 'better-auth/next-js'
 import {
   checkAccountLockByEmail,
   checkAccountLockByUsername,

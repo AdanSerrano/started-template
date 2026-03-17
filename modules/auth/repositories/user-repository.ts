@@ -1,6 +1,6 @@
-import { db, type DbOrTx } from '@/lib/db'
-import * as schema from '@/db/schema'
 import { eq, sql } from 'drizzle-orm'
+import * as schema from '@/db/schema'
+import { db, type DbOrTx } from '@/lib/db'
 
 // ── Prepared statements ─────────────────────────────────────
 

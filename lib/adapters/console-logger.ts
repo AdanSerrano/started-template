@@ -37,11 +37,13 @@ export class ConsoleLogger implements ILogger {
 
   debug(message: string, context?: LogContext): void {
     if (!this.shouldLog('debug')) return
+    // eslint-disable-next-line no-console
     console.debug(JSON.stringify(this.format('debug', message, context)))
   }
 
   info(message: string, context?: LogContext): void {
     if (!this.shouldLog('info')) return
+    // eslint-disable-next-line no-console
     console.info(JSON.stringify(this.format('info', message, context)))
   }
 

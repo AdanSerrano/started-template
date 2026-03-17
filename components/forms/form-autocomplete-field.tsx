@@ -1,5 +1,6 @@
 'use client'
 
+import { Loader2, Search } from 'lucide-react'
 import {
   memo,
   useCallback,
@@ -8,11 +9,13 @@ import {
   useDeferredValue,
   useState,
 } from 'react'
-import type {
-  FieldPath,
-  FieldValues,
-  ControllerRenderProps,
-} from 'react-hook-form'
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command'
 import {
   FormControl,
   FormDescription,
@@ -23,21 +26,18 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandItem,
-  CommandList,
-} from '@/components/ui/command'
-import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
-import { Loader2, Search } from 'lucide-react'
-import type { BaseFormFieldProps, SelectOption } from './form-field.types'
 import { FormFieldTooltip } from './form-field-tooltip'
+import type { BaseFormFieldProps, SelectOption } from './form-field.types'
+import type {
+  FieldPath,
+  FieldValues,
+  ControllerRenderProps,
+} from 'react-hook-form'
 
 export interface FormAutoCompleteFieldProps<
   TFieldValues extends FieldValues = FieldValues,

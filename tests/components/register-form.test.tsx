@@ -4,9 +4,10 @@
  * Tests: rendering, all form fields, submit button state.
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { RegisterForm } from '@/modules/auth/components/register-form.client'
 
 vi.mock('next-intl', () => ({
   useTranslations: () => (key: string) => key,
@@ -33,8 +34,6 @@ vi.mock('@/routes', () => ({
 vi.mock('@/components/password-strength.client', () => ({
   PasswordStrengthField: () => null,
 }))
-
-import { RegisterForm } from '@/modules/auth/components/register-form.client'
 
 describe('RegisterForm', () => {
   beforeEach(() => {

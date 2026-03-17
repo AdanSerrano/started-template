@@ -1,18 +1,12 @@
 'use client'
 
-import { useCallback, useState, useTransition } from 'react'
-import { useTranslations } from 'next-intl'
-import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { authClient } from '@/lib/auth-client'
-import {
-  createRegisterSchema,
-  type RegisterInput,
-} from '@/modules/auth/validations'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { PasswordInput } from '@/components/ui/password-input.client'
+import { Loader2, Mail } from 'lucide-react'
+import { useTranslations } from 'next-intl'
+import { useCallback, useState, useTransition } from 'react'
+import { useForm } from 'react-hook-form'
 import { PasswordStrengthField } from '@/components/password-strength.client'
+import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
@@ -21,8 +15,14 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { Loader2, Mail } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import { PasswordInput } from '@/components/ui/password-input.client'
 import { Link } from '@/i18n/navigation'
+import { authClient } from '@/lib/auth-client'
+import {
+  createRegisterSchema,
+  type RegisterInput,
+} from '@/modules/auth/validations'
 import { DEFAULT_LOGOUT_REDIRECT } from '@/routes'
 
 export function RegisterForm() {

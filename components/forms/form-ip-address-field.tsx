@@ -1,11 +1,8 @@
 'use client'
 
+import { Network, Check, X } from 'lucide-react'
 import { memo, useMemo } from 'react'
-import type {
-  FieldPath,
-  FieldValues,
-  ControllerRenderProps,
-} from 'react-hook-form'
+import { Badge } from '@/components/ui/badge'
 import {
   FormControl,
   FormDescription,
@@ -15,10 +12,13 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
-import { Network, Check, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { BaseFormFieldProps } from './form-field.types'
+import type {
+  FieldPath,
+  FieldValues,
+  ControllerRenderProps,
+} from 'react-hook-form'
 
 export type IPVersion = 'ipv4' | 'ipv6' | 'both'
 

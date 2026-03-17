@@ -1,7 +1,7 @@
 'use client'
 
-import type { ReactNode } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import type { ReactNode } from 'react'
 
 const LOCALES = ['es', 'en', 'ca'] as const
 type Locale = (typeof LOCALES)[number]

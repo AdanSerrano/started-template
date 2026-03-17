@@ -1,5 +1,5 @@
-import { db } from '@/lib/db'
 import { auditLogs } from '@/db/schema'
+import { db } from '@/lib/db'
 
 type AuditSeverity = 'low' | 'medium' | 'high' | 'critical'
 

@@ -1,11 +1,6 @@
 'use client'
 
 import { memo, useCallback, useRef, useMemo } from 'react'
-import type {
-  FieldPath,
-  FieldValues,
-  ControllerRenderProps,
-} from 'react-hook-form'
 import {
   FormControl,
   FormDescription,
@@ -16,8 +11,13 @@ import {
 } from '@/components/ui/form'
 import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
-import type { BaseFormFieldProps } from './form-field.types'
 import { FormFieldTooltip } from './form-field-tooltip'
+import type { BaseFormFieldProps } from './form-field.types'
+import type {
+  FieldPath,
+  FieldValues,
+  ControllerRenderProps,
+} from 'react-hook-form'
 
 export interface FormTextareaFieldProps<
   TFieldValues extends FieldValues = FieldValues,

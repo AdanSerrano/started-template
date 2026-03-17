@@ -1,7 +1,8 @@
 'use client'
 
+import { AtSign } from 'lucide-react'
 import { memo, useCallback, useRef, useMemo, useState } from 'react'
-import type { FieldPath, FieldValues } from 'react-hook-form'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   FormControl,
   FormDescription,
@@ -10,13 +11,12 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { Textarea } from '@/components/ui/textarea'
 import { Popover, PopoverContent, PopoverAnchor } from '@/components/ui/popover'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { AtSign } from 'lucide-react'
+import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
 import type { BaseFormFieldProps } from './form-field.types'
+import type { FieldPath, FieldValues } from 'react-hook-form'
 
 export interface MentionUser {
   id: string

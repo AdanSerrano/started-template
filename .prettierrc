@@ -4,5 +4,14 @@
   "trailingComma": "all",
   "tabWidth": 2,
   "printWidth": 80,
-  "plugins": ["prettier-plugin-tailwindcss"]
+  "arrowParens": "always",
+  "plugins": ["prettier-plugin-tailwindcss"],
+  "overrides": [
+    {
+      "files": "*.md",
+      "options": {
+        "proseWrap": "preserve"
+      }
+    }
+  ]
 }

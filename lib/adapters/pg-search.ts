@@ -5,14 +5,14 @@
  * Para produccion con alto volumen, migrar a Meilisearch o Algolia.
  */
 
+import { sql } from 'drizzle-orm'
+import { db } from '@/lib/db'
 import type {
   ISearchService,
   SearchOptions,
   SearchResult,
   IndexDocument,
 } from '@/lib/interfaces/search.interface'
-import { db } from '@/lib/db'
-import { sql } from 'drizzle-orm'
 
 export class PgSearchService implements ISearchService {
   async search<T = Record<string, unknown>>(

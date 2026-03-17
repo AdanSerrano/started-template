@@ -1,8 +1,6 @@
 'use client'
 
 import { useMemo } from 'react'
-import { authClient } from '@/lib/auth-client'
-import { Sidebar, SidebarRail } from '@/components/ui/sidebar'
 import {
   SidebarBrandHeader,
   SidebarNavContent,
@@ -10,6 +8,8 @@ import {
   getVisibleGroups,
 } from '@/components/sidebar'
 import type { UserRole } from '@/components/sidebar'
+import { Sidebar, SidebarRail } from '@/components/ui/sidebar'
+import { authClient } from '@/lib/auth-client'
 import type { ServerSession } from '@/lib/auth-server'
 
 interface AppSidebarProps {

@@ -1,19 +1,16 @@
 'use client'
 
 import { memo, useCallback, useRef, Fragment, useMemo } from 'react'
-
-import { cn } from '@/lib/utils'
 import { TableCell, TableRow } from '@/components/ui/table'
-
+import { cn } from '@/lib/utils'
+import { DENSITY_HEIGHT, CLICK_DELAY_MS } from '../constants'
+import { SelectionCell, DataCell, ExpanderCell } from './table-row-cells'
 import type {
   CustomColumnDef,
   SelectionConfig,
   ExpansionConfig,
   StyleConfig,
 } from '../types'
-import { DENSITY_HEIGHT, CLICK_DELAY_MS } from '../constants'
-
-import { SelectionCell, DataCell, ExpanderCell } from './table-row-cells'
 
 interface TableRowProps<TData> {
   row: TData

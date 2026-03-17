@@ -1,8 +1,8 @@
-import { Suspense } from 'react'
-import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
-import { TwoFactorVerifyForm } from '@/modules/auth/components/two-factor-verify-form.client'
+import { Suspense } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
+import { TwoFactorVerifyForm } from '@/modules/auth/components/two-factor-verify-form.client'
+import type { Metadata } from 'next'
 
 export const revalidate = 3600
 

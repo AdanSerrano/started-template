@@ -1,18 +1,17 @@
 'use server'
 
-import { requireAuth } from '@/lib/auth-server'
 import { createAuditLog } from '@/lib/audit'
 import { getRequestMetadata } from '@/lib/audit-helpers'
-import { checkRateLimit } from '@/lib/rate-limit'
+import { requireAuth } from '@/lib/auth-server'
+import type { RateLimitConfig } from '@/lib/interfaces'
 import { getGDPRService } from '@/lib/providers'
-import type { ActionResult } from './account-actions'
+import { checkRateLimit } from '@/lib/rate-limit'
+import type { ActionResult } from '@/lib/safe-action'
 
 // Rate limit: 3 GDPR operations per user per hour (CPU-intensive, irreversible)
-const GDPR_RATE_LIMIT = { maxAttempts: 3, windowMs: 60 * 60 * 1000 }
+const GDPR_RATE_LIMIT: RateLimitConfig = { limit: 3, windowSeconds: 3600 }
 
-export async function exportMyDataAction(): Promise<
-  ActionResult & { data?: unknown }
-> {
+export async function exportMyDataAction(): Promise<ActionResult<unknown>> {
   const session = await requireAuth()
   const rl = checkRateLimit(`gdpr:${session.user.id}`, GDPR_RATE_LIMIT)
   if (!rl.success) {

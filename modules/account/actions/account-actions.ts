@@ -1,10 +1,12 @@
 'use server'
 
 import { z } from 'zod/v4'
-import { requireAuth } from '@/lib/auth-server'
 import { createAuditLog } from '@/lib/audit'
 import { getRequestMetadata } from '@/lib/audit-helpers'
+import { requireAuth } from '@/lib/auth-server'
+import type { RateLimitConfig } from '@/lib/interfaces'
 import { checkRateLimit } from '@/lib/rate-limit'
+import type { ActionResult } from '@/lib/safe-action'
 import * as accountService from '../services/account-service'
 import {
   createProfileUpdateSchema,
@@ -12,7 +14,7 @@ import {
 } from '../validations'
 
 // Rate limit: 20 write operations per user per 5 minutes
-const WRITE_RATE_LIMIT = { maxAttempts: 20, windowMs: 5 * 60 * 1000 }
+const WRITE_RATE_LIMIT: RateLimitConfig = { limit: 20, windowSeconds: 300 }
 
 function checkWriteLimit(userId: string): ActionResult | null {
   const result = checkRateLimit(`account:write:${userId}`, WRITE_RATE_LIMIT)
@@ -25,12 +27,6 @@ function checkWriteLimit(userId: string): ActionResult | null {
 const passthrough = (key: string) => key
 const profileUpdateSchema = createProfileUpdateSchema(passthrough)
 const addressFormSchema = createAddressFormSchema(passthrough)
-
-export type ActionResult = {
-  success: boolean
-  error?: string
-  fieldErrors?: Record<string, string[]>
-}
 
 // Profile
 export async function getProfileAction() {
@@ -101,7 +97,7 @@ export async function createAddressAction(
     }
   }
 
-  const { id: _, ...addressData } = parsed.data
+  const { id: _id, ...addressData } = parsed.data
   const address = await accountService.createAddress({
     ...addressData,
     userId: session.user.id,

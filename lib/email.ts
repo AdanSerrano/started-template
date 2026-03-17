@@ -4,11 +4,10 @@
  * Para cambiar de Resend a otro proveedor (SendGrid, AWS SES, etc.),
  * solo se modifica lib/providers.ts sin tocar este archivo.
  */
-import type { ReactElement } from 'react'
-import { getEmailService } from '@/lib/providers'
 import type { EmailLocale } from '@/emails/i18n'
-
 import { appConfig } from '@/lib/config'
+import { getEmailService } from '@/lib/providers'
+import type { ReactElement } from 'react'
 
 const DEFAULT_FROM = appConfig.emailFrom
 

@@ -7,8 +7,8 @@ import {
   pdf,
 } from '@react-pdf/renderer'
 import { createElement } from 'react'
-import type { IPDFExportService, PDFExportOptions } from '@/lib/interfaces'
 import { appConfig } from '@/lib/config'
+import type { IPDFExportService, PDFExportOptions } from '@/lib/interfaces'
 
 /**
  * Convierte el pageSize de la interfaz al tipo esperado por @react-pdf/renderer.

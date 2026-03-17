@@ -1,11 +1,7 @@
 'use client'
 
+import { REGEXP_ONLY_DIGITS, REGEXP_ONLY_DIGITS_AND_CHARS } from 'input-otp'
 import { memo, useCallback, useMemo } from 'react'
-import type {
-  FieldPath,
-  FieldValues,
-  ControllerRenderProps,
-} from 'react-hook-form'
 import {
   FormControl,
   FormDescription,
@@ -22,7 +18,11 @@ import {
 } from '@/components/ui/input-otp'
 import { cn } from '@/lib/utils'
 import type { BaseFormFieldProps } from './form-field.types'
-import { REGEXP_ONLY_DIGITS, REGEXP_ONLY_DIGITS_AND_CHARS } from 'input-otp'
+import type {
+  FieldPath,
+  FieldValues,
+  ControllerRenderProps,
+} from 'react-hook-form'
 
 export interface FormOTPFieldProps<
   TFieldValues extends FieldValues = FieldValues,

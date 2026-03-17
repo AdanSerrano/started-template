@@ -1,11 +1,8 @@
 'use client'
 
+import { Eraser, Download, Undo, Pen } from 'lucide-react'
 import { memo, useCallback, useRef, useMemo, useState } from 'react'
-import type {
-  FieldPath,
-  FieldValues,
-  ControllerRenderProps,
-} from 'react-hook-form'
+import { Button } from '@/components/ui/button'
 import {
   FormControl,
   FormDescription,
@@ -14,10 +11,13 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { Button } from '@/components/ui/button'
-import { Eraser, Download, Undo, Pen } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { BaseFormFieldProps } from './form-field.types'
+import type {
+  FieldPath,
+  FieldValues,
+  ControllerRenderProps,
+} from 'react-hook-form'
 
 export interface FormSignatureFieldProps<
   TFieldValues extends FieldValues = FieldValues,

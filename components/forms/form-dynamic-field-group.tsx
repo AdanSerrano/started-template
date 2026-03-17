@@ -1,5 +1,12 @@
 'use client'
 
+import {
+  Plus,
+  Trash2,
+  GripVertical,
+  ChevronUp,
+  ChevronDown,
+} from 'lucide-react'
 import { memo, useCallback, useMemo, type ReactNode } from 'react'
 import {
   useFieldArray,
@@ -9,15 +16,8 @@ import {
   type UseFieldArrayReturn,
 } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
-import {
-  Plus,
-  Trash2,
-  GripVertical,
-  ChevronUp,
-  ChevronDown,
-} from 'lucide-react'
 import { FormLabel, FormDescription } from '@/components/ui/form'
+import { cn } from '@/lib/utils'
 import { FormFieldTooltip } from './form-field-tooltip'
 import type { TooltipConfig } from './form-field.types'
 

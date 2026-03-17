@@ -1,23 +1,23 @@
 'use client'
 
-import { useCallback, useMemo, useRef, useState, useTransition } from 'react'
-import Image from 'next/image'
-import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useTranslations } from 'next-intl'
-import { useRouter } from '@/i18n/navigation'
-import { toast } from 'sonner'
 import { Camera, User } from 'lucide-react'
-import { Form } from '@/components/ui/form'
-import { FormTextField } from '@/components/forms/form-text-field'
+import Image from 'next/image'
+import { useTranslations } from 'next-intl'
+import { useCallback, useMemo, useRef, useState, useTransition } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { FormSubmitButton } from '@/components/forms/form-submit-button'
+import { FormTextField } from '@/components/forms/form-text-field'
 import { Badge } from '@/components/ui/badge'
+import { Form } from '@/components/ui/form'
+import { useRouter } from '@/i18n/navigation'
+import { updateProfileAction } from '../actions/account-actions'
+import { uploadAvatar } from '../utils/upload-avatar'
 import {
   createProfileUpdateSchema,
   type ProfileUpdateInput,
 } from '../validations'
-import { updateProfileAction } from '../actions/account-actions'
-import { uploadAvatar } from '../utils/upload-avatar'
 
 interface ProfileFormProps {
   defaultValues: {

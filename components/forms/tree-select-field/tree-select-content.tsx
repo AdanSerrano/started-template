@@ -1,6 +1,8 @@
 'use client'
 
+import { ChevronsUpDown, FolderTree } from 'lucide-react'
 import { memo, useCallback, useMemo, useState } from 'react'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
   Popover,
@@ -8,11 +10,9 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Badge } from '@/components/ui/badge'
-import { ChevronsUpDown, FolderTree } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { TreeItem } from './tree-item'
 import { SelectedBadge } from './selected-badge'
+import { TreeItem } from './tree-item'
 import { getAllValues, findNodeByValue, getNodePath } from './tree-utils'
 import type { TreeSelectContentProps } from './types'
 

@@ -1,13 +1,12 @@
 'use client'
 
-import { useCallback, useState, useTransition } from 'react'
-import { useTranslations } from 'next-intl'
-import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { CheckCircle, Loader2, Mail, Wand2 } from 'lucide-react'
+import { useTranslations } from 'next-intl'
+import { useCallback, useState, useTransition } from 'react'
+import { useForm } from 'react-hook-form'
 import { z } from 'zod/v4'
-import { authClient } from '@/lib/auth-client'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import {
   Form,
   FormControl,
@@ -16,7 +15,8 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { CheckCircle, Loader2, Mail, Wand2 } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import { authClient } from '@/lib/auth-client'
 import { DEFAULT_LOGIN_REDIRECT } from '@/routes'
 
 const magicLinkSchema = z.object({

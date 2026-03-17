@@ -1,5 +1,6 @@
 'use client'
 
+import { useSearchParams } from 'next/navigation'
 import {
   forwardRef,
   useCallback,
@@ -11,12 +12,15 @@ import {
 } from 'react'
 import { useStore, type StoreApi } from 'zustand'
 import { useShallow } from 'zustand/react/shallow'
-import type { DataTableStoreState } from './store/types'
-import { useSearchParams } from 'next/navigation'
 import { usePathname } from '@/i18n/navigation'
 import { CustomDataTable } from './custom-datatable'
-import { DataTableStoreContext } from './store/datatable-context'
 import { createDataTableStore } from './store/create-datatable-store'
+import { DataTableStoreContext } from './store/datatable-context'
+import type {
+  DataTableStoreState,
+  DataTableStore,
+  DataTableFetchFn,
+} from './store/types'
 import type {
   CustomDataTableProps,
   SelectionConfig,
@@ -30,7 +34,6 @@ import type {
   ColumnVisibilityState,
   DensityType,
 } from './types'
-import type { DataTableStore, DataTableFetchFn } from './store/types'
 
 // ============================================
 // SMART CONFIG TYPES (without state management)

@@ -1,11 +1,6 @@
 'use client'
 
 import { memo, useMemo } from 'react'
-import type {
-  FieldPath,
-  FieldValues,
-  ControllerRenderProps,
-} from 'react-hook-form'
 import {
   FormControl,
   FormDescription,
@@ -15,8 +10,13 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { TransferContent } from './transfer-content'
-import type { FormTransferFieldProps } from './types'
 import { DEFAULT_LABELS } from './types'
+import type { FormTransferFieldProps } from './types'
+import type {
+  FieldPath,
+  FieldValues,
+  ControllerRenderProps,
+} from 'react-hook-form'
 
 function FormTransferFieldComponent<
   TFieldValues extends FieldValues = FieldValues,

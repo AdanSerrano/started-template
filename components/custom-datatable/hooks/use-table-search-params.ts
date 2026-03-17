@@ -1,9 +1,9 @@
 'use client'
 
-import { useCallback, useMemo } from 'react'
 import { useSearchParams } from 'next/navigation'
-import type { SortingState } from '../types'
+import { useCallback, useMemo } from 'react'
 import type { DataTableFetchParams } from '../store/types'
+import type { SortingState } from '../types'
 
 // ============================================
 // TYPES

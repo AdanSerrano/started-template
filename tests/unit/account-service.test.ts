@@ -1,4 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { addressRepository } from '@/modules/account/repositories/address-repository'
+import { profileRepository } from '@/modules/account/repositories/profile-repository'
+import * as accountService from '@/modules/account/services/account-service'
 
 // Mock db with transaction support
 vi.mock('@/lib/db', () => ({
@@ -25,10 +28,6 @@ vi.mock('@/modules/account/repositories/profile-repository', () => ({
     update: vi.fn(),
   },
 }))
-
-import * as accountService from '@/modules/account/services/account-service'
-import { addressRepository } from '@/modules/account/repositories/address-repository'
-import { profileRepository } from '@/modules/account/repositories/profile-repository'
 
 describe('AccountService', () => {
   beforeEach(() => {

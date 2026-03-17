@@ -1,11 +1,14 @@
 'use client'
 
+import { ChevronDown } from 'lucide-react'
 import { memo, useCallback, useRef, useMemo } from 'react'
-import type {
-  FieldPath,
-  FieldValues,
-  ControllerRenderProps,
-} from 'react-hook-form'
+import { Button } from '@/components/ui/button'
+import {
+  Command,
+  CommandGroup,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command'
 import {
   FormControl,
   FormDescription,
@@ -20,17 +23,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import {
-  Command,
-  CommandGroup,
-  CommandItem,
-  CommandList,
-} from '@/components/ui/command'
-import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import { ChevronDown } from 'lucide-react'
-import type { BaseFormFieldProps, CurrencyConfig } from './form-field.types'
 import { FormFieldTooltip } from './form-field-tooltip'
+import type { BaseFormFieldProps, CurrencyConfig } from './form-field.types'
+import type {
+  FieldPath,
+  FieldValues,
+  ControllerRenderProps,
+} from 'react-hook-form'
 
 export interface CurrencyValue {
   amount: number

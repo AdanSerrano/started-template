@@ -173,7 +173,6 @@ export function useColumnPinning<TData>({
 
   // Calculate sticky positions for pinned columns
   const getStickyStyle = useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     (columnId: string, _columnIndex: number): React.CSSProperties => {
       if (!enabled || !config?.enabled) return {}
 

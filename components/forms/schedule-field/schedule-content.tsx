@@ -1,16 +1,15 @@
 'use client'
 
 import { memo, useCallback, useMemo } from 'react'
-import type { FieldValues } from 'react-hook-form'
 import { cn } from '@/lib/utils'
 import { DayRow } from './day-row'
+import { DAYS_ORDER, DEFAULT_SCHEDULE } from './types'
 import type {
   DayOfWeek,
   TimeSlot,
   WeekSchedule,
   ScheduleContentProps,
 } from './types'
-import { DAYS_ORDER, DEFAULT_SCHEDULE } from './types'
 
 export const ScheduleContent = memo(function ScheduleContent({
   field,

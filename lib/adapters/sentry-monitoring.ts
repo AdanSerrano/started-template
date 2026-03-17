@@ -48,7 +48,8 @@ export class ConsoleMonitoringAdapter implements IErrorMonitoringService {
     }
     const logger =
       level === 'info'
-        ? console.info
+        ? // eslint-disable-next-line no-console
+          console.info
         : level === 'warning'
           ? console.warn
           : console.error
@@ -65,6 +66,7 @@ export class ConsoleMonitoringAdapter implements IErrorMonitoringService {
       })
       return
     }
+    // eslint-disable-next-line no-console
     console.debug('[ErrorMonitor] setUser', user?.id ?? 'null')
   }
 }

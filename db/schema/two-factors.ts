@@ -3,7 +3,6 @@ import {
   primaryId,
   uuidCol,
   text,
-  timestampCol,
   index,
   timestamps,
 } from '@/db/dialect'

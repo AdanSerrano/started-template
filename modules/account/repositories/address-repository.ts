@@ -1,6 +1,6 @@
-import { db, type DbOrTx } from '@/lib/db'
-import { addresses } from '@/db/schema'
 import { eq, and, count, sql } from 'drizzle-orm'
+import { addresses } from '@/db/schema'
+import { db, type DbOrTx } from '@/lib/db'
 import type { Address, AddressInsert } from '../types'
 
 // ── Interface ───────────────────────────────────────────────

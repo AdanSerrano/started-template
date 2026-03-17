@@ -1,4 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { getServerSession } from '@/lib/auth-server'
+import { UnauthorizedError, ForbiddenError } from '@/lib/errors'
+import { userRepository } from '@/modules/auth/repositories'
+import { getAuthSecurityService } from '@/modules/auth/services/auth-security-service'
+import { authService } from '@/modules/auth/services/auth-service'
+import type { AuthSession } from '@/modules/auth/types'
 
 vi.mock('@/lib/auth-server', () => ({
   getServerSession: vi.fn(),
@@ -14,13 +20,6 @@ vi.mock('@/modules/auth/repositories', () => ({
 vi.mock('@/modules/auth/services/auth-security-service', () => ({
   getAuthSecurityService: vi.fn(),
 }))
-
-import { authService } from '@/modules/auth/services/auth-service'
-import { getServerSession } from '@/lib/auth-server'
-import { userRepository } from '@/modules/auth/repositories'
-import { getAuthSecurityService } from '@/modules/auth/services/auth-security-service'
-import { UnauthorizedError, ForbiddenError } from '@/lib/errors'
-import type { AuthSession } from '@/modules/auth/types'
 
 const mockSession: AuthSession = {
   user: {

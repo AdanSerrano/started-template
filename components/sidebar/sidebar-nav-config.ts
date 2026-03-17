@@ -1,5 +1,5 @@
-import type { LucideIcon } from 'lucide-react'
 import { LayoutDashboard, Settings } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 
 export type UserRole = 'super_admin' | 'admin' | 'user'
 

@@ -1,9 +1,8 @@
 'use client'
 
-import { memo, useCallback } from 'react'
-import { useTranslations } from 'next-intl'
 import { ChevronRight } from 'lucide-react'
-import { Link, usePathname } from '@/i18n/navigation'
+import { useTranslations } from 'next-intl'
+import { memo, useCallback } from 'react'
 import {
   Collapsible,
   CollapsibleContent,
@@ -22,6 +21,7 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from '@/components/ui/sidebar'
+import { Link, usePathname } from '@/i18n/navigation'
 import type { NavGroup, NavItem } from './sidebar-nav-config'
 
 interface SidebarNavContentProps {

@@ -1,13 +1,11 @@
 'use client'
 
-import { memo } from 'react'
 import { ChevronRight, ChevronDown } from 'lucide-react'
-
-import { cn } from '@/lib/utils'
+import { memo } from 'react'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { TableCell } from '@/components/ui/table'
-
+import { cn } from '@/lib/utils'
 import { DENSITY_PADDING } from '../constants'
 
 // Memoized checkbox cell - no generics, safe to memo

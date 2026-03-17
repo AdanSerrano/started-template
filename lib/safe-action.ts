@@ -1,6 +1,6 @@
 import { z } from 'zod/v4'
-import { requireAuth } from '@/lib/auth-server'
 import { getRequestMetadata } from '@/lib/audit-helpers'
+import { requireAuth } from '@/lib/auth-server'
 import { AppError } from '@/lib/errors'
 import { getLogger } from '@/lib/providers'
 

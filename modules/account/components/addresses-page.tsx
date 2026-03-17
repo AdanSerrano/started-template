@@ -1,6 +1,6 @@
+import { MapPin } from 'lucide-react'
 import { getTranslations } from 'next-intl/server'
 import { requireAuth } from '@/lib/auth-server'
-import { MapPin } from 'lucide-react'
 import * as accountService from '../services/account-service'
 import { AddressList } from './address-list.client'
 

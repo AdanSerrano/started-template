@@ -4,9 +4,10 @@
  * Tests: rendering, three password fields, submit button.
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { ChangePasswordForm } from '@/modules/account/components/change-password-form.client'
 
 vi.mock('next-intl', () => ({
   useTranslations: () => (key: string) => key,
@@ -24,8 +25,6 @@ vi.mock('sonner', () => ({
     error: vi.fn(),
   },
 }))
-
-import { ChangePasswordForm } from '@/modules/account/components/change-password-form.client'
 
 describe('ChangePasswordForm', () => {
   beforeEach(() => {

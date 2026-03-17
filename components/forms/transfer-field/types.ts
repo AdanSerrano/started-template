@@ -1,5 +1,5 @@
-import type { FieldPath, FieldValues } from 'react-hook-form'
 import type { BaseFormFieldProps, FormFieldOption } from '../form-field.types'
+import type { FieldPath, FieldValues } from 'react-hook-form'
 
 export interface FormTransferFieldProps<
   TFieldValues extends FieldValues = FieldValues,

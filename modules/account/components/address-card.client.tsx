@@ -1,13 +1,12 @@
 'use client'
 
-import { useTransition } from 'react'
-import { useTranslations } from 'next-intl'
-import { useRouter } from '@/i18n/navigation'
 import { MapPin, Star, Trash2, Pencil } from 'lucide-react'
+import { useTranslations } from 'next-intl'
+import { useTransition } from 'react'
 import { toast } from 'sonner'
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Link } from '@/i18n/navigation'
+import { Button } from '@/components/ui/button'
+import { useRouter, Link } from '@/i18n/navigation'
 import {
   deleteAddressAction,
   setDefaultAddressAction,

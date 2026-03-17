@@ -1,11 +1,6 @@
 'use client'
 
 import { memo } from 'react'
-import type {
-  FieldPath,
-  FieldValues,
-  ControllerRenderProps,
-} from 'react-hook-form'
 import {
   FormControl,
   FormDescription,
@@ -16,6 +11,11 @@ import {
 } from '@/components/ui/form'
 import { TreeSelectContent } from './tree-select-content'
 import type { FormTreeSelectFieldProps } from './types'
+import type {
+  FieldPath,
+  FieldValues,
+  ControllerRenderProps,
+} from 'react-hook-form'
 
 function FormTreeSelectFieldComponent<
   TFieldValues extends FieldValues = FieldValues,

@@ -1,13 +1,12 @@
-import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { hasLocale, NextIntlClientProvider } from 'next-intl'
 import { getMessages, getTranslations } from 'next-intl/server'
 import { ThemeProvider } from 'next-themes'
-import { geistSans, geistMono } from '@/lib/fonts'
-import { routing } from '@/i18n/routing'
 import { Toaster } from '@/components/ui/sonner'
-
+import { routing } from '@/i18n/routing'
 import { appConfig } from '@/lib/config'
+import { geistSans, geistMono } from '@/lib/fonts'
+import type { Metadata } from 'next'
 
 const BASE_URL = appConfig.url
 

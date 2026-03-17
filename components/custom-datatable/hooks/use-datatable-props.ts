@@ -1,13 +1,10 @@
 import { useMemo } from 'react'
-
 import { cn } from '@/lib/utils'
-
 import type {
   CustomColumnDef,
   CustomDataTableProps,
   DensityType,
   ExportFormat,
-  StyleConfig,
 } from '../types'
 
 interface UseDataTablePropsParams<TData> {

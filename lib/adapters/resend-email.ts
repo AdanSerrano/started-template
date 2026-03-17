@@ -1,10 +1,10 @@
 import { Resend } from 'resend'
-import type { ReactElement } from 'react'
 import type {
   IEmailService,
   SendEmailParams,
   SendEmailResult,
 } from '@/lib/interfaces'
+import type { ReactElement } from 'react'
 
 /**
  * Implementacion de IEmailService usando Resend.

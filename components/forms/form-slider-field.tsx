@@ -1,11 +1,6 @@
 'use client'
 
 import { memo, useMemo, useCallback } from 'react'
-import type {
-  FieldPath,
-  FieldValues,
-  ControllerRenderProps,
-} from 'react-hook-form'
 import {
   FormControl,
   FormDescription,
@@ -16,6 +11,11 @@ import {
 } from '@/components/ui/form'
 import { Slider } from '@/components/ui/slider'
 import type { BaseFormFieldProps } from './form-field.types'
+import type {
+  FieldPath,
+  FieldValues,
+  ControllerRenderProps,
+} from 'react-hook-form'
 
 export interface FormSliderFieldProps<
   TFieldValues extends FieldValues = FieldValues,

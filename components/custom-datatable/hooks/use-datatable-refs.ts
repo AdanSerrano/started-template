@@ -1,5 +1,4 @@
 import { useEffect, useImperativeHandle, useRef } from 'react'
-
 import type {
   CustomDataTableProps,
   CustomDataTableRef,

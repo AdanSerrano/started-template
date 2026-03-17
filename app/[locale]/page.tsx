@@ -1,9 +1,3 @@
-import { Suspense } from 'react'
-import { getTranslations } from 'next-intl/server'
-import { getServerSession } from '@/lib/auth-server'
-import { Link } from '@/i18n/navigation'
-import { ThemeSwitcher } from '@/components/theme-switcher.client'
-import { LanguageSwitcher } from '@/components/language-switcher.client'
 import {
   ArrowRight,
   Database,
@@ -14,6 +8,12 @@ import {
   Shield,
   Zap,
 } from 'lucide-react'
+import { getTranslations } from 'next-intl/server'
+import { Suspense } from 'react'
+import { LanguageSwitcher } from '@/components/language-switcher.client'
+import { ThemeSwitcher } from '@/components/theme-switcher.client'
+import { Link } from '@/i18n/navigation'
+import { getServerSession } from '@/lib/auth-server'
 
 export const revalidate = 3600
 

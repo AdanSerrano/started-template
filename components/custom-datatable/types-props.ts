@@ -1,5 +1,3 @@
-import type { ReactNode } from 'react'
-
 import type {
   CustomColumnDef,
   SortingState,
@@ -27,6 +25,7 @@ import type {
   EmptyStateConfig,
   ToolbarConfig,
 } from './types-config'
+import type { ReactNode } from 'react'
 
 // ============================================
 // MAIN DATATABLE PROPS

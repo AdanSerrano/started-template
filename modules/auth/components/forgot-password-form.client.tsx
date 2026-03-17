@@ -1,16 +1,11 @@
 'use client'
 
-import { useCallback, useState, useTransition } from 'react'
-import { useTranslations } from 'next-intl'
-import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { authClient } from '@/lib/auth-client'
-import {
-  createForgotPasswordSchema,
-  type ForgotPasswordInput,
-} from '@/modules/auth/validations'
+import { Loader2, Mail } from 'lucide-react'
+import { useTranslations } from 'next-intl'
+import { useCallback, useState, useTransition } from 'react'
+import { useForm } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import {
   Form,
   FormControl,
@@ -19,7 +14,12 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { Loader2, Mail } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import { authClient } from '@/lib/auth-client'
+import {
+  createForgotPasswordSchema,
+  type ForgotPasswordInput,
+} from '@/modules/auth/validations'
 
 export function ForgotPasswordForm() {
   const t = useTranslations('auth.forgotPassword')

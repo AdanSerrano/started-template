@@ -31,18 +31,14 @@ describe('env validation', () => {
         'a-secret-that-is-at-least-32-characters-long!'
       delete process.env.DATABASE_URL
 
-      await expect(importEnv()).rejects.toThrow(
-        'Missing required environment variable: DATABASE_URL',
-      )
+      await expect(importEnv()).rejects.toThrow('Environment validation failed')
     })
 
     it('should throw when BETTER_AUTH_SECRET is missing', async () => {
       process.env.DATABASE_URL = 'postgresql://localhost:5432/testdb'
       delete process.env.BETTER_AUTH_SECRET
 
-      await expect(importEnv()).rejects.toThrow(
-        'Missing required environment variable: BETTER_AUTH_SECRET',
-      )
+      await expect(importEnv()).rejects.toThrow('Environment validation failed')
     })
 
     it('should throw when DATABASE_URL is not a postgres URL', async () => {
@@ -50,9 +46,7 @@ describe('env validation', () => {
       process.env.BETTER_AUTH_SECRET =
         'a-secret-that-is-at-least-32-characters-long!'
 
-      await expect(importEnv()).rejects.toThrow(
-        'DATABASE_URL must start with postgresql:// or postgres://',
-      )
+      await expect(importEnv()).rejects.toThrow('DB_DIALECT=postgresql')
     })
 
     it('should accept mysql URL when DB_DIALECT is mysql', async () => {
@@ -195,9 +189,7 @@ describe('env validation', () => {
       setMinimalValidEnv()
       process.env.NEXT_PUBLIC_APP_URL = 'not-a-url'
 
-      await expect(importEnv()).rejects.toThrow(
-        'NEXT_PUBLIC_APP_URL must be a valid URL',
-      )
+      await expect(importEnv()).rejects.toThrow('Environment validation failed')
     })
   })
 
@@ -258,9 +250,7 @@ describe('env validation', () => {
       setMinimalValidEnv()
       process.env.EMAIL_FROM = 'invalid-email'
 
-      await expect(importEnv()).rejects.toThrow(
-        'EMAIL_FROM must be a valid email address (must contain @)',
-      )
+      await expect(importEnv()).rejects.toThrow('EMAIL_FROM must contain @')
     })
 
     it('should accept valid EMAIL_FROM', async () => {

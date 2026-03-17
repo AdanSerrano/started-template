@@ -1,5 +1,5 @@
-import { db } from '@/lib/db'
 import { sql } from 'drizzle-orm'
+import { db } from '@/lib/db'
 
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'

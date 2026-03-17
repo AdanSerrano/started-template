@@ -1,7 +1,6 @@
 'use client'
 
 import { memo, useMemo, Fragment } from 'react'
-import type { FieldPath, FieldValues } from 'react-hook-form'
 import {
   FormControl,
   FormDescription,
@@ -21,8 +20,9 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { cn } from '@/lib/utils'
-import type { BaseFormFieldProps, SelectOptions } from './form-field.types'
 import { isGroupedOptions } from './form-field.types'
+import type { BaseFormFieldProps, SelectOptions } from './form-field.types'
+import type { FieldPath, FieldValues } from 'react-hook-form'
 
 export interface FormSelectFieldProps<
   TFieldValues extends FieldValues = FieldValues,

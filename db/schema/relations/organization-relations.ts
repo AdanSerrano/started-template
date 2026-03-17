@@ -1,10 +1,10 @@
 import { relations } from 'drizzle-orm'
-import { users } from '../users'
 import {
   organizations,
   organizationMembers,
   organizationInvitations,
 } from '../organizations'
+import { users } from '../users'
 
 export const organizationsRelations = relations(
   organizations,

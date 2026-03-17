@@ -5,12 +5,12 @@
  * Para produccion, reemplazar con DB-backed o servicio externo.
  */
 
+import { randomUUID } from 'node:crypto'
 import type {
   INotificationService,
   Notification,
   NotificationPayload,
 } from '@/lib/interfaces/notification.interface'
-import { randomUUID } from 'node:crypto'
 
 export class InAppNotificationService implements INotificationService {
   private notifications: Map<string, Notification[]> = new Map()

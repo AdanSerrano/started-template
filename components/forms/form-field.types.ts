@@ -1,8 +1,8 @@
 'use client'
 
+import type { LucideIcon } from 'lucide-react'
 import type { ReactNode } from 'react'
 import type { Control, FieldPath, FieldValues } from 'react-hook-form'
-import type { LucideIcon } from 'lucide-react'
 
 export interface TooltipConfig {
   content: ReactNode

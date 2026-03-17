@@ -1,7 +1,7 @@
 'use client'
 
-import { memo, useCallback } from 'react'
 import { ChevronRight, ChevronDown } from 'lucide-react'
+import { memo, useCallback } from 'react'
 import { Checkbox } from '@/components/ui/checkbox'
 import { cn } from '@/lib/utils'
 import type { TreeItemProps } from './types'

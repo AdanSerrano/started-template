@@ -1,8 +1,8 @@
 import { getServerSession } from '@/lib/auth-server'
 import { UnauthorizedError, ForbiddenError } from '@/lib/errors'
 import { userRepository } from '@/modules/auth/repositories'
-import { getAuthSecurityService } from './auth-security-service'
 import type { AuthSession } from '@/modules/auth/types'
+import { getAuthSecurityService } from './auth-security-service'
 
 export const authService = {
   /**

@@ -1,7 +1,18 @@
 'use client'
 
+import { format } from 'date-fns'
+import { CalendarIcon, Repeat } from 'lucide-react'
 import { memo, useCallback, useMemo } from 'react'
+import { Button } from '@/components/ui/button'
+import { Calendar } from '@/components/ui/calendar'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import {
   Select,
   SelectContent,
@@ -9,20 +20,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { Label } from '@/components/ui/label'
-import { Calendar } from '@/components/ui/calendar'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
-import { Button } from '@/components/ui/button'
-import { CalendarIcon, Repeat } from 'lucide-react'
-import { format } from 'date-fns'
 import { cn } from '@/lib/utils'
-import { WeekdaySelector } from './weekday-selector'
 import { getRecurrenceDescription } from './recurrence-utils'
+import { DEFAULT_VALUE } from './types'
+import { WeekdaySelector } from './weekday-selector'
 import type {
   RecurrenceFrequency,
   RecurrenceDayOfWeek,
@@ -30,7 +31,6 @@ import type {
   RecurrenceValue,
   RecurrenceContentProps,
 } from './types'
-import { DEFAULT_VALUE } from './types'
 
 export const RecurrenceContent = memo(function RecurrenceContent({
   field,

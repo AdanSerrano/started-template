@@ -1,7 +1,6 @@
 'use client'
 
 import { memo, type ReactNode } from 'react'
-import type { FieldPath, FieldValues } from 'react-hook-form'
 import {
   FormControl,
   FormDescription,
@@ -13,6 +12,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
 import type { BaseFormFieldProps, InputType } from './form-field.types'
+import type { FieldPath, FieldValues } from 'react-hook-form'
 
 export interface FormTextFieldProps<
   TFieldValues extends FieldValues = FieldValues,

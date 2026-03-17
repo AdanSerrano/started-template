@@ -1,7 +1,7 @@
 /**
  * In-memory rate limit adapter.
  *
- * Wraps the existing checkRateLimit/resetRateLimit/peekRateLimit functions
+ * Wraps the standalone checkRateLimit/resetRateLimit/peekRateLimit functions
  * to implement the IRateLimitService interface.
  */
 
@@ -22,11 +22,7 @@ export class InMemoryRateLimitService implements IRateLimitService {
     identifier: string,
     config?: RateLimitConfig,
   ): Promise<RateLimitResult> {
-    const cfg = config ?? DEFAULT_CONFIG
-    return checkRateLimit(identifier, {
-      maxAttempts: cfg.limit,
-      windowMs: cfg.windowSeconds * 1000,
-    })
+    return checkRateLimit(identifier, config ?? DEFAULT_CONFIG)
   }
 
   async reset(identifier: string): Promise<void> {
@@ -37,10 +33,6 @@ export class InMemoryRateLimitService implements IRateLimitService {
     identifier: string,
     config?: RateLimitConfig,
   ): Promise<RateLimitResult> {
-    const cfg = config ?? DEFAULT_CONFIG
-    return peekRateLimit(identifier, {
-      maxAttempts: cfg.limit,
-      windowMs: cfg.windowSeconds * 1000,
-    })
+    return peekRateLimit(identifier, config ?? DEFAULT_CONFIG)
   }
 }

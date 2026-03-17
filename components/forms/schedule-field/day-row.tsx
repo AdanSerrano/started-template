@@ -1,9 +1,9 @@
 'use client'
 
+import { Copy } from 'lucide-react'
 import { memo, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
-import { Copy } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { TimeSlotInput } from './time-slot-input'
 import type { DayRowProps } from './types'

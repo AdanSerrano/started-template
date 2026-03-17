@@ -1,11 +1,9 @@
 'use client'
 
+import { Braces, Copy, Check, WandSparkles, AlertCircle } from 'lucide-react'
 import { memo, useCallback, useMemo } from 'react'
-import type {
-  FieldPath,
-  FieldValues,
-  ControllerRenderProps,
-} from 'react-hook-form'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import {
   FormControl,
   FormDescription,
@@ -15,11 +13,13 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Textarea } from '@/components/ui/textarea'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Braces, Copy, Check, WandSparkles, AlertCircle } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { BaseFormFieldProps } from './form-field.types'
+import type {
+  FieldPath,
+  FieldValues,
+  ControllerRenderProps,
+} from 'react-hook-form'
 
 export interface FormJsonFieldProps<
   TFieldValues extends FieldValues = FieldValues,

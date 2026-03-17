@@ -1,4 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
+import {
+  extractCredentials,
+  checkAccountLockByEmail,
+  checkAccountLockByUsername,
+  handleFailedLogin,
+} from '@/modules/auth/services/auth-rate-limit'
 
 // Stable mock objects that persist across calls
 const mockSecurityService = {
@@ -32,13 +38,6 @@ vi.mock('@/modules/auth/repositories', () => ({
 vi.mock('@/modules/auth/services/auth-security-service', () => ({
   getAuthSecurityService: () => mockSecurityService,
 }))
-
-import {
-  extractCredentials,
-  checkAccountLockByEmail,
-  checkAccountLockByUsername,
-  handleFailedLogin,
-} from '@/modules/auth/services/auth-rate-limit'
 
 // ── Tests ───────────────────────────────────────────────────
 

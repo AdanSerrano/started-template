@@ -1,7 +1,8 @@
 'use client'
 
+import { Copy, Check } from 'lucide-react'
 import { memo, useMemo, useCallback } from 'react'
-import type { FieldPath, FieldValues } from 'react-hook-form'
+import { Button } from '@/components/ui/button'
 import {
   FormControl,
   FormDescription,
@@ -10,7 +11,6 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { Textarea } from '@/components/ui/textarea'
 import {
   Select,
   SelectContent,
@@ -18,10 +18,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Button } from '@/components/ui/button'
-import { Copy, Check } from 'lucide-react'
+import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
 import type { BaseFormFieldProps } from './form-field.types'
+import type { FieldPath, FieldValues } from 'react-hook-form'
 
 type CodeLanguage =
   | 'javascript'

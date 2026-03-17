@@ -2,6 +2,7 @@
  * Webhook adapter con verificacion HMAC-SHA256 y retry.
  */
 
+import { createHmac, randomUUID, timingSafeEqual } from 'node:crypto'
 import type {
   IWebhookService,
   WebhookConfig,
@@ -9,7 +10,6 @@ import type {
   WebhookDelivery,
   WebhookSendOptions,
 } from '@/lib/interfaces/webhook.interface'
-import { createHmac, randomUUID, timingSafeEqual } from 'node:crypto'
 
 function sign(payload: string, secret: string): string {
   return createHmac('sha256', secret).update(payload).digest('hex')

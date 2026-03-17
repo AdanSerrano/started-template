@@ -1,6 +1,5 @@
 'use client'
 
-import { memo, useCallback, useMemo } from 'react'
 import {
   ChevronLeft,
   ChevronRight,
@@ -9,8 +8,7 @@ import {
   MoreHorizontal,
 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-
-import { cn } from '@/lib/utils'
+import { memo, useCallback, useMemo } from 'react'
 import { Button } from '@/components/ui/button'
 import {
   Select,
@@ -19,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-
+import { cn } from '@/lib/utils'
 import type { PaginationConfig } from '../types'
 
 interface TablePaginationProps {

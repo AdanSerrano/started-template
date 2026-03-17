@@ -1,11 +1,10 @@
 'use client'
 
 import { memo, useMemo, useCallback } from 'react'
-
-import { cn } from '@/lib/utils'
-import { TableBody, TableCell, TableRow } from '@/components/ui/table'
 import { Skeleton } from '@/components/ui/skeleton'
-
+import { TableBody, TableCell, TableRow } from '@/components/ui/table'
+import { cn } from '@/lib/utils'
+import { DENSITY_PADDING, DENSITY_HEIGHT, SKELETON_HEIGHT } from '../constants'
 import { CustomTableRow } from './table-row'
 import type {
   CustomColumnDef,
@@ -13,7 +12,6 @@ import type {
   ExpansionConfig,
   StyleConfig,
 } from '../types'
-import { DENSITY_PADDING, DENSITY_HEIGHT, SKELETON_HEIGHT } from '../constants'
 
 interface TableBodyProps<TData> {
   data: TData[]

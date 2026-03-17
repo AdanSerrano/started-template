@@ -1,9 +1,9 @@
-import { Suspense } from 'react'
-import type { Metadata } from 'next'
-import { Link } from '@/i18n/navigation'
 import { getTranslations } from 'next-intl/server'
-import { LoginForm } from '@/modules/auth/components'
+import { Suspense } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Link } from '@/i18n/navigation'
+import { LoginForm } from '@/modules/auth/components'
+import type { Metadata } from 'next'
 
 export const revalidate = 3600
 

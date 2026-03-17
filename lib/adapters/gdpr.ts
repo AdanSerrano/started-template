@@ -2,14 +2,14 @@
  * GDPR adapter — exportacion y eliminacion de datos del usuario.
  */
 
+import { eq } from 'drizzle-orm'
+import { users, addresses, sessions, auditLogs } from '@/db/schema'
+import { db } from '@/lib/db'
 import type {
   IGDPRService,
   UserDataExport,
   DataCategory,
 } from '@/lib/interfaces/gdpr.interface'
-import { db } from '@/lib/db'
-import { users, addresses, sessions, auditLogs } from '@/db/schema'
-import { eq } from 'drizzle-orm'
 
 const DATA_CATEGORIES: DataCategory[] = [
   {

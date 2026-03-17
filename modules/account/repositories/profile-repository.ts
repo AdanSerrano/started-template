@@ -1,6 +1,6 @@
-import { db, type DbOrTx } from '@/lib/db'
-import { users } from '@/db/schema'
 import { eq, sql } from 'drizzle-orm'
+import { users } from '@/db/schema'
+import { db, type DbOrTx } from '@/lib/db'
 import type { ProfileUpdateData } from '../types'
 
 // ── Interface ───────────────────────────────────────────────

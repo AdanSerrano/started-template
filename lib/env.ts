@@ -1,69 +1,107 @@
+import { z } from 'zod/v4'
+
 const isDev = process.env.NODE_ENV !== 'production'
-
-// ── Validation helpers ──────────────────────────────────────
-
-function isValidUrl(value: string): boolean {
-  try {
-    new URL(value)
-    return true
-  } catch {
-    return false
-  }
-}
 
 type DbDialect = 'postgresql' | 'mysql' | 'sqlite' | 'turso' | 'singlestore'
 
-const DB_DIALECT = (process.env.DB_DIALECT ?? 'postgresql') as DbDialect
+const dbDialectSchema = z.enum([
+  'postgresql',
+  'mysql',
+  'sqlite',
+  'turso',
+  'singlestore',
+])
 
-function isValidDatabaseUrl(value: string, dialect: DbDialect): boolean {
+const DB_DIALECT_HINTS: Record<DbDialect, string> = {
+  postgresql: 'must start with postgresql:// or postgres://',
+  mysql: 'must start with mysql:// or mysql2://',
+  sqlite: 'must be a file path or :memory:',
+  turso: 'must start with libsql://, file:, or be a file path',
+  singlestore: 'must start with mysql:// or mysql2://',
+}
+
+function validateDatabaseUrl(url: string, dialect: DbDialect): boolean {
   switch (dialect) {
     case 'postgresql':
-      return (
-        value.startsWith('postgresql://') || value.startsWith('postgres://')
-      )
+      return url.startsWith('postgresql://') || url.startsWith('postgres://')
     case 'mysql':
     case 'singlestore':
-      return value.startsWith('mysql://') || value.startsWith('mysql2://')
+      return url.startsWith('mysql://') || url.startsWith('mysql2://')
     case 'sqlite':
-      return value === ':memory:' || !value.startsWith('http')
+      return url === ':memory:' || !url.startsWith('http')
     case 'turso':
       return (
-        value.startsWith('libsql://') ||
-        value.startsWith('file:') ||
-        value === ':memory:' ||
-        !value.startsWith('http')
+        url.startsWith('libsql://') ||
+        url.startsWith('file:') ||
+        url === ':memory:' ||
+        !url.startsWith('http')
       )
   }
 }
 
-// ── Critical — la app NO arranca sin estas ──────────────────
+// ── Schema definition ────────────────────────────────────────
 
-const critical = ['DATABASE_URL', 'BETTER_AUTH_SECRET'] as const
+const envSchema = z
+  .object({
+    // Critical — app does NOT start without these
+    DATABASE_URL: z.string().min(1, { error: 'DATABASE_URL is required' }),
+    BETTER_AUTH_SECRET: z
+      .string()
+      .min(32, { error: 'BETTER_AUTH_SECRET must be at least 32 characters' }),
 
-for (const key of critical) {
-  if (!process.env[key]) {
-    throw new Error(`Missing required environment variable: ${key}`)
-  }
+    // Dialect
+    DB_DIALECT: dbDialectSchema.default('postgresql'),
+
+    // Recommended — warn in dev, throw in production
+    NEXT_PUBLIC_APP_URL: z.url({ error: 'Must be a valid URL' }).optional(),
+    RESEND_API_KEY: z.string().optional(),
+
+    // Paired — require both or neither
+    GOOGLE_CLIENT_ID: z.string().optional(),
+    GOOGLE_CLIENT_SECRET: z.string().optional(),
+    UPSTASH_REDIS_REST_URL: z.string().optional(),
+    UPSTASH_REDIS_REST_TOKEN: z.string().optional(),
+    R2_ACCESS_KEY_ID: z.string().optional(),
+    R2_SECRET_ACCESS_KEY: z.string().optional(),
+
+    // Optional
+    SENTRY_DSN: z.string().optional(),
+    CORS_ALLOWED_ORIGINS: z.string().optional(),
+    EMAIL_FROM: z
+      .string()
+      .refine((v) => v.includes('@'), {
+        error: 'EMAIL_FROM must contain @',
+      })
+      .optional(),
+  })
+  .check((ctx) => {
+    if (!validateDatabaseUrl(ctx.value.DATABASE_URL, ctx.value.DB_DIALECT)) {
+      ctx.issues.push({
+        code: 'custom',
+        input: ctx.value.DATABASE_URL,
+        message: `DATABASE_URL ${DB_DIALECT_HINTS[ctx.value.DB_DIALECT]} (DB_DIALECT=${ctx.value.DB_DIALECT})`,
+      })
+    }
+  })
+
+// ── Parse & validate ─────────────────────────────────────────
+
+const parsed = envSchema.safeParse(process.env)
+
+if (!parsed.success) {
+  const issues = parsed.error.issues
+  const messages = issues.map((issue) => {
+    if (issue.path.length > 0) {
+      return `${issue.path.join('.')}: ${issue.message}`
+    }
+    return issue.message
+  })
+  throw new Error(`Environment validation failed:\n${messages.join('\n')}`)
 }
 
-if (!isValidDatabaseUrl(process.env.DATABASE_URL!, DB_DIALECT)) {
-  const hints: Record<DbDialect, string> = {
-    postgresql: 'must start with postgresql:// or postgres://',
-    mysql: 'must start with mysql:// or mysql2://',
-    sqlite: 'must be a file path or :memory:',
-    turso: 'must start with libsql://, file:, or be a file path',
-    singlestore: 'must start with mysql:// or mysql2://',
-  }
-  throw new Error(
-    `DATABASE_URL ${hints[DB_DIALECT]} (DB_DIALECT=${DB_DIALECT})`,
-  )
-}
+const data = parsed.data
 
-if (process.env.BETTER_AUTH_SECRET!.length < 32) {
-  throw new Error('BETTER_AUTH_SECRET must be at least 32 characters')
-}
-
-// ── Recommended — warn en dev, throw en produccion ──────────
+// ── Recommended variable warnings ────────────────────────────
 
 const recommended = ['NEXT_PUBLIC_APP_URL', 'RESEND_API_KEY'] as const
 
@@ -77,14 +115,7 @@ for (const key of recommended) {
   }
 }
 
-if (
-  process.env.NEXT_PUBLIC_APP_URL &&
-  !isValidUrl(process.env.NEXT_PUBLIC_APP_URL)
-) {
-  throw new Error('NEXT_PUBLIC_APP_URL must be a valid URL')
-}
-
-// ── Paired — variables que requieren ambas o ninguna ─────────
+// ── Paired variable validation ───────────────────────────────
 
 const paired: [string, string][] = [
   ['GOOGLE_CLIENT_ID', 'GOOGLE_CLIENT_SECRET'],
@@ -93,47 +124,26 @@ const paired: [string, string][] = [
 ]
 
 for (const [a, b] of paired) {
-  if (process.env[a] && !process.env[b]) {
-    const msg = `${a} is set but ${b} is missing — both are required`
-    if (isDev) console.warn(`[env] ${msg}`)
-    else throw new Error(msg)
-  }
-  if (process.env[b] && !process.env[a]) {
-    const msg = `${b} is set but ${a} is missing — both are required`
-    if (isDev) console.warn(`[env] ${msg}`)
-    else throw new Error(msg)
-  }
-}
-
-// ── Optional — solo warn en dev ─────────────────────────────
-
-const optional = [
-  'GOOGLE_CLIENT_ID',
-  'GOOGLE_CLIENT_SECRET',
-  'SENTRY_DSN',
-  'UPSTASH_REDIS_REST_URL',
-  'UPSTASH_REDIS_REST_TOKEN',
-  'CORS_ALLOWED_ORIGINS',
-] as const
-
-for (const key of optional) {
-  if (!process.env[key] && isDev) {
-    console.warn(`[env] Missing optional variable: ${key}`)
+  const hasA = !!process.env[a]
+  const hasB = !!process.env[b]
+  if (hasA !== hasB) {
+    const present = hasA ? a : b
+    const missing = hasA ? b : a
+    const msg = `${present} is set but ${missing} is missing — both are required`
+    if (isDev) {
+      console.warn(`[env] ${msg}`)
+    } else {
+      throw new Error(msg)
+    }
   }
 }
 
-// ── Format validation ────────────────────────────────────────
-
-if (process.env.EMAIL_FROM && !process.env.EMAIL_FROM.includes('@')) {
-  throw new Error('EMAIL_FROM must be a valid email address (must contain @)')
-}
-
-// ── Exported validated env ──────────────────────────────────
+// ── Exported validated env ───────────────────────────────────
 
 export const env = {
-  DATABASE_URL: process.env.DATABASE_URL!,
-  DB_DIALECT,
-  BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET!,
-  APP_URL: process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000',
-  RESEND_API_KEY: process.env.RESEND_API_KEY ?? '',
+  DATABASE_URL: data.DATABASE_URL,
+  DB_DIALECT: data.DB_DIALECT,
+  BETTER_AUTH_SECRET: data.BETTER_AUTH_SECRET,
+  APP_URL: data.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000',
+  RESEND_API_KEY: data.RESEND_API_KEY ?? '',
 } as const

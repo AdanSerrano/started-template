@@ -1,5 +1,3 @@
-import type { ReactNode } from 'react'
-
 import type {
   SortingState,
   PaginationState,
@@ -7,6 +5,7 @@ import type {
   ColumnSizingState,
   ExportFormat,
 } from './types-columns'
+import type { ReactNode } from 'react'
 
 // ============================================
 // SELECTION CONFIG

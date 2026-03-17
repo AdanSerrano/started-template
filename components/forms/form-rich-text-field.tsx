@@ -1,18 +1,5 @@
 'use client'
 
-import { memo, useCallback, useRef, useMemo, useLayoutEffect } from 'react'
-import { sanitizeHtml } from '@/lib/sanitize'
-import type { FieldPath, FieldValues } from 'react-hook-form'
-import {
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
-import { Toggle } from '@/components/ui/toggle'
-import { Separator } from '@/components/ui/separator'
 import {
   Bold,
   Italic,
@@ -32,8 +19,21 @@ import {
   Heading2,
   Heading3,
 } from 'lucide-react'
+import { memo, useCallback, useRef, useMemo, useLayoutEffect } from 'react'
+import {
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { Separator } from '@/components/ui/separator'
+import { Toggle } from '@/components/ui/toggle'
+import { sanitizeHtml } from '@/lib/sanitize'
 import { cn } from '@/lib/utils'
 import type { BaseFormFieldProps } from './form-field.types'
+import type { FieldPath, FieldValues } from 'react-hook-form'
 
 type ToolbarAction =
   | 'bold'

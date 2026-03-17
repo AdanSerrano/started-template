@@ -1,9 +1,9 @@
+import type { BaseFormFieldProps } from '../form-field.types'
 import type {
   FieldPath,
   FieldValues,
   ControllerRenderProps,
 } from 'react-hook-form'
-import type { BaseFormFieldProps } from '../form-field.types'
 
 export interface AddressValue {
   street?: string | undefined

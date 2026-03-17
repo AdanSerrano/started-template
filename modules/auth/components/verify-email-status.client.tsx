@@ -1,11 +1,11 @@
 'use client'
 
-import { useEffect } from 'react'
+import { AlertCircle, CheckCircle, Loader2 } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
-import { Link, useRouter } from '@/i18n/navigation'
+import { useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { AlertCircle, CheckCircle, Loader2 } from 'lucide-react'
+import { Link, useRouter } from '@/i18n/navigation'
 import { DEFAULT_LOGOUT_REDIRECT } from '@/routes'
 
 export function VerifyEmailStatus() {

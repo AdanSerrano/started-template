@@ -1,11 +1,9 @@
 'use client'
 
+import { Upload, X, File, Image, FileText, FileArchive } from 'lucide-react'
+import NextImage from 'next/image'
 import { memo, useCallback, useRef, useMemo } from 'react'
-import type {
-  FieldPath,
-  FieldValues,
-  ControllerRenderProps,
-} from 'react-hook-form'
+import { Button } from '@/components/ui/button'
 import {
   FormControl,
   FormDescription,
@@ -14,11 +12,13 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { Button } from '@/components/ui/button'
-import NextImage from 'next/image'
 import { cn } from '@/lib/utils'
-import { Upload, X, File, Image, FileText, FileArchive } from 'lucide-react'
 import type { BaseFormFieldProps, FileWithPreview } from './form-field.types'
+import type {
+  FieldPath,
+  FieldValues,
+  ControllerRenderProps,
+} from 'react-hook-form'
 
 export interface FormFileFieldProps<
   TFieldValues extends FieldValues = FieldValues,

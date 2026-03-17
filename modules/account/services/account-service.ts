@@ -1,6 +1,6 @@
 import { db } from '@/lib/db'
-import { profileRepository } from '../repositories/profile-repository'
 import { addressRepository } from '../repositories/address-repository'
+import { profileRepository } from '../repositories/profile-repository'
 import type { ProfileUpdateData, AddressInsert } from '../types'
 
 // Profile

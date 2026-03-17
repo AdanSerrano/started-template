@@ -1,10 +1,10 @@
-import { Suspense } from 'react'
-import type { Metadata } from 'next'
-import { Link } from '@/i18n/navigation'
 import { getTranslations } from 'next-intl/server'
-import { ForgotPasswordForm } from '@/modules/auth/components'
+import { Suspense } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Link } from '@/i18n/navigation'
+import { ForgotPasswordForm } from '@/modules/auth/components'
 import { DEFAULT_LOGOUT_REDIRECT } from '@/routes'
+import type { Metadata } from 'next'
 
 export const revalidate = 3600
 

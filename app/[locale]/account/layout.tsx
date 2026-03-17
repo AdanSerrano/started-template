@@ -1,10 +1,10 @@
-import { requireAuth } from '@/lib/auth-server'
-import { AccountSidebar } from '@/modules/account/components/account-sidebar.client'
-import { Link } from '@/i18n/navigation'
-import { ThemeSwitcher } from '@/components/theme-switcher.client'
-import { LanguageSwitcher } from '@/components/language-switcher.client'
 import { Zap } from 'lucide-react'
+import { LanguageSwitcher } from '@/components/language-switcher.client'
+import { ThemeSwitcher } from '@/components/theme-switcher.client'
+import { Link } from '@/i18n/navigation'
+import { requireAuth } from '@/lib/auth-server'
 import { appConfig } from '@/lib/config'
+import { AccountSidebar } from '@/modules/account/components/account-sidebar.client'
 
 export default async function AccountLayout({
   children,

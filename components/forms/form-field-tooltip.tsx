@@ -1,12 +1,12 @@
 'use client'
 
+import { HelpCircle } from 'lucide-react'
 import { memo, type ReactNode } from 'react'
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
 } from '@/components/ui/hover-card'
-import { HelpCircle } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { TooltipConfig } from './form-field.types'
 

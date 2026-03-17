@@ -6,9 +6,9 @@
  * - Maneja error objects con stack traces
  */
 
+import pino from 'pino'
 import type { ILogger, LogContext } from '@/lib/interfaces'
 import { getRequestId } from '@/lib/request-context'
-import pino from 'pino'
 
 const isDev = process.env.NODE_ENV !== 'production'
 

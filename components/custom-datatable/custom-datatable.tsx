@@ -1,5 +1,6 @@
 'use client'
 
+import { Loader2 } from 'lucide-react'
 import {
   forwardRef,
   useEffect,
@@ -9,22 +10,18 @@ import {
   useCallback,
 } from 'react'
 import { toast } from 'sonner'
-
-import { Loader2 } from 'lucide-react'
-
-import { cn } from '@/lib/utils'
 import { Table } from '@/components/ui/table'
-
-import { CustomTableHeader } from './components/table-header'
+import { cn } from '@/lib/utils'
 import { CustomTableBody } from './components/table-body'
+import { CustomTableHeader } from './components/table-header'
 import { CustomTablePagination } from './components/table-pagination'
 import { CustomTableToolbar } from './components/table-toolbar'
+import { useCopyClipboard } from './hooks/use-copy-clipboard'
+import { useDataTableMemoizedProps } from './hooks/use-datatable-props'
+import { useDataTableRefs } from './hooks/use-datatable-refs'
 import { useDataTableState } from './hooks/use-datatable-state'
 import { useFullscreen } from './hooks/use-fullscreen'
-import { useCopyClipboard } from './hooks/use-copy-clipboard'
 import { usePrint } from './hooks/use-print'
-import { useDataTableRefs } from './hooks/use-datatable-refs'
-import { useDataTableMemoizedProps } from './hooks/use-datatable-props'
 import type {
   CustomDataTableProps,
   CustomDataTableRef,
@@ -41,7 +38,7 @@ function CustomDataTableInner<TData>(
     columns,
     getRowId,
     selection,
-    expansion,
+    expansion: _expansion,
     pagination,
     columnVisibility,
     style,

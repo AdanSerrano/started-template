@@ -1,7 +1,9 @@
 'use client'
 
+import { Landmark, Check, X, Copy } from 'lucide-react'
 import { memo, useCallback, useMemo } from 'react'
-import type { FieldPath, FieldValues } from 'react-hook-form'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import {
   FormControl,
   FormDescription,
@@ -11,11 +13,9 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
-import { Landmark, Check, X, Copy } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import type { BaseFormFieldProps } from './form-field.types'
+import type { FieldPath, FieldValues } from 'react-hook-form'
 
 const DEFAULT_IBAN_MESSAGES = {
   invalidCountryCode: 'Invalid country code',

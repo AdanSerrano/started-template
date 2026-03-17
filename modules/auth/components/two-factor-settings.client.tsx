@@ -1,7 +1,7 @@
 'use client'
 
-import { useCallback, useMemo, useState, useTransition } from 'react'
 import { useTranslations } from 'next-intl'
+import { useCallback, useMemo, useState, useTransition } from 'react'
 import { authClient } from '@/lib/auth-client'
 import type {
   TwoFactorEnableInput,
