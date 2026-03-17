@@ -155,7 +155,7 @@ Server Component — getServerSession()
 |  Tiempo: ~1-2ms                                  |
 |  NO toca la base de datos                        |
 +--------------------------------------------------+
-    | MISS (cada 5 min)
+    | MISS (cada 2 min)
 +- Database Query ---------------------------------+
 |  Consulta sessions + users                       |
 |  Actualiza cookie cache                          |
