@@ -1,9 +1,16 @@
-import { pgTable, uuid, varchar, timestamp, index } from 'drizzle-orm/pg-core'
+import {
+  createTable,
+  primaryId,
+  varchar,
+  timestampCol,
+  index,
+  timestamps,
+} from '@/db/dialect'
 
-export const verifications = pgTable(
+export const verifications = createTable(
   'verifications',
   {
-    id: uuid('id').defaultRandom().primaryKey(),
+    id: primaryId('id'),
 
     // Identificador del flujo (tipicamente el email del usuario)
     identifier: varchar('identifier', { length: 255 }).notNull(),
@@ -11,15 +18,10 @@ export const verifications = pgTable(
     value: varchar('value', { length: 255 }).notNull(),
 
     // Expiracion
-    expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+    expiresAt: timestampCol('expires_at').notNull(),
 
     // Timestamps
-    createdAt: timestamp('created_at', { withTimezone: true })
-      .defaultNow()
-      .notNull(),
-    updatedAt: timestamp('updated_at', { withTimezone: true })
-      .defaultNow()
-      .notNull(),
+    ...timestamps(),
   },
   (table) => [
     index('verification_identifier_idx').on(table.identifier),

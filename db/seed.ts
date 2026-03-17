@@ -42,6 +42,8 @@ async function main() {
   ]
 
   for (const user of seedUsers) {
+    // PG/SQLite: onConflictDoNothing
+    // MySQL: usar .onDuplicateKeyUpdate({ set: { id: sql`id` } })
     await db
       .insert(schema.users)
       .values(user)
@@ -84,6 +86,8 @@ async function main() {
   ]
 
   for (const address of seedAddresses) {
+    // PG/SQLite: onConflictDoNothing
+    // MySQL: usar .onDuplicateKeyUpdate({ set: { id: sql`id` } })
     await db
       .insert(schema.addresses)
       .values(address)

@@ -1,21 +1,24 @@
-import { pgTable, uuid, text, timestamp, index } from 'drizzle-orm/pg-core'
+import {
+  createTable,
+  primaryId,
+  uuidCol,
+  text,
+  timestampCol,
+  index,
+  timestamps,
+} from '@/db/dialect'
 import { users } from './users'
 
-export const twoFactors = pgTable(
+export const twoFactors = createTable(
   'two_factors',
   {
-    id: uuid('id').defaultRandom().primaryKey(),
-    userId: uuid('user_id')
+    id: primaryId('id'),
+    userId: uuidCol('user_id')
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
     secret: text('secret').notNull(),
     backupCodes: text('backup_codes').notNull(),
-    createdAt: timestamp('created_at', { withTimezone: true })
-      .defaultNow()
-      .notNull(),
-    updatedAt: timestamp('updated_at', { withTimezone: true })
-      .defaultNow()
-      .notNull(),
+    ...timestamps(),
   },
   (table) => [index('two_factor_user_idx').on(table.userId)],
 )

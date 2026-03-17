@@ -5,7 +5,7 @@
  */
 
 import { isNull } from 'drizzle-orm'
-import type { PgColumn } from 'drizzle-orm/pg-core'
+import type { Column } from 'drizzle-orm'
 
 /**
  * Filtro para excluir registros soft-deleted.
@@ -14,6 +14,6 @@ import type { PgColumn } from 'drizzle-orm/pg-core'
  * @example
  * db.select().from(users).where(notDeleted(users.deletedAt))
  */
-export function notDeleted(deletedAtColumn: PgColumn) {
+export function notDeleted(deletedAtColumn: Column) {
   return isNull(deletedAtColumn)
 }

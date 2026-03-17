@@ -1,17 +1,20 @@
-import { pgEnum } from 'drizzle-orm/pg-core'
+import { createEnum } from '@/db/dialect'
 
 // --- Roles ---
-export const userRoleEnum = pgEnum('user_role', [
+export const userRoleEnum = createEnum('user_role', [
   'super_admin',
   'admin',
   'user',
 ])
 
 // --- Direcciones ---
-export const addressTypeEnum = pgEnum('address_type', ['shipping', 'billing'])
+export const addressTypeEnum = createEnum('address_type', [
+  'shipping',
+  'billing',
+])
 
 // --- Audit Logs ---
-export const auditSeverityEnum = pgEnum('audit_severity', [
+export const auditSeverityEnum = createEnum('audit_severity', [
   'low',
   'medium',
   'high',
@@ -19,13 +22,13 @@ export const auditSeverityEnum = pgEnum('audit_severity', [
 ])
 
 // --- Organizaciones ---
-export const organizationPlanEnum = pgEnum('organization_plan', [
+export const organizationPlanEnum = createEnum('organization_plan', [
   'free',
   'pro',
   'enterprise',
 ])
 
-export const orgMemberRoleEnum = pgEnum('org_member_role', [
+export const orgMemberRoleEnum = createEnum('org_member_role', [
   'owner',
   'admin',
   'member',

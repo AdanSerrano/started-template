@@ -1,19 +1,20 @@
 import {
-  pgTable,
-  uuid,
+  createTable,
+  primaryId,
+  uuidCol,
   varchar,
   boolean,
-  timestamp,
   index,
-} from 'drizzle-orm/pg-core'
+  timestamps,
+} from '@/db/dialect'
 import { addressTypeEnum } from './enums'
 import { users } from './users'
 
-export const addresses = pgTable(
+export const addresses = createTable(
   'addresses',
   {
-    id: uuid('id').defaultRandom().primaryKey(),
-    userId: uuid('user_id')
+    id: primaryId('id'),
+    userId: uuidCol('user_id')
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
 
@@ -30,12 +31,7 @@ export const addresses = pgTable(
     phone: varchar('phone', { length: 50 }),
 
     // Timestamps
-    createdAt: timestamp('created_at', { withTimezone: true })
-      .defaultNow()
-      .notNull(),
-    updatedAt: timestamp('updated_at', { withTimezone: true })
-      .defaultNow()
-      .notNull(),
+    ...timestamps(),
   },
   (table) => [
     index('address_user_idx').on(table.userId),

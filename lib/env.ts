@@ -11,8 +11,29 @@ function isValidUrl(value: string): boolean {
   }
 }
 
-function isValidPostgresUrl(value: string): boolean {
-  return value.startsWith('postgresql://') || value.startsWith('postgres://')
+type DbDialect = 'postgresql' | 'mysql' | 'sqlite' | 'turso' | 'singlestore'
+
+const DB_DIALECT = (process.env.DB_DIALECT ?? 'postgresql') as DbDialect
+
+function isValidDatabaseUrl(value: string, dialect: DbDialect): boolean {
+  switch (dialect) {
+    case 'postgresql':
+      return (
+        value.startsWith('postgresql://') || value.startsWith('postgres://')
+      )
+    case 'mysql':
+    case 'singlestore':
+      return value.startsWith('mysql://') || value.startsWith('mysql2://')
+    case 'sqlite':
+      return value === ':memory:' || !value.startsWith('http')
+    case 'turso':
+      return (
+        value.startsWith('libsql://') ||
+        value.startsWith('file:') ||
+        value === ':memory:' ||
+        !value.startsWith('http')
+      )
+  }
 }
 
 // ── Critical — la app NO arranca sin estas ──────────────────
@@ -25,8 +46,17 @@ for (const key of critical) {
   }
 }
 
-if (!isValidPostgresUrl(process.env.DATABASE_URL!)) {
-  throw new Error('DATABASE_URL must start with postgresql:// or postgres://')
+if (!isValidDatabaseUrl(process.env.DATABASE_URL!, DB_DIALECT)) {
+  const hints: Record<DbDialect, string> = {
+    postgresql: 'must start with postgresql:// or postgres://',
+    mysql: 'must start with mysql:// or mysql2://',
+    sqlite: 'must be a file path or :memory:',
+    turso: 'must start with libsql://, file:, or be a file path',
+    singlestore: 'must start with mysql:// or mysql2://',
+  }
+  throw new Error(
+    `DATABASE_URL ${hints[DB_DIALECT]} (DB_DIALECT=${DB_DIALECT})`,
+  )
 }
 
 if (process.env.BETTER_AUTH_SECRET!.length < 32) {
@@ -102,6 +132,7 @@ if (process.env.EMAIL_FROM && !process.env.EMAIL_FROM.includes('@')) {
 
 export const env = {
   DATABASE_URL: process.env.DATABASE_URL!,
+  DB_DIALECT,
   BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET!,
   APP_URL: process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000',
   RESEND_API_KEY: process.env.RESEND_API_KEY ?? '',

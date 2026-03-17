@@ -1,18 +1,20 @@
 import {
-  pgTable,
-  uuid,
+  createTable,
+  primaryId,
+  uuidCol,
   varchar,
   boolean,
-  timestamp,
+  timestampCol,
   integer,
   index,
-} from 'drizzle-orm/pg-core'
+  timestamps,
+} from '@/db/dialect'
 import { userRoleEnum } from './enums'
 
-export const users = pgTable(
+export const users = createTable(
   'users',
   {
-    id: uuid('id').defaultRandom().primaryKey(),
+    id: primaryId('id'),
     name: varchar('name', { length: 255 }).notNull(),
     email: varchar('email', { length: 255 }).notNull().unique(),
     emailVerified: boolean('email_verified').default(false).notNull(),
@@ -27,30 +29,25 @@ export const users = pgTable(
     // Admin (plugin: admin)
     banned: boolean('banned').default(false),
     banReason: varchar('ban_reason', { length: 500 }),
-    banExpires: timestamp('ban_expires', { withTimezone: true }),
+    banExpires: timestampCol('ban_expires'),
 
     // 2FA (plugin: twoFactor)
     twoFactorEnabled: boolean('two_factor_enabled').default(false),
 
     // Estado
     isActive: boolean('is_active').default(true).notNull(),
-    lastLoginAt: timestamp('last_login_at', { withTimezone: true }),
+    lastLoginAt: timestampCol('last_login_at'),
 
     // Bloqueo por intentos fallidos
     failedLoginAttempts: integer('failed_login_attempts').default(0).notNull(),
-    lockedUntil: timestamp('locked_until', { withTimezone: true }),
+    lockedUntil: timestampCol('locked_until'),
 
     // Soft delete
-    deletedAt: timestamp('deleted_at', { withTimezone: true }),
-    deletedBy: uuid('deleted_by'),
+    deletedAt: timestampCol('deleted_at'),
+    deletedBy: uuidCol('deleted_by'),
 
     // Timestamps
-    createdAt: timestamp('created_at', { withTimezone: true })
-      .defaultNow()
-      .notNull(),
-    updatedAt: timestamp('updated_at', { withTimezone: true })
-      .defaultNow()
-      .notNull(),
+    ...timestamps(),
   },
   (table) => [
     index('user_email_idx').on(table.email),

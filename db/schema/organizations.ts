@@ -1,34 +1,31 @@
 import {
-  pgTable,
-  uuid,
+  createTable,
+  primaryId,
+  uuidCol,
   varchar,
-  timestamp,
-  jsonb,
+  timestampCol,
+  jsonCol,
   index,
   uniqueIndex,
-} from 'drizzle-orm/pg-core'
+  timestamps,
+} from '@/db/dialect'
 import { organizationPlanEnum, orgMemberRoleEnum } from './enums'
 import { users } from './users'
 
-export const organizations = pgTable(
+export const organizations = createTable(
   'organizations',
   {
-    id: uuid('id').defaultRandom().primaryKey(),
+    id: primaryId('id'),
     name: varchar('name', { length: 255 }).notNull(),
     slug: varchar('slug', { length: 100 }).notNull().unique(),
     plan: organizationPlanEnum('plan').default('free').notNull(),
-    ownerId: uuid('owner_id')
+    ownerId: uuidCol('owner_id')
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
     logo: varchar('logo', { length: 500 }),
-    settings: jsonb('settings').$type<Record<string, unknown>>().default({}),
+    settings: jsonCol('settings').$type<Record<string, unknown>>().default({}),
 
-    createdAt: timestamp('created_at', { withTimezone: true })
-      .defaultNow()
-      .notNull(),
-    updatedAt: timestamp('updated_at', { withTimezone: true })
-      .defaultNow()
-      .notNull(),
+    ...timestamps(),
   },
   (table) => [
     uniqueIndex('org_slug_idx').on(table.slug),
@@ -36,22 +33,20 @@ export const organizations = pgTable(
   ],
 )
 
-export const organizationMembers = pgTable(
+export const organizationMembers = createTable(
   'organization_members',
   {
-    id: uuid('id').defaultRandom().primaryKey(),
-    organizationId: uuid('organization_id')
+    id: primaryId('id'),
+    organizationId: uuidCol('organization_id')
       .notNull()
       .references(() => organizations.id, { onDelete: 'cascade' }),
-    userId: uuid('user_id')
+    userId: uuidCol('user_id')
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
     role: orgMemberRoleEnum('role').default('member').notNull(),
-    invitedBy: uuid('invited_by'),
+    invitedBy: uuidCol('invited_by'),
 
-    joinedAt: timestamp('joined_at', { withTimezone: true })
-      .defaultNow()
-      .notNull(),
+    joinedAt: timestampCol('joined_at').defaultNow().notNull(),
   },
   (table) => [
     uniqueIndex('org_member_unique_idx').on(table.organizationId, table.userId),
@@ -59,24 +54,22 @@ export const organizationMembers = pgTable(
   ],
 )
 
-export const organizationInvitations = pgTable(
+export const organizationInvitations = createTable(
   'organization_invitations',
   {
-    id: uuid('id').defaultRandom().primaryKey(),
-    organizationId: uuid('organization_id')
+    id: primaryId('id'),
+    organizationId: uuidCol('organization_id')
       .notNull()
       .references(() => organizations.id, { onDelete: 'cascade' }),
     email: varchar('email', { length: 255 }).notNull(),
     role: orgMemberRoleEnum('role').default('member').notNull(),
     token: varchar('token', { length: 255 }).notNull().unique(),
-    invitedBy: uuid('invited_by')
+    invitedBy: uuidCol('invited_by')
       .notNull()
       .references(() => users.id),
 
-    expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
-    createdAt: timestamp('created_at', { withTimezone: true })
-      .defaultNow()
-      .notNull(),
+    expiresAt: timestampCol('expires_at').notNull(),
+    createdAt: timestampCol('created_at').defaultNow().notNull(),
   },
   (table) => [
     uniqueIndex('org_invitation_token_idx').on(table.token),

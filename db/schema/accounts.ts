@@ -1,19 +1,21 @@
 import {
-  pgTable,
-  uuid,
+  createTable,
+  primaryId,
+  uuidCol,
   varchar,
   text,
-  timestamp,
+  timestampCol,
   uniqueIndex,
   index,
-} from 'drizzle-orm/pg-core'
+  timestamps,
+} from '@/db/dialect'
 import { users } from './users'
 
-export const accounts = pgTable(
+export const accounts = createTable(
   'accounts',
   {
-    id: uuid('id').defaultRandom().primaryKey(),
-    userId: uuid('user_id')
+    id: primaryId('id'),
+    userId: uuidCol('user_id')
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
 
@@ -24,12 +26,8 @@ export const accounts = pgTable(
     // Tokens OAuth
     accessToken: text('access_token'),
     refreshToken: text('refresh_token'),
-    accessTokenExpiresAt: timestamp('access_token_expires_at', {
-      withTimezone: true,
-    }),
-    refreshTokenExpiresAt: timestamp('refresh_token_expires_at', {
-      withTimezone: true,
-    }),
+    accessTokenExpiresAt: timestampCol('access_token_expires_at'),
+    refreshTokenExpiresAt: timestampCol('refresh_token_expires_at'),
 
     // ID Token y Scope
     idToken: text('id_token'),
@@ -39,12 +37,7 @@ export const accounts = pgTable(
     password: text('password'),
 
     // Timestamps
-    createdAt: timestamp('created_at', { withTimezone: true })
-      .defaultNow()
-      .notNull(),
-    updatedAt: timestamp('updated_at', { withTimezone: true })
-      .defaultNow()
-      .notNull(),
+    ...timestamps(),
   },
   (table) => [
     uniqueIndex('provider_account_idx').on(table.providerId, table.accountId),

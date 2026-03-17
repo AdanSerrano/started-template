@@ -1,39 +1,38 @@
 import {
-  pgTable,
-  uuid,
+  createTable,
+  primaryId,
+  uuidCol,
   varchar,
   text,
-  timestamp,
-  jsonb,
+  timestampCol,
+  jsonCol,
   index,
-} from 'drizzle-orm/pg-core'
+} from '@/db/dialect'
 import { auditSeverityEnum } from './enums'
 import { users } from './users'
 
-export const auditLogs = pgTable(
+export const auditLogs = createTable(
   'audit_logs',
   {
-    id: uuid('id').defaultRandom().primaryKey(),
-    timestamp: timestamp('timestamp', { withTimezone: true })
-      .defaultNow()
-      .notNull(),
+    id: primaryId('id'),
+    timestamp: timestampCol('timestamp').defaultNow().notNull(),
 
     // Quien
-    userId: uuid('user_id').references(() => users.id),
+    userId: uuidCol('user_id').references(() => users.id),
 
     // Que
     action: varchar('action', { length: 100 }).notNull(),
     entityType: varchar('entity_type', { length: 100 }).notNull(),
-    entityId: uuid('entity_id'),
+    entityId: uuidCol('entity_id'),
 
     // Cambios (antes -> despues)
-    changes: jsonb('changes').$type<{
+    changes: jsonCol('changes').$type<{
       before?: Record<string, unknown>
       after?: Record<string, unknown>
     }>(),
 
     // Contexto
-    metadata: jsonb('metadata').$type<{
+    metadata: jsonCol('metadata').$type<{
       ip?: string
       userAgent?: string
       route?: string

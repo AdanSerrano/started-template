@@ -55,6 +55,79 @@ describe('env validation', () => {
       )
     })
 
+    it('should accept mysql URL when DB_DIALECT is mysql', async () => {
+      setMinimalValidEnv()
+      process.env.DB_DIALECT = 'mysql'
+      process.env.DATABASE_URL = 'mysql://localhost:3306/testdb'
+
+      const mod = await importEnv()
+
+      expect(mod.env.DATABASE_URL).toBe('mysql://localhost:3306/testdb')
+      expect(mod.env.DB_DIALECT).toBe('mysql')
+    })
+
+    it('should accept sqlite path when DB_DIALECT is sqlite', async () => {
+      setMinimalValidEnv()
+      process.env.DB_DIALECT = 'sqlite'
+      process.env.DATABASE_URL = './data/app.db'
+
+      const mod = await importEnv()
+
+      expect(mod.env.DATABASE_URL).toBe('./data/app.db')
+      expect(mod.env.DB_DIALECT).toBe('sqlite')
+    })
+
+    it('should accept :memory: for sqlite', async () => {
+      setMinimalValidEnv()
+      process.env.DB_DIALECT = 'sqlite'
+      process.env.DATABASE_URL = ':memory:'
+
+      const mod = await importEnv()
+
+      expect(mod.env.DATABASE_URL).toBe(':memory:')
+    })
+
+    it('should reject postgres URL when DB_DIALECT is mysql', async () => {
+      process.env.DB_DIALECT = 'mysql'
+      process.env.DATABASE_URL = 'postgresql://localhost:5432/db'
+      process.env.BETTER_AUTH_SECRET =
+        'a-secret-that-is-at-least-32-characters-long!'
+
+      await expect(importEnv()).rejects.toThrow('DB_DIALECT=mysql')
+    })
+
+    it('should accept libsql URL when DB_DIALECT is turso', async () => {
+      setMinimalValidEnv()
+      process.env.DB_DIALECT = 'turso'
+      process.env.DATABASE_URL = 'libsql://my-db.turso.io'
+
+      const mod = await importEnv()
+
+      expect(mod.env.DATABASE_URL).toBe('libsql://my-db.turso.io')
+      expect(mod.env.DB_DIALECT).toBe('turso')
+    })
+
+    it('should accept file: URL for turso local', async () => {
+      setMinimalValidEnv()
+      process.env.DB_DIALECT = 'turso'
+      process.env.DATABASE_URL = 'file:local.db'
+
+      const mod = await importEnv()
+
+      expect(mod.env.DATABASE_URL).toBe('file:local.db')
+    })
+
+    it('should accept mysql URL when DB_DIALECT is singlestore', async () => {
+      setMinimalValidEnv()
+      process.env.DB_DIALECT = 'singlestore'
+      process.env.DATABASE_URL = 'mysql://localhost:3306/testdb'
+
+      const mod = await importEnv()
+
+      expect(mod.env.DATABASE_URL).toBe('mysql://localhost:3306/testdb')
+      expect(mod.env.DB_DIALECT).toBe('singlestore')
+    })
+
     it('should accept postgres:// prefix', async () => {
       setMinimalValidEnv()
       process.env.DATABASE_URL = 'postgres://localhost:5432/testdb'

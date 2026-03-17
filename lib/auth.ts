@@ -13,6 +13,7 @@ import {
   verifications,
   twoFactors,
 } from '@/db/schema'
+import { DIALECT } from '@/db/dialect'
 import { eq } from 'drizzle-orm'
 import { ac, roles } from '@/lib/permissions'
 import { sendEmail } from '@/lib/email'
@@ -49,7 +50,14 @@ export const auth = betterAuth({
   trustedOrigins: [process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'],
 
   database: drizzleAdapter(db, {
-    provider: 'pg',
+    provider:
+      DIALECT === 'postgresql'
+        ? 'pg'
+        : DIALECT === 'turso' || DIALECT === 'sqlite'
+          ? 'sqlite'
+          : DIALECT === 'singlestore'
+            ? 'mysql'
+            : DIALECT,
     schema: {
       users,
       sessions,

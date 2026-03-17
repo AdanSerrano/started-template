@@ -1,39 +1,36 @@
 import {
-  pgTable,
-  uuid,
+  createTable,
+  primaryId,
+  uuidCol,
   varchar,
   text,
-  timestamp,
+  timestampCol,
   index,
-} from 'drizzle-orm/pg-core'
+  timestamps,
+} from '@/db/dialect'
 import { users } from './users'
 
-export const sessions = pgTable(
+export const sessions = createTable(
   'sessions',
   {
-    id: uuid('id').defaultRandom().primaryKey(),
-    userId: uuid('user_id')
+    id: primaryId('id'),
+    userId: uuidCol('user_id')
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
 
     // Token unico de sesion
     token: varchar('token', { length: 255 }).notNull().unique(),
-    expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+    expiresAt: timestampCol('expires_at').notNull(),
 
     // Datos de seguridad
     ipAddress: varchar('ip_address', { length: 45 }),
     userAgent: text('user_agent'),
 
     // Admin (plugin: admin — impersonacion)
-    impersonatedBy: uuid('impersonated_by'),
+    impersonatedBy: uuidCol('impersonated_by'),
 
     // Timestamps
-    createdAt: timestamp('created_at', { withTimezone: true })
-      .defaultNow()
-      .notNull(),
-    updatedAt: timestamp('updated_at', { withTimezone: true })
-      .defaultNow()
-      .notNull(),
+    ...timestamps(),
   },
   (table) => [
     index('session_user_idx').on(table.userId),

@@ -29,24 +29,24 @@ La **UX es prioridad #1**. Toda decision optimiza:
 
 **ANTES de implementar cualquier cosa, LEE la documentacion relevante en `docs/`.**
 
-| Archivo                 | Leer cuando...                                        |
-| ----------------------- | ----------------------------------------------------- |
-| `docs/architecture.md`  | Creas modulo, swappeas servicio, o agregas adapter    |
-| `docs/database.md`      | Agregas tabla, creas migracion, o tocas DB            |
-| `docs/tech-stack.md`    | Configuras algo o agregas dependencia                 |
-| `docs/patterns.md`      | Diseñas logica de negocio o servicios                 |
-| `docs/conventions.md`   | Escribes cualquier codigo nuevo                       |
-| `docs/auth.md`          | Tocas auth, sesiones o permisos                       |
-| `docs/performance.md`   | Optimizas rendimiento o agregas monitoring            |
-| `docs/i18n.md`          | Agregas textos, traducciones o cambias tema           |
-| `docs/testing.md`       | Escribes CUALQUIER codigo nuevo o modificas existente |
-| `docs/deployment.md`    | Despliegas o configuras entorno                       |
-| `docs/monitoring.md`    | Configuras observabilidad o depuras produccion        |
-| `docs/security.md`      | Implementas seguridad o revisas vulnerabilidades      |
-| `docs/api-routes.md`    | Creas o modificas endpoints en app/api/               |
-| `docs/jobs.md`          | Implementas tareas asincronas o programadas           |
-| `docs/caching.md`       | Implementas cache o tocas datos con alta frecuencia   |
-| `docs/official-docs.md` | Usas cualquier paquete — SIEMPRE consultar primero    |
+| Archivo                 | Leer cuando...                                               |
+| ----------------------- | ------------------------------------------------------------ |
+| `docs/architecture.md`  | Creas modulo, swappeas servicio, o agregas adapter           |
+| `docs/database.md`      | Agregas tabla, creas migracion, tocas DB, o cambias dialecto |
+| `docs/tech-stack.md`    | Configuras algo o agregas dependencia                        |
+| `docs/patterns.md`      | Diseñas logica de negocio o servicios                        |
+| `docs/conventions.md`   | Escribes cualquier codigo nuevo                              |
+| `docs/auth.md`          | Tocas auth, sesiones o permisos                              |
+| `docs/performance.md`   | Optimizas rendimiento o agregas monitoring                   |
+| `docs/i18n.md`          | Agregas textos, traducciones o cambias tema                  |
+| `docs/testing.md`       | Escribes CUALQUIER codigo nuevo o modificas existente        |
+| `docs/deployment.md`    | Despliegas o configuras entorno                              |
+| `docs/monitoring.md`    | Configuras observabilidad o depuras produccion               |
+| `docs/security.md`      | Implementas seguridad o revisas vulnerabilidades             |
+| `docs/api-routes.md`    | Creas o modificas endpoints en app/api/                      |
+| `docs/jobs.md`          | Implementas tareas asincronas o programadas                  |
+| `docs/caching.md`       | Implementas cache o tocas datos con alta frecuencia          |
+| `docs/official-docs.md` | Usas cualquier paquete — SIEMPRE consultar primero           |
 
 ### Documentar componentes nuevos — OBLIGATORIO
 
@@ -111,6 +111,7 @@ La **UX es prioridad #1**. Toda decision optimiza:
 | **Soft Delete**    | SIEMPRE usar `notDeleted()` de `lib/query-helpers.ts` en reads                    | `docs/database.md`     |
 | **Transacciones**  | `db.transaction()` OBLIGATORIO en operaciones multi-paso                          | `docs/database.md`     |
 | **Repositories**   | Interface explicita + `tx?: DbOrTx` en mutaciones                                 | `docs/database.md`     |
+| **DB Dialect**     | SIEMPRE importar de `@/db/dialect`, NUNCA de `drizzle-orm/pg-core` directamente   | `docs/database.md`     |
 | **Adapters**       | NUNCA importar libs externas fuera de `lib/adapters/`. Usar providers             | `docs/architecture.md` |
 | **Audit Logs**     | OBLIGATORIO en cada mutacion via `createAuditLog()`                               | `docs/conventions.md`  |
 | **Branding**       | SIEMPRE via `appConfig` de `lib/config.ts`. NUNCA hardcodear                      | `docs/conventions.md`  |
@@ -206,7 +207,8 @@ starter-template/
 │   └── [module]/           # actions/ services/ repositories/ components/
 ├── components/             # ui/ (shadcn), forms/, custom-datatable/, sidebar/
 ├── lib/                    # Core: interfaces/, adapters/, providers, utils
-├── db/schema/              # 13 Drizzle schemas
+├── db/dialect/             # Abstraccion multi-DB (pg, mysql, sqlite, turso, singlestore)
+├── db/schema/              # 13 Drizzle schemas (importan de db/dialect/)
 ├── emails/                 # React Email templates
 ├── messages/               # i18n (es/en/ca.json)
 ├── tests/                  # unit/ integration/ components/ factories/ mocks/
