@@ -76,7 +76,7 @@ describe('AccountService — Extended', () => {
   })
 
   describe('updateAddress', () => {
-    it('calls setDefault when isDefault is true', async () => {
+    it('calls setDefault and update in transaction when isDefault is true', async () => {
       vi.mocked(addressRepository.setDefault).mockResolvedValue(null)
       vi.mocked(addressRepository.update).mockResolvedValue(
         createMockAddress({ id: 'a1', isDefault: true }) as never,
@@ -84,10 +84,18 @@ describe('AccountService — Extended', () => {
 
       await accountService.updateAddress('a1', 'u1', { isDefault: true })
 
-      expect(addressRepository.setDefault).toHaveBeenCalledWith('a1', 'u1')
-      expect(addressRepository.update).toHaveBeenCalledWith('a1', 'u1', {
-        isDefault: true,
-      })
+      // Both operations receive tx from db.transaction()
+      expect(addressRepository.setDefault).toHaveBeenCalledWith(
+        'a1',
+        'u1',
+        expect.anything(),
+      )
+      expect(addressRepository.update).toHaveBeenCalledWith(
+        'a1',
+        'u1',
+        { isDefault: true },
+        expect.anything(),
+      )
     })
 
     it('skips setDefault when isDefault is false', async () => {

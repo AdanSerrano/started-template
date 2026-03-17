@@ -40,7 +40,10 @@ export async function updateAddress(
   data: Partial<Omit<AddressInsert, 'id' | 'userId'>>,
 ) {
   if (data.isDefault) {
-    await addressRepository.setDefault(id, userId)
+    return db.transaction(async (tx) => {
+      await addressRepository.setDefault(id, userId, tx)
+      return addressRepository.update(id, userId, data, tx)
+    })
   }
   return addressRepository.update(id, userId, data)
 }

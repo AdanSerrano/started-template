@@ -1,4 +1,4 @@
-import { uploadAvatarAction } from '../actions/account-actions'
+import { uploadAvatarAction } from '../actions/avatar-actions'
 
 export async function uploadAvatar(
   userId: string,
