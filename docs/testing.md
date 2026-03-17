@@ -1,5 +1,26 @@
 # Testing — Estrategia y Patrones
 
+## Regla: Tests son OBLIGATORIOS
+
+> **Todo codigo nuevo o modificado DEBE tener tests automaticos.** Si no tiene test, no esta terminado.
+
+Esta regla aplica a:
+
+- **Services** — Test unitario obligatorio (mockear repos/adapters)
+- **Actions** — Test de integracion obligatorio (mockear auth/repos/audit)
+- **Repositories** — Test unitario obligatorio (verificar queries y parametros)
+- **Utilities/helpers** — Test unitario obligatorio (funciones puras = faciles de testear)
+- **Componentes con interaccion** — Test de componente obligatorio (formularios, modales, etc.)
+
+**Excepciones** (no requieren test):
+
+- Pages (`app/[locale]/`) — son thin wrappers, se cubren con E2E
+- `components/ui/` — shadcn/ui ya esta testeado por Radix
+- Archivos de configuracion (`config.ts`, `env.ts`)
+- Types/interfaces (`.d.ts`, `types.ts`)
+
+---
+
 ## Filosofia
 
 Test pyramid: **unit > integration > E2E**. Mas tests rapidos, menos tests lentos.

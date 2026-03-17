@@ -30,21 +30,21 @@ La **UX es prioridad #1**. Toda decision optimiza:
 
 **ANTES de implementar cualquier cosa, LEE la documentacion relevante en `docs/`.**
 
-| Archivo                 | Contenido                                                       | Leer cuando...                                     |
-| ----------------------- | --------------------------------------------------------------- | -------------------------------------------------- |
-| `docs/architecture.md`  | Capas, adapters, transacciones, safe actions, health, logging   | Creas modulo, swappeas servicio, o agregas adapter |
-| `docs/database.md`      | Schemas, migraciones, transacciones, prepared statements, seeds | Agregas tabla, creas migracion, o tocas DB         |
-| `docs/tech-stack.md`    | Stack completo, Tailwind v4, Drizzle, env vars                  | Configuras algo o agregas dependencia              |
-| `docs/patterns.md`      | 12 patrones de diseno con ejemplos y anti-patrones              | Diseñas logica de negocio o servicios              |
-| `docs/conventions.md`   | Naming, imports, limites, skeletons, errores, Zod, audit logs   | Escribes cualquier codigo nuevo                    |
-| `docs/auth.md`          | Better Auth, cookie cache, roles, sesiones, 2FA                 | Tocas auth, sesiones o permisos                    |
-| `docs/performance.md`   | ISR, React 19.2, Zustand, prepared statements, instrumentation  | Optimizas rendimiento o agregas monitoring         |
-| `docs/i18n.md`          | next-intl (es/en/ca), theming dark/light, emails i18n           | Agregas textos, traducciones o cambias tema        |
-| `docs/testing.md`       | Estrategia de tests, patrones por capa, factories, MSW          | Escribes tests o agregas modulo nuevo              |
-| `docs/deployment.md`    | Deploy a Vercel/Docker/Node, env vars, migraciones, rollback    | Despliegas o configuras entorno                    |
-| `docs/monitoring.md`    | Logging estructurado, Sentry, health check, request IDs         | Configuras observabilidad o depuras produccion     |
-| `docs/security.md`      | OWASP Top 10, rate limiting, CORS, GDPR, file upload            | Implementas seguridad o revisas vulnerabilidades   |
-| `docs/official-docs.md` | URLs documentacion oficial de TODOS los paquetes del stack      | Usas cualquier paquete — SIEMPRE consultar primero |
+| Archivo                 | Contenido                                                       | Leer cuando...                                        |
+| ----------------------- | --------------------------------------------------------------- | ----------------------------------------------------- |
+| `docs/architecture.md`  | Capas, adapters, transacciones, safe actions, health, logging   | Creas modulo, swappeas servicio, o agregas adapter    |
+| `docs/database.md`      | Schemas, migraciones, transacciones, prepared statements, seeds | Agregas tabla, creas migracion, o tocas DB            |
+| `docs/tech-stack.md`    | Stack completo, Tailwind v4, Drizzle, env vars                  | Configuras algo o agregas dependencia                 |
+| `docs/patterns.md`      | 12 patrones de diseno con ejemplos y anti-patrones              | Diseñas logica de negocio o servicios                 |
+| `docs/conventions.md`   | Naming, imports, limites, skeletons, errores, Zod, audit logs   | Escribes cualquier codigo nuevo                       |
+| `docs/auth.md`          | Better Auth, cookie cache, roles, sesiones, 2FA                 | Tocas auth, sesiones o permisos                       |
+| `docs/performance.md`   | ISR, React 19.2, Zustand, prepared statements, instrumentation  | Optimizas rendimiento o agregas monitoring            |
+| `docs/i18n.md`          | next-intl (es/en/ca), theming dark/light, emails i18n           | Agregas textos, traducciones o cambias tema           |
+| `docs/testing.md`       | Tests OBLIGATORIOS, patrones por capa, factories, MSW           | Escribes CUALQUIER codigo nuevo o modificas existente |
+| `docs/deployment.md`    | Deploy a Vercel/Docker/Node, env vars, migraciones, rollback    | Despliegas o configuras entorno                       |
+| `docs/monitoring.md`    | Logging estructurado, Sentry, health check, request IDs         | Configuras observabilidad o depuras produccion        |
+| `docs/security.md`      | OWASP Top 10, rate limiting, CORS, GDPR, file upload            | Implementas seguridad o revisas vulnerabilidades      |
+| `docs/official-docs.md` | URLs documentacion oficial de TODOS los paquetes del stack      | Usas cualquier paquete — SIEMPRE consultar primero    |
 
 ### Regla: Documentar componentes nuevos — OBLIGATORIO
 
@@ -339,6 +339,34 @@ export interface IAddressRepository {
 export const addressRepository: IAddressRepository = { ... }
 ```
 
+### Tests Automaticos — OBLIGATORIO en toda implementacion
+
+**Cada service, action, utilidad o componente nuevo DEBE tener tests unitarios.**
+
+| Capa       | Tipo de test | Que testear                                   | Ejemplo ubicacion                         |
+| ---------- | ------------ | --------------------------------------------- | ----------------------------------------- |
+| Service    | Unit         | Logica de negocio, casos edge, errores        | `tests/unit/mi-service.test.ts`           |
+| Action     | Integration  | Validacion Zod, auth, flujo completo          | `tests/integration/mi-action.test.ts`     |
+| Repository | Unit         | Queries correctas, parametros, soft-delete    | `tests/unit/mi-repository.test.ts`        |
+| Utility    | Unit         | Funciones puras, transformaciones, edge cases | `tests/unit/mi-util.test.ts`              |
+| Component  | Component    | Renderizado, interaccion, estados             | `tests/components/mi-componente.test.tsx` |
+
+```bash
+# SIEMPRE ejecutar tests despues de implementar
+bun run test              # Todos los tests
+bun run test:coverage     # Verificar cobertura >= 50%
+```
+
+**Reglas:**
+
+- **NO entregar codigo sin tests** — si no tiene test, no esta terminado
+- **Testear comportamiento, no implementacion** — que hace, no como lo hace
+- **Mockear solo boundaries** — repositories, adapters, auth; nunca logica interna
+- **Factories para datos** — usar `tests/factories/` para datos consistentes
+- **Tests deben pasar en CI** — `bun run test` debe ser exitoso antes de commit
+
+**Patrones completos:** `docs/testing.md`
+
 ### Logging — via ILogger provider
 
 ```ts
@@ -464,6 +492,15 @@ import { Link, useRouter } from '@/i18n/navigation' // SIEMPRE
 - [ ] Promise.all para fetching paralelo
 - [ ] ISR con `revalidate` en paginas publicas
 - [ ] Zustand con selectores atomicos
+
+### Tests — OBLIGATORIO
+
+- [ ] Tests unitarios para cada service/util nuevo o modificado
+- [ ] Tests de integracion para cada action nueva o modificada
+- [ ] Tests de componente para componentes con interaccion
+- [ ] Factories actualizadas si hay nuevas entidades
+- [ ] `bun run test` pasa sin errores
+- [ ] Coverage >= 50% en archivos nuevos
 
 ### Calidad
 
