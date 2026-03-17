@@ -29,7 +29,7 @@ La configuracion de plugins de Better Auth vive en `lib/auth-plugins.ts` y es im
 session: {
   cookieCache: {
     enabled: true,
-    maxAge: 5 * 60,        // 5 minutos
+    maxAge: 2 * 60,        // 2 minutos
     strategy: 'compact',   // menor tamano
   },
 }

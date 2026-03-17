@@ -179,7 +179,7 @@ z.string().refine(fn, { error: 'Required' }) // CORRECTO (Zod 4)
 ### Auth (`docs/auth.md`) — Quick ref
 
 ```ts
-await getServerSession() // Server Component (cookie cache 5min)
+await getServerSession() // Server Component (cookie cache 2min)
 await requireAuth() // Proteger pagina
 await requireRole(['super_admin']) // Solo admins
 ```
@@ -211,7 +211,7 @@ starter-template/
 ├── components/             # ui/ (shadcn), forms/, custom-datatable/, sidebar/
 ├── lib/                    # Core: interfaces/, adapters/, providers, utils
 ├── db/dialect/             # Abstraccion multi-DB (pg, mysql, sqlite, turso, singlestore)
-├── db/schema/              # 13 Drizzle schemas (importan de db/dialect/)
+├── db/schema/              # 11 Drizzle schemas (importan de db/dialect/)
 ├── emails/                 # React Email templates
 ├── messages/               # i18n (es/en/ca.json)
 ├── tests/                  # unit/ integration/ components/ factories/ mocks/
