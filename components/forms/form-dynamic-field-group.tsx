@@ -1,13 +1,7 @@
 'use client'
 
-import {
-  Plus,
-  Trash2,
-  GripVertical,
-  ChevronUp,
-  ChevronDown,
-} from 'lucide-react'
-import { memo, useCallback, useMemo, type ReactNode } from 'react'
+import { Plus, GripVertical } from 'lucide-react'
+import { memo, useCallback, type ReactNode } from 'react'
 import {
   useFieldArray,
   type Control,
@@ -18,6 +12,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { FormLabel, FormDescription } from '@/components/ui/form'
 import { cn } from '@/lib/utils'
+import { MoveUpButton, MoveDownButton, RemoveButton } from './dynamic-field-row'
 import { FormFieldTooltip } from './form-field-tooltip'
 import type { TooltipConfig } from './form-field.types'
 
@@ -62,108 +57,6 @@ const DEFAULT_LABELS = {
   moveDown: 'Move down',
   empty: 'No items added yet',
 }
-
-interface MoveUpButtonProps {
-  index: number
-  onMoveUp: (index: number) => void
-  disabled: boolean
-}
-
-const MoveUpButton = memo(function MoveUpButton({
-  index,
-  onMoveUp,
-  disabled,
-}: MoveUpButtonProps) {
-  const handleClick = useCallback(() => {
-    onMoveUp(index)
-  }, [onMoveUp, index])
-
-  return (
-    <Button
-      type="button"
-      variant="ghost"
-      size="icon"
-      className="h-6 w-6"
-      onClick={handleClick}
-      disabled={disabled ?? false}
-      aria-label="Move up"
-    >
-      <ChevronUp className="h-4 w-4" />
-    </Button>
-  )
-})
-
-interface MoveDownButtonProps {
-  index: number
-  onMoveDown: (index: number) => void
-  disabled: boolean
-}
-
-const MoveDownButton = memo(function MoveDownButton({
-  index,
-  onMoveDown,
-  disabled,
-}: MoveDownButtonProps) {
-  const handleClick = useCallback(() => {
-    onMoveDown(index)
-  }, [onMoveDown, index])
-
-  return (
-    <Button
-      type="button"
-      variant="ghost"
-      size="icon"
-      className="h-6 w-6"
-      onClick={handleClick}
-      disabled={disabled ?? false}
-      aria-label="Move down"
-    >
-      <ChevronDown className="h-4 w-4" />
-    </Button>
-  )
-})
-
-interface RemoveButtonProps {
-  index: number
-  onRemove: (index: number) => void
-  disabled: boolean
-  variant: 'default' | 'card' | 'compact'
-}
-
-const RemoveButton = memo(function RemoveButton({
-  index,
-  onRemove,
-  disabled,
-  variant,
-}: RemoveButtonProps) {
-  const handleClick = useCallback(() => {
-    onRemove(index)
-  }, [onRemove, index])
-
-  const buttonClasses = useMemo(
-    () =>
-      cn(
-        'h-8 w-8 text-muted-foreground hover:text-destructive shrink-0',
-        variant === 'default' &&
-          'opacity-0 group-hover:opacity-100 transition-opacity',
-      ),
-    [variant],
-  )
-
-  return (
-    <Button
-      type="button"
-      variant="ghost"
-      size="icon"
-      className={buttonClasses}
-      onClick={handleClick}
-      disabled={disabled ?? false}
-      aria-label="Remove"
-    >
-      <Trash2 className="h-4 w-4" />
-    </Button>
-  )
-})
 
 function FormDynamicFieldGroupComponent<
   TFieldValues extends FieldValues = FieldValues,

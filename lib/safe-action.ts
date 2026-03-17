@@ -96,3 +96,57 @@ export function createSafeAction<TSchema extends z.ZodType, TResult = void>(
     }
   }
 }
+
+/**
+ * Wrapper para server actions que reciben FormData (file uploads).
+ * Provee auth, metadata y error handling igual que createSafeAction,
+ * pero sin validacion Zod (FormData no es serializable por Zod).
+ *
+ * @example
+ * ```ts
+ * export const uploadAction = createSafeFormAction(
+ *   async ({ formData, session, metadata }) => {
+ *     const file = formData.get('file') as File
+ *     // ... process file
+ *     return { url: publicUrl }
+ *   },
+ * )
+ * ```
+ */
+export function createSafeFormAction<TResult = void>(
+  handler: (params: {
+    formData: FormData
+    session: NonNullable<Awaited<ReturnType<typeof requireAuth>>>
+    metadata: { ip: string; userAgent: string }
+  }) => Promise<TResult>,
+) {
+  return async (formData: FormData): Promise<ActionResult<TResult>> => {
+    try {
+      const session = await requireAuth()
+      const metadata = await getRequestMetadata()
+
+      const result = await handler({ formData, session, metadata })
+      return { success: true, data: result }
+    } catch (error) {
+      if (error instanceof Error && 'digest' in error) {
+        throw error
+      }
+
+      if (error instanceof AppError) {
+        return {
+          success: false,
+          error: error.message,
+          code: error.code,
+          fieldErrors: error.fieldErrors,
+        }
+      }
+
+      getLogger().error('[safeFormAction] Unhandled error', error as Error)
+      return {
+        success: false,
+        error: 'Error interno del servidor',
+        code: 'INTERNAL_ERROR',
+      }
+    }
+  }
+}

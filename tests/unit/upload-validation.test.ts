@@ -1,78 +1,135 @@
-import { describe, expect, it } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import { validateFile } from '@/lib/upload-validation'
 
-function createMockFile(
-  name: string,
-  size: number,
-  type: string,
-  content?: Uint8Array,
-): File {
-  const buffer = content ?? new Uint8Array(size)
-  return new File([buffer], name, { type })
+function createMockFile(name: string, type: string, content: Uint8Array): File {
+  return new File([content], name, { type })
 }
 
+const JPEG_MAGIC = new Uint8Array([
+  0xff,
+  0xd8,
+  0xff,
+  0xe0,
+  ...Array(96).fill(0),
+])
+const PNG_MAGIC = new Uint8Array([0x89, 0x50, 0x4e, 0x47, ...Array(96).fill(0)])
+
 describe('validateFile', () => {
-  it('accepts a valid JPEG file', async () => {
-    const jpegHeader = new Uint8Array([
-      0xff,
-      0xd8,
-      0xff,
-      0xe0,
-      ...Array(96).fill(0),
-    ])
-    const file = createMockFile('photo.jpg', 100, 'image/jpeg', jpegHeader)
-    const result = await validateFile(file)
-    expect(result.valid).toBe(true)
-  })
-
-  it('accepts a valid PNG file', async () => {
-    const pngHeader = new Uint8Array([
-      0x89,
-      0x50,
-      0x4e,
-      0x47,
-      ...Array(96).fill(0),
-    ])
-    const file = createMockFile('image.png', 100, 'image/png', pngHeader)
-    const result = await validateFile(file)
-    expect(result.valid).toBe(true)
-  })
-
-  it('rejects file exceeding max size', async () => {
-    const file = createMockFile('big.jpg', 10 * 1024 * 1024, 'image/jpeg')
-    const result = await validateFile(file, { maxSizeBytes: 5 * 1024 * 1024 })
-    expect(result.valid).toBe(false)
-    expect(result.error).toContain('5MB')
-  })
-
-  it('rejects disallowed MIME type', async () => {
-    const file = createMockFile('script.js', 100, 'application/javascript')
-    const result = await validateFile(file)
-    expect(result.valid).toBe(false)
-    expect(result.error).toContain('no permitido')
-  })
-
-  it('rejects disallowed extension', async () => {
-    const file = createMockFile('virus.exe', 100, 'image/jpeg')
-    const result = await validateFile(file)
-    expect(result.valid).toBe(false)
-    expect(result.error).toContain('no permitida')
-  })
-
-  it('rejects file with mismatched magic bytes', async () => {
-    const fakeJpeg = new Uint8Array([0x00, 0x00, 0x00, ...Array(97).fill(0)])
-    const file = createMockFile('fake.jpg', 100, 'image/jpeg', fakeJpeg)
-    const result = await validateFile(file)
-    expect(result.valid).toBe(false)
-    expect(result.error).toContain('no coincide')
-  })
-
-  it('respects custom options', async () => {
-    const file = createMockFile('doc.pdf', 100, 'application/pdf')
-    const result = await validateFile(file, {
-      allowedMimeTypes: ['image/png'],
-      allowedExtensions: ['png'],
+  describe('valid files', () => {
+    it('accepts a valid JPEG file', async () => {
+      const file = createMockFile('photo.jpg', 'image/jpeg', JPEG_MAGIC)
+      const result = await validateFile(file)
+      expect(result).toEqual({ valid: true })
     })
-    expect(result.valid).toBe(false)
+
+    it('accepts a valid PNG file', async () => {
+      const file = createMockFile('image.png', 'image/png', PNG_MAGIC)
+      const result = await validateFile(file)
+      expect(result).toEqual({ valid: true })
+    })
+  })
+
+  describe('file size', () => {
+    it('rejects file exceeding default max size', async () => {
+      const largeContent = new Uint8Array(6 * 1024 * 1024)
+      largeContent.set(JPEG_MAGIC)
+      const file = createMockFile('big.jpg', 'image/jpeg', largeContent)
+      const result = await validateFile(file)
+      expect(result.valid).toBe(false)
+      expect(result.error).toContain('5MB')
+    })
+
+    it('rejects file exceeding custom max size', async () => {
+      const content = new Uint8Array(2000)
+      content.set(JPEG_MAGIC)
+      const file = createMockFile('medium.jpg', 'image/jpeg', content)
+      const result = await validateFile(file, { maxSizeBytes: 1000 })
+      expect(result.valid).toBe(false)
+      expect(result.error).toContain('excede')
+    })
+
+    it('accepts file within custom max size', async () => {
+      const file = createMockFile('small.jpg', 'image/jpeg', JPEG_MAGIC)
+      const result = await validateFile(file, {
+        maxSizeBytes: 10 * 1024 * 1024,
+      })
+      expect(result.valid).toBe(true)
+    })
+  })
+
+  describe('MIME type', () => {
+    it('rejects invalid MIME type', async () => {
+      const file = createMockFile(
+        'script.js',
+        'application/javascript',
+        new Uint8Array(10),
+      )
+      const result = await validateFile(file)
+      expect(result.valid).toBe(false)
+      expect(result.error).toContain('no permitido')
+      expect(result.error).toContain('application/javascript')
+    })
+
+    it('accepts MIME type from custom allowed list', async () => {
+      const file = createMockFile(
+        'data.json',
+        'application/json',
+        new Uint8Array([0x7b, 0x7d]),
+      )
+      const result = await validateFile(file, {
+        allowedMimeTypes: ['application/json'],
+        allowedExtensions: ['json'],
+      })
+      expect(result.valid).toBe(true)
+    })
+  })
+
+  describe('extension', () => {
+    it('rejects disallowed extension', async () => {
+      const file = createMockFile('virus.exe', 'image/jpeg', JPEG_MAGIC)
+      const result = await validateFile(file)
+      expect(result.valid).toBe(false)
+      expect(result.error).toContain('no permitida')
+      expect(result.error).toContain('.exe')
+    })
+  })
+
+  describe('magic bytes', () => {
+    it('rejects file claiming JPEG but with PNG magic bytes', async () => {
+      const file = createMockFile('fake.jpg', 'image/jpeg', PNG_MAGIC)
+      const result = await validateFile(file)
+      expect(result.valid).toBe(false)
+      expect(result.error).toContain('no coincide')
+    })
+
+    it('rejects file claiming PNG but with JPEG magic bytes', async () => {
+      const file = createMockFile('fake.png', 'image/png', JPEG_MAGIC)
+      const result = await validateFile(file)
+      expect(result.valid).toBe(false)
+      expect(result.error).toContain('no coincide')
+    })
+
+    it('skips magic byte check for types without defined magic bytes', async () => {
+      const csvContent = new Uint8Array([0x61, 0x2c, 0x62])
+      const file = createMockFile('data.csv', 'text/csv', csvContent)
+      const result = await validateFile(file)
+      expect(result.valid).toBe(true)
+    })
+  })
+
+  describe('custom options', () => {
+    it('overrides all defaults', async () => {
+      const file = createMockFile(
+        'doc.pdf',
+        'application/pdf',
+        new Uint8Array(100),
+      )
+      const result = await validateFile(file, {
+        allowedMimeTypes: ['image/png'],
+        allowedExtensions: ['png'],
+        maxSizeBytes: 1024,
+      })
+      expect(result.valid).toBe(false)
+    })
   })
 })

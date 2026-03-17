@@ -12,14 +12,17 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
+import {
+  DEFAULT_DURATION_LABELS,
+  durationToSeconds,
+  formatDuration,
+  normalizeDuration,
+  type DurationValue,
+} from './form-duration-field.utils'
 import type { BaseFormFieldProps } from './form-field.types'
 import type { FieldPath, FieldValues } from 'react-hook-form'
 
-export interface DurationValue {
-  hours: number
-  minutes: number
-  seconds: number
-}
+export type { DurationValue } from './form-duration-field.utils'
 
 export interface FormDurationFieldProps<
   TFieldValues extends FieldValues = FieldValues,
@@ -35,32 +38,6 @@ export interface FormDurationFieldProps<
     minutes?: string | undefined
     seconds?: string | undefined
   }
-}
-
-const DEFAULT_LABELS = {
-  hours: 'Hours',
-  minutes: 'Minutes',
-  seconds: 'Seconds',
-}
-
-function formatDuration(duration: DurationValue): string {
-  const parts: string[] = []
-
-  if (duration.hours > 0) {
-    parts.push(`${duration.hours}h`)
-  }
-  if (duration.minutes > 0) {
-    parts.push(`${duration.minutes}m`)
-  }
-  if (duration.seconds > 0 || parts.length === 0) {
-    parts.push(`${duration.seconds}s`)
-  }
-
-  return parts.join(' ')
-}
-
-function durationToSeconds(duration: DurationValue): number {
-  return duration.hours * 3600 + duration.minutes * 60 + duration.seconds
 }
 
 const DurationInput = memo(function DurationInput({
@@ -127,7 +104,11 @@ function FormDurationFieldComponent<
   labels: customLabels,
 }: FormDurationFieldProps<TFieldValues, TName>) {
   const labels = useMemo(
-    () => ({ ...DEFAULT_LABELS, ...customLabels }) as typeof DEFAULT_LABELS,
+    () =>
+      ({
+        ...DEFAULT_DURATION_LABELS,
+        ...customLabels,
+      }) as typeof DEFAULT_DURATION_LABELS,
     [customLabels],
   )
 
@@ -138,27 +119,7 @@ function FormDurationFieldComponent<
       newValue: number,
       onChange: (value: DurationValue) => void,
     ) => {
-      const updated = { ...currentValue, [key]: newValue }
-
-      if (key === 'minutes' && newValue >= 60) {
-        const extraHours = Math.floor(newValue / 60)
-        updated.minutes = newValue % 60
-        updated.hours = Math.min(maxHours, currentValue.hours + extraHours)
-      }
-
-      if (key === 'seconds' && newValue >= 60) {
-        const extraMinutes = Math.floor(newValue / 60)
-        updated.seconds = newValue % 60
-        updated.minutes = currentValue.minutes + extraMinutes
-
-        if (updated.minutes >= 60) {
-          const extraHours = Math.floor(updated.minutes / 60)
-          updated.minutes = updated.minutes % 60
-          updated.hours = Math.min(maxHours, currentValue.hours + extraHours)
-        }
-      }
-
-      onChange(updated)
+      onChange(normalizeDuration(currentValue, key, newValue, maxHours))
     },
     [maxHours],
   )
@@ -175,7 +136,6 @@ function FormDurationFieldComponent<
         }) as DurationValue
         const hasError = !!fieldState.error
         const totalSeconds = durationToSeconds(value)
-
         return (
           <FormItem className={className}>
             {label && (

@@ -14,7 +14,7 @@ test.describe('SEO & Metadata', () => {
     const response = await request.get('/robots.txt')
     expect(response.status()).toBe(200)
     const text = await response.text()
-    expect(text).toContain('User-agent')
+    expect(text.toLowerCase()).toContain('user-agent')
     expect(text).toContain('Sitemap')
   })
 

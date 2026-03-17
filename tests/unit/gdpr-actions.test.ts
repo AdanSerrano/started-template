@@ -57,6 +57,12 @@ const mockGDPRService = {
 
 vi.mock('@/lib/providers', () => ({
   getGDPRService: () => mockGDPRService,
+  getLogger: () => ({
+    error: vi.fn(),
+    info: vi.fn(),
+    warn: vi.fn(),
+    debug: vi.fn(),
+  }),
 }))
 
 describe('GDPR Actions', () => {
@@ -142,7 +148,7 @@ describe('GDPR Actions', () => {
       expect(requireAuth).toHaveBeenCalled()
     })
 
-    it('should propagate error when gdprService throws', async () => {
+    it('should return error when gdprService throws', async () => {
       mockGDPRService.exportUserData.mockRejectedValue(
         new Error('Export failed'),
       )
@@ -150,7 +156,9 @@ describe('GDPR Actions', () => {
       const { exportMyDataAction } =
         await import('@/modules/account/actions/gdpr-actions')
 
-      await expect(exportMyDataAction()).rejects.toThrow('Export failed')
+      const result = await exportMyDataAction()
+      expect(result.success).toBe(false)
+      expect(result.code).toBe('INTERNAL_ERROR')
     })
   })
 
@@ -186,7 +194,7 @@ describe('GDPR Actions', () => {
       const result = await deleteMyAccountAction('delete')
 
       expect(result.success).toBe(false)
-      expect(result.error).toBe('validation.deleteConfirmationRequired')
+      expect(result.error).toBe('Datos invalidos')
     })
 
     it('should not call gdprService when confirmation is wrong', async () => {
@@ -216,7 +224,7 @@ describe('GDPR Actions', () => {
       const result = await deleteMyAccountAction('')
 
       expect(result.success).toBe(false)
-      expect(result.error).toBe('validation.deleteConfirmationRequired')
+      expect(result.error).toBe('Datos invalidos')
     })
 
     it('should create audit log with critical severity before deleting', async () => {
@@ -251,7 +259,7 @@ describe('GDPR Actions', () => {
       expect(requireAuth).toHaveBeenCalled()
     })
 
-    it('should propagate error when gdprService.deleteUserData throws', async () => {
+    it('should return error when gdprService.deleteUserData throws', async () => {
       mockGDPRService.deleteUserData.mockRejectedValue(
         new Error('Deletion failed'),
       )
@@ -259,9 +267,9 @@ describe('GDPR Actions', () => {
       const { deleteMyAccountAction } =
         await import('@/modules/account/actions/gdpr-actions')
 
-      await expect(deleteMyAccountAction('DELETE')).rejects.toThrow(
-        'Deletion failed',
-      )
+      const result = await deleteMyAccountAction('DELETE')
+      expect(result.success).toBe(false)
+      expect(result.code).toBe('INTERNAL_ERROR')
     })
   })
 })

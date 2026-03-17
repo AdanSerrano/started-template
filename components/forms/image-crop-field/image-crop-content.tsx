@@ -1,17 +1,8 @@
 'use client'
 
-import { Upload, X } from 'lucide-react'
-import NextImage from 'next/image'
-import {
-  memo,
-  useCallback,
-  useRef,
-  useMemo,
-  useState,
-  useTransition,
-} from 'react'
+import { memo, useCallback, useRef, useState, useTransition } from 'react'
 import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
+import { CropPreview, UploadButton } from './crop-controls'
 import { CropDialog } from './crop-dialog'
 import type { ImageState, ImageCropContentProps } from './types'
 
@@ -31,7 +22,6 @@ export const ImageCropContent = memo(function ImageCropContent({
   const [dialogOpen, setDialogOpen] = useState(false)
   const [imageState, setImageState] = useState<ImageState | null>(null)
   const imageStateRef = useRef<ImageState | null>(null)
-
   const [isPending, startTransition] = useTransition()
 
   const processImage = useCallback(
@@ -43,19 +33,15 @@ export const ImageCropContent = memo(function ImageCropContent({
           const size = 500
           const width = aspectRatio >= 1 ? size : size * aspectRatio
           const height = aspectRatio >= 1 ? size / aspectRatio : size
-
           canvas.width = width
           canvas.height = height
-
           const ctx = canvas.getContext('2d')
           if (!ctx) {
             resolve(state.src)
             return
           }
-
           ctx.fillStyle = '#ffffff'
           ctx.fillRect(0, 0, width, height)
-
           ctx.save()
           ctx.translate(width / 2, height / 2)
           ctx.rotate((state.rotation * Math.PI) / 180)
@@ -66,7 +52,6 @@ export const ImageCropContent = memo(function ImageCropContent({
           )
           ctx.drawImage(img, -img.width / 2, -img.height / 2)
           ctx.restore()
-
           resolve(canvas.toDataURL(`image/${outputFormat}`, outputQuality))
         }
         img.src = state.src
@@ -105,12 +90,7 @@ export const ImageCropContent = memo(function ImageCropContent({
   const handleFileSelect = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0]
-      if (!file) return
-
-      if (file.size > maxFileSize) {
-        return
-      }
-
+      if (!file || file.size > maxFileSize) return
       const reader = new FileReader()
       reader.onload = (event) => {
         const src = event.target?.result as string
@@ -130,9 +110,7 @@ export const ImageCropContent = memo(function ImageCropContent({
   )
 
   const handleApply = useCallback(() => {
-    const imageState = imageStateRef.current
-    if (!imageState) return
-
+    if (!imageStateRef.current) return
     startTransition(async () => {
       const result = await processImage(imageStateRef.current!)
       field.onChange(result)
@@ -150,22 +128,12 @@ export const ImageCropContent = memo(function ImageCropContent({
 
   const handleRemove = useCallback(() => {
     field.onChange('')
-    if (inputRef.current) {
-      inputRef.current.value = ''
-    }
+    if (inputRef.current) inputRef.current.value = ''
   }, [field])
 
   const handleUploadClick = useCallback(() => {
     inputRef.current?.click()
   }, [])
-
-  const previewStyle = useMemo(
-    () => ({
-      width: aspectRatio >= 1 ? 150 : 150 * aspectRatio,
-      height: aspectRatio >= 1 ? 150 / aspectRatio : 150,
-    }),
-    [aspectRatio],
-  )
 
   return (
     <div className="space-y-3">
@@ -178,48 +146,20 @@ export const ImageCropContent = memo(function ImageCropContent({
         className="hidden"
       />
       {field.value ? (
-        <div className="relative inline-block">
-          <div
-            className={cn(
-              'border-muted-foreground/25 overflow-hidden border-2 border-dashed',
-              cropShape === 'round' ? 'rounded-full' : 'rounded-lg',
-            )}
-            style={previewStyle}
-          >
-            <NextImage
-              src={field.value}
-              alt="Preview"
-              width={150}
-              height={150}
-              className="h-full w-full object-cover"
-              unoptimized
-            />
-          </div>
-          <Button
-            type="button"
-            variant="destructive"
-            size="icon"
-            className="absolute -top-2 -right-2 h-6 w-6 rounded-full"
-            onClick={handleRemove}
-            disabled={disabled ?? false}
-          >
-            <X className="h-3 w-3" />
-          </Button>
-        </div>
+        <CropPreview
+          value={field.value}
+          aspectRatio={aspectRatio}
+          cropShape={cropShape}
+          disabled={disabled}
+          onRemove={handleRemove}
+        />
       ) : (
-        <Button
-          type="button"
-          variant="outline"
+        <UploadButton
+          hasError={hasError}
+          disabled={disabled}
+          label={labels.upload}
           onClick={handleUploadClick}
-          disabled={disabled ?? false}
-          className={cn(
-            'h-auto flex-col gap-2 p-6',
-            hasError && 'border-destructive',
-          )}
-        >
-          <Upload className="text-muted-foreground h-8 w-8" />
-          <span>{labels.upload}</span>
-        </Button>
+        />
       )}
       {field.value && (
         <Button

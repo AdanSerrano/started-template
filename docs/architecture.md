@@ -192,6 +192,17 @@ export async function myWriteAction(data: unknown): Promise<ActionResult> {
 | `IFeatureFlagService`     | `EnvFeatureFlagService`     | LaunchDarkly, Unleash                        |
 | `IGDPRService`            | `GDPRService`               | --                                           |
 
+### Providers — Estructura de archivos
+
+> `providers.ts` es un barrel que re-exporta de dos archivos internos:
+
+| Archivo                 | Providers                                                                                  |
+| ----------------------- | ------------------------------------------------------------------------------------------ |
+| `providers-core.ts`     | auth, email, storage, jobs, http, cache, rate-limit, logger                                |
+| `providers-extended.ts` | analytics, monitoring, notifications, search, webhooks, feature-flags, gdpr, export/import |
+
+**SIEMPRE importar de `@/lib/providers`** (el barrel file). Nunca importar de `providers-core.ts` o `providers-extended.ts` directamente.
+
 ### Uso correcto
 
 ```typescript

@@ -12,76 +12,8 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { cn } from '@/lib/utils'
+import { EmojiGrid, SelectedEmojiButton } from './emoji-grid'
 import type { EmojiCategory } from './emoji-data'
-
-interface EmojiButtonProps {
-  emoji: string
-  onSelect: (emoji: string) => void
-}
-
-const EmojiButton = memo(function EmojiButton({
-  emoji,
-  onSelect,
-}: EmojiButtonProps) {
-  const handleClick = useCallback(() => {
-    onSelect(emoji)
-  }, [emoji, onSelect])
-
-  return (
-    <button
-      type="button"
-      className="hover:bg-accent flex h-8 w-8 items-center justify-center rounded text-xl transition-colors"
-      onClick={handleClick}
-    >
-      {emoji}
-    </button>
-  )
-})
-
-const EmojiGrid = memo(function EmojiGrid({
-  emojis,
-  onSelect,
-}: {
-  emojis: string[]
-  onSelect: (emoji: string) => void
-}) {
-  return (
-    <div className="grid grid-cols-8 gap-1 p-2">
-      {emojis.map((emoji, index) => (
-        <EmojiButton
-          key={`${emoji}-${index}`}
-          emoji={emoji}
-          onSelect={onSelect}
-        />
-      ))}
-    </div>
-  )
-})
-
-interface SelectedEmojiButtonProps {
-  emoji: string
-  onRemove: (emoji: string) => void
-}
-
-const SelectedEmojiButton = memo(function SelectedEmojiButton({
-  emoji,
-  onRemove,
-}: SelectedEmojiButtonProps) {
-  const handleClick = useCallback(() => {
-    onRemove(emoji)
-  }, [emoji, onRemove])
-
-  return (
-    <button
-      type="button"
-      className="hover:bg-destructive/10 hover:border-destructive flex h-8 w-8 items-center justify-center rounded border text-lg transition-colors"
-      onClick={handleClick}
-      title="Remove"
-    >
-      {emoji}
-    </button>
-  )
-})
 
 export interface EmojiContentProps {
   field: {
@@ -127,7 +59,6 @@ export const EmojiContent = memo(function EmojiContent({
   const handleSelect = useCallback(
     (emoji: string) => {
       addToRecent(emoji)
-
       if (multiple) {
         const isSelected = selectedEmojis.includes(emoji)
         if (isSelected) {
@@ -207,7 +138,6 @@ export const EmojiContent = memo(function EmojiContent({
               </div>
             </div>
           )}
-
           {searchValue ? (
             <ScrollArea className="h-[250px]">
               <EmojiGrid emojis={searchResults} onSelect={handleSelect} />
@@ -244,7 +174,6 @@ export const EmojiContent = memo(function EmojiContent({
           )}
         </PopoverContent>
       </Popover>
-
       {showPreview && selectedEmojis.length > 0 && multiple && (
         <div className="flex flex-wrap gap-1">
           {selectedEmojis.map((emoji, index) => (

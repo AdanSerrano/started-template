@@ -1,12 +1,6 @@
 'use client'
 
-import {
-  Plus,
-  Trash2,
-  GripVertical,
-  ChevronUp,
-  ChevronDown,
-} from 'lucide-react'
+import { Plus, GripVertical } from 'lucide-react'
 import { memo, useCallback } from 'react'
 import {
   useFieldArray,
@@ -23,6 +17,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { cn } from '@/lib/utils'
+import { ArrayItemControls } from './array-field-item'
 
 export interface FormArrayFieldProps<
   TFieldValues extends FieldValues = FieldValues,
@@ -51,77 +46,6 @@ export interface FormArrayFieldProps<
   }) => React.ReactNode
 }
 
-const ArrayItemControls = memo(function ArrayItemControls({
-  index,
-  showIndex,
-  showReorder,
-  canMoveUp,
-  canMoveDown,
-  canRemove,
-  onMoveUp,
-  onMoveDown,
-  onRemove,
-  disabled,
-}: {
-  index: number
-  showIndex: boolean
-  showReorder: boolean
-  canMoveUp: boolean
-  canMoveDown: boolean
-  canRemove: boolean
-  onMoveUp: () => void
-  onMoveDown: () => void
-  onRemove: () => void
-  disabled?: boolean | undefined
-}) {
-  return (
-    <div className="flex shrink-0 items-center gap-1">
-      {showIndex && (
-        <span className="text-muted-foreground w-6 text-center font-mono text-xs">
-          {index + 1}
-        </span>
-      )}
-      {showReorder && (
-        <>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            className="h-7 w-7"
-            onClick={onMoveUp}
-            disabled={disabled || !canMoveUp}
-            aria-label="Move up"
-          >
-            <ChevronUp className="h-4 w-4" />
-          </Button>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            className="h-7 w-7"
-            onClick={onMoveDown}
-            disabled={disabled || !canMoveDown}
-            aria-label="Move down"
-          >
-            <ChevronDown className="h-4 w-4" />
-          </Button>
-        </>
-      )}
-      <Button
-        type="button"
-        variant="ghost"
-        size="icon"
-        className="text-destructive hover:text-destructive h-7 w-7"
-        onClick={onRemove}
-        disabled={disabled || !canRemove}
-        aria-label="Remove"
-      >
-        <Trash2 className="h-4 w-4" />
-      </Button>
-    </div>
-  )
-})
-
 function FormArrayFieldComponent<
   TFieldValues extends FieldValues = FieldValues,
   TName extends ArrayPath<TFieldValues> = ArrayPath<TFieldValues>,
@@ -142,10 +66,7 @@ function FormArrayFieldComponent<
   emptyMessage = 'No items yet. Click the button below to add one.',
   renderItem,
 }: FormArrayFieldProps<TFieldValues, TName>) {
-  const { fields, append, remove, move } = useFieldArray({
-    control,
-    name,
-  })
+  const { fields, append, remove, move } = useFieldArray({ control, name })
 
   const handleAdd = useCallback(() => {
     if (fields.length < maxItems) {
@@ -155,27 +76,21 @@ function FormArrayFieldComponent<
 
   const handleRemove = useCallback(
     (index: number) => {
-      if (fields.length > minItems) {
-        remove(index)
-      }
+      if (fields.length > minItems) remove(index)
     },
     [fields.length, minItems, remove],
   )
 
   const handleMoveUp = useCallback(
     (index: number) => {
-      if (index > 0) {
-        move(index, index - 1)
-      }
+      if (index > 0) move(index, index - 1)
     },
     [move],
   )
 
   const handleMoveDown = useCallback(
     (index: number) => {
-      if (index < fields.length - 1) {
-        move(index, index + 1)
-      }
+      if (index < fields.length - 1) move(index, index + 1)
     },
     [fields.length, move],
   )
@@ -195,7 +110,6 @@ function FormArrayFieldComponent<
           </span>
         </FormLabel>
       )}
-
       <div className="space-y-3">
         {fields.length === 0 ? (
           <div className="rounded-lg border border-dashed p-6 text-center">
@@ -216,7 +130,6 @@ function FormArrayFieldComponent<
                     <GripVertical className="h-4 w-4" />
                   </div>
                 )}
-
                 <div className="min-w-0 flex-1">
                   {renderItem({
                     index,
@@ -226,7 +139,6 @@ function FormArrayFieldComponent<
                     isLast: index === fields.length - 1,
                   })}
                 </div>
-
                 <ArrayItemControls
                   index={index}
                   showIndex={showIndex}
@@ -243,7 +155,6 @@ function FormArrayFieldComponent<
             ))}
           </div>
         )}
-
         <Button
           type="button"
           variant="outline"
@@ -256,7 +167,6 @@ function FormArrayFieldComponent<
           {addButtonLabel}
         </Button>
       </div>
-
       {description && <FormDescription>{description}</FormDescription>}
       <FormMessage />
     </FormItem>

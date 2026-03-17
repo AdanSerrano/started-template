@@ -175,6 +175,44 @@ if (data.isDefault) {
 
 ---
 
+## Query Helpers — `lib/query-helpers.ts`
+
+Funciones reutilizables para queries comunes. **NO reimplementar** — importar siempre de `@/lib/query-helpers`.
+
+| Helper                                | Proposito                                           |
+| ------------------------------------- | --------------------------------------------------- |
+| `notDeleted(col)`                     | Filtra registros soft-deleted (`deletedAt IS NULL`) |
+| `isDeleted(col)`                      | Solo registros soft-deleted — uso admin             |
+| `byId(idCol, id)`                     | Filtra por ID                                       |
+| `activeById(idCol, id, deletedAtCol)` | Combina `byId` + `notDeleted`                       |
+| `withLimit({pageSize})`               | Aplica limite de paginacion                         |
+| `withOffset({page, pageSize})`        | Aplica offset de paginacion                         |
+| `countRows()`                         | Helper para `count(*)`                              |
+
+### Uso
+
+```ts
+import {
+  notDeleted,
+  byId,
+  activeById,
+  withLimit,
+  withOffset,
+  countRows,
+} from '@/lib/query-helpers'
+
+// Common patterns
+db.select().from(users).where(notDeleted(users.deletedAt))
+db.select()
+  .from(users)
+  .where(activeById(users.id, userId, users.deletedAt))
+db.select({ total: countRows() }).from(users).where(notDeleted(users.deletedAt))
+```
+
+> **REGLA:** Toda query de lectura DEBE usar `notDeleted()` a menos que se necesite acceder a registros eliminados (admin).
+
+---
+
 ## Prepared Statements
 
 > Compilar SQL una vez, reutilizar N veces. Usar en queries frecuentes.

@@ -105,7 +105,7 @@ La **UX es prioridad #1**. Toda decision optimiza:
 
 | Regla              | Detalle                                                                           | Docs                   |
 | ------------------ | --------------------------------------------------------------------------------- | ---------------------- |
-| **Server Actions** | SIEMPRE via `createSafeAction()` — provee Zod, auth, metadata, error handling     | `docs/architecture.md` |
+| **Server Actions** | SIEMPRE via `createSafeAction()` o `createSafeFormAction()` (FormData)            | `docs/architecture.md` |
 | **Error Handling** | SIEMPRE clases tipadas de `lib/errors.ts` (NotFoundError, ForbiddenError, etc.)   | `docs/conventions.md`  |
 | **Rate Limiting**  | OBLIGATORIO en actions sensibles via `checkRateLimit()`                           | `docs/security.md`     |
 | **Soft Delete**    | SIEMPRE usar `notDeleted()` de `lib/query-helpers.ts` en reads                    | `docs/database.md`     |
@@ -161,22 +161,25 @@ z.string().refine(fn, { error: 'Required' }) // CORRECTO (Zod 4)
 
 ### Utilidades disponibles — NO reimplementar
 
-| Util                                                    | Import                                   |
-| ------------------------------------------------------- | ---------------------------------------- |
-| `cn()`, `formatCurrency()`, `formatDate()`, `slugify()` | `@/lib/utils`                            |
-| `apiSuccess()`, `apiError()`, `apiNotFound()`           | `@/lib/api-response`                     |
-| `paginationSchema`, `createPaginatedResult()`           | `@/lib/pagination`                       |
-| `corsHeaders()`, `handleCorsPreflight()`                | `@/lib/cors`                             |
-| `getRequestId()`                                        | `@/lib/request-context`                  |
-| `getTranslatedField()`, `createI18nField()`             | `@/lib/i18n-helpers`                     |
-| `sanitizeHtml()`, `sanitizeText()`                      | `@/lib/sanitize`                         |
-| `validateFile()`                                        | `@/lib/upload-validation`                |
-| `ac` (access control), `requireRole()`                  | `@/lib/permissions`, `@/lib/auth-server` |
+| Util                                                                                   | Import                                   |
+| -------------------------------------------------------------------------------------- | ---------------------------------------- |
+| `cn()`, `formatCurrency()`, `formatDate()`, `slugify()`                                | `@/lib/utils`                            |
+| `apiSuccess()`, `apiError()`, `apiNotFound()`                                          | `@/lib/api-response`                     |
+| `paginationSchema`, `createPaginatedResult()`                                          | `@/lib/pagination`                       |
+| `corsHeaders()`, `handleCorsPreflight()`                                               | `@/lib/cors`                             |
+| `getRequestId()`                                                                       | `@/lib/request-context`                  |
+| `getTranslatedField()`, `createI18nField()`                                            | `@/lib/i18n-helpers`                     |
+| `sanitizeHtml()`, `sanitizeText()`                                                     | `@/lib/sanitize`                         |
+| `validateFile()`                                                                       | `@/lib/upload-validation`                |
+| `ac` (access control), `requireRole()`                                                 | `@/lib/permissions`, `@/lib/auth-server` |
+| `createSafeAction()`, `createSafeFormAction()`, `ActionResult<T>`                      | `@/lib/safe-action`                      |
+| `notDeleted()`, `byId()`, `activeById()`, `withLimit()`, `withOffset()`, `countRows()` | `@/lib/query-helpers`                    |
+| `generateRequestId()`, `getRequestId()`, `withRequestContext()`                        | `@/lib/request-context`                  |
 
 ### Auth (`docs/auth.md`) — Quick ref
 
 ```ts
-await getServerSession() // Server Component (cookie cache 5min)
+await getServerSession() // Server Component (cookie cache 2min)
 await requireAuth() // Proteger pagina
 await requireRole(['super_admin']) // Solo admins
 ```
@@ -208,7 +211,7 @@ starter-template/
 ├── components/             # ui/ (shadcn), forms/, custom-datatable/, sidebar/
 ├── lib/                    # Core: interfaces/, adapters/, providers, utils
 ├── db/dialect/             # Abstraccion multi-DB (pg, mysql, sqlite, turso, singlestore)
-├── db/schema/              # 13 Drizzle schemas (importan de db/dialect/)
+├── db/schema/              # 11 Drizzle schemas (importan de db/dialect/)
 ├── emails/                 # React Email templates
 ├── messages/               # i18n (es/en/ca.json)
 ├── tests/                  # unit/ integration/ components/ factories/ mocks/
@@ -261,6 +264,13 @@ Automatico en cada commit: `prettier --write` + `eslint --fix --cache`. NUNCA us
 | `bun run knip`                                                                          | Codigo muerto         |
 | `bun run db:generate` / `db:push` / `db:migrate` / `db:studio` / `db:seed` / `db:reset` | DB ops                |
 | `bun run email:preview`                                                                 | Preview emails (3001) |
+| `bun run start`                                                                         | Iniciar produccion    |
+| `bun run test:watch`                                                                    | Tests en modo watch   |
+| `bun run test:unit` / `test:integration` / `test:components`                            | Tests por tipo        |
+| `bun run test:coverage`                                                                 | Tests con cobertura   |
+| `bun run test:ui`                                                                       | UI de Vitest          |
+| `bun run test:all`                                                                      | Unit + E2E            |
+| `bun run lint:fix`                                                                      | ESLint con auto-fix   |
 | `bun run generate:module` / `generate:icons`                                            | Generadores           |
 
 ---
@@ -332,6 +342,34 @@ Artefactos en `docs/tasks/` son temporales por feature (en `.gitignore`).
 
 - [ ] `bun run format:check` + `bun run lint` + `bun run type-check` pasan
 - [ ] Imports con `@/` — Archivos < 250 lineas — Docs actualizados
+
+### CI/CD — OBLIGATORIO antes de merge
+
+> **NINGÚN PR se mergea si CI falla.** Ambos jobs deben pasar en verde.
+
+#### Code Quality (cada push a main/develop y PRs)
+
+- [ ] `bun run format:check` — Prettier formatting
+- [ ] `bun run type-check` — TypeScript strict, 0 errores
+- [ ] `bun run lint` — ESLint, 0 errores, 0 warnings
+- [ ] `bun run test` — Todos los unit/integration/component tests pasan
+- [ ] `bun run test:coverage` — Coverage >= 50% en archivos nuevos
+- [ ] `bun run knip` — 0 codigo muerto
+- [ ] `bun run build` — Build de produccion exitoso
+
+#### E2E Tests (cada PR a main)
+
+- [ ] `bun run test:e2e` — Todos los tests Playwright pasan (Chromium + Firefox)
+- [ ] Navegacion y rutas protegidas funcionan
+- [ ] Health endpoint responde correctamente
+- [ ] SEO metadata (robots.txt, sitemap.xml, canonical) presente
+- [ ] Auth flow (redirect a login, locale switching) funciona
+
+#### Reglas de proteccion de branch
+
+- `main` esta protegido — **cambios solo via Pull Request**
+- Code Quality y E2E deben pasar antes de merge
+- Dependabot mantiene dependencias actualizadas automaticamente
 
 ---
 

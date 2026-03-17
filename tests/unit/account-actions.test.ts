@@ -18,6 +18,15 @@ vi.mock('@/lib/db', () => ({
   db: {},
 }))
 
+vi.mock('@/lib/providers', () => ({
+  getLogger: () => ({
+    error: vi.fn(),
+    info: vi.fn(),
+    warn: vi.fn(),
+    debug: vi.fn(),
+  }),
+}))
+
 // Mock auth
 vi.mock('@/lib/auth-server', () => ({
   requireAuth: vi.fn().mockResolvedValue({
@@ -79,7 +88,7 @@ describe('Account Actions — Validation & Error Codes', () => {
 
       const result = await updateProfileAction({})
       expect(result.success).toBe(false)
-      expect(result.error).toBe('validation.invalid')
+      expect(result.error).toBe('Datos invalidos')
       expect(result.fieldErrors).toBeDefined()
     })
 
@@ -112,7 +121,7 @@ describe('Account Actions — Validation & Error Codes', () => {
 
       const result = await createAddressAction({})
       expect(result.success).toBe(false)
-      expect(result.error).toBe('validation.invalid')
+      expect(result.error).toBe('Datos invalidos')
     })
 
     it('creates address and logs audit with entity id', async () => {

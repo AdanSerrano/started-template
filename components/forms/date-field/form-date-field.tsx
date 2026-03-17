@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
 import { FormFieldTooltip } from '../form-field-tooltip'
+import { PresetButton } from './date-preset-button'
 import {
   DEFAULT_PRESET_LABELS,
   buildDatePresets,
@@ -54,32 +55,6 @@ const defaultFormatDate = (date: Date, locale = 'en-US') =>
     day: 'numeric',
   })
 
-interface PresetButtonProps {
-  preset: DatePreset
-  onSelect: (preset: DatePreset) => void
-}
-
-const PresetButton = memo(function PresetButton({
-  preset,
-  onSelect,
-}: PresetButtonProps) {
-  const handleClick = useCallback(() => {
-    onSelect(preset)
-  }, [preset, onSelect])
-
-  return (
-    <Button
-      type="button"
-      variant="ghost"
-      size="sm"
-      className="justify-start text-left"
-      onClick={handleClick}
-    >
-      {preset.label}
-    </Button>
-  )
-})
-
 interface DateContentProps {
   field: ControllerRenderProps<FieldValues, string>
   placeholder: string
@@ -103,8 +78,7 @@ const DateContent = memo(function DateContent({
 }: DateContentProps) {
   const handlePresetSelect = useCallback(
     (preset: DatePreset) => {
-      const date = preset.getValue()
-      field.onChange(date)
+      field.onChange(preset.getValue())
     },
     [field],
   )
@@ -186,11 +160,7 @@ function FormDateFieldComponent<
   presetLabels: customPresetLabels,
 }: FormDateFieldProps<TFieldValues, TName>) {
   const mergedPresetLabels = useMemo(
-    () =>
-      ({
-        ...DEFAULT_PRESET_LABELS,
-        ...customPresetLabels,
-      }) as PresetLabels,
+    () => ({ ...DEFAULT_PRESET_LABELS, ...customPresetLabels }) as PresetLabels,
     [customPresetLabels],
   )
 

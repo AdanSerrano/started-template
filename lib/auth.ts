@@ -1,9 +1,6 @@
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { betterAuth } from 'better-auth/minimal'
-import { nextCookies } from 'better-auth/next-js'
-import { username, twoFactor, admin, magicLink } from 'better-auth/plugins'
 import { eq } from 'drizzle-orm'
-import { cookies } from 'next/headers'
 import { DIALECT } from '@/db/dialect'
 import {
   users,
@@ -12,35 +9,14 @@ import {
   verifications,
   twoFactors,
 } from '@/db/schema'
-import { getEmailTranslations, type EmailLocale } from '@/emails/i18n'
-import { MagicLinkEmail } from '@/emails/magic-link'
+import { getEmailTranslations } from '@/emails/i18n'
 import { ResetPasswordEmail } from '@/emails/reset-password'
 import { VerificationEmail } from '@/emails/verification'
-import { routing } from '@/i18n/routing'
+import { createAuthPlugins, getLocaleFromRequest } from '@/lib/auth-plugins'
 import { appConfig } from '@/lib/config'
 import { db } from '@/lib/db'
 import { sendEmail } from '@/lib/email'
-import { ac, roles } from '@/lib/permissions'
 import { getAuthSecurityService } from '@/modules/auth/services/auth-security-service'
-
-/**
- * Obtiene el locale actual desde las cookies de next-intl.
- * Usa el defaultLocale si no hay cookie establecida.
- */
-async function getLocaleFromRequest(): Promise<EmailLocale> {
-  try {
-    const cookieStore = await cookies()
-    const localeCookie = cookieStore.get('NEXT_LOCALE')?.value
-
-    if (localeCookie && routing.locales.includes(localeCookie as EmailLocale)) {
-      return localeCookie as EmailLocale
-    }
-  } catch {
-    // Si no podemos leer las cookies, usar el default
-  }
-
-  return routing.defaultLocale as EmailLocale
-}
 
 export const auth = betterAuth({
   appName: appConfig.name,
@@ -55,41 +31,11 @@ export const auth = betterAuth({
           : DIALECT === 'singlestore'
             ? 'mysql'
             : DIALECT,
-    schema: {
-      users,
-      sessions,
-      accounts,
-      verifications,
-      twoFactors,
-    },
+    schema: { users, sessions, accounts, verifications, twoFactors },
     usePlural: true,
   }),
 
-  plugins: [
-    username(),
-    twoFactor({
-      issuer: appConfig.name,
-    }),
-    admin({
-      ac,
-      roles,
-      defaultRole: 'user',
-    }),
-    magicLink({
-      sendMagicLink: async ({ email, url }) => {
-        const locale = await getLocaleFromRequest()
-        const t = getEmailTranslations(locale)
-        await sendEmail({
-          to: email,
-          subject: t.magicLink.subject,
-          react: MagicLinkEmail({ url, locale }),
-        })
-      },
-      expiresIn: 600, // 10 minutos
-    }),
-    // nextCookies MUST be last — handles cookies in Server Actions automatically
-    nextCookies(),
-  ],
+  plugins: createAuthPlugins(),
 
   emailAndPassword: {
     enabled: true,
@@ -135,10 +81,7 @@ export const auth = betterAuth({
 
   user: {
     additionalFields: {
-      phone: {
-        type: 'string',
-        required: false,
-      },
+      phone: { type: 'string', required: false },
       role: {
         type: ['super_admin', 'admin', 'user'] as const,
         required: false,
@@ -157,32 +100,16 @@ export const auth = betterAuth({
         defaultValue: 0,
         input: false,
       },
-      lockedUntil: {
-        type: 'date',
-        required: false,
-        input: false,
-      },
-      deletedAt: {
-        type: 'date',
-        required: false,
-        input: false,
-      },
-      deletedBy: {
-        type: 'string',
-        required: false,
-        input: false,
-      },
+      lockedUntil: { type: 'date', required: false, input: false },
+      deletedAt: { type: 'date', required: false, input: false },
+      deletedBy: { type: 'string', required: false, input: false },
     },
   },
 
   session: {
-    expiresIn: 60 * 60 * 24 * 7, // 7 dias
-    updateAge: 60 * 60 * 24, // Refresh DB session cada 1 dia de actividad
-    cookieCache: {
-      enabled: true,
-      maxAge: 2 * 60, // 2 minutos — balance seguridad vs rendimiento
-      strategy: 'compact',
-    },
+    expiresIn: 60 * 60 * 24 * 7,
+    updateAge: 60 * 60 * 24,
+    cookieCache: { enabled: true, maxAge: 2 * 60, strategy: 'compact' },
   },
 
   rateLimit: {
@@ -199,17 +126,12 @@ export const auth = betterAuth({
     },
   },
 
-  advanced: {
-    database: {
-      generateId: false,
-    },
-  },
+  advanced: { database: { generateId: false } },
 
   databaseHooks: {
     session: {
       create: {
         before: async (session) => {
-          // Single query to check lock, deletion and active status atomically
           const [user] = await db
             .select({
               deletedAt: users.deletedAt,
@@ -220,17 +142,9 @@ export const auth = betterAuth({
             .from(users)
             .where(eq(users.id, session.userId))
 
-          if (!user) {
-            throw new Error('Usuario no encontrado')
-          }
-
-          if (user.deletedAt) {
-            throw new Error('Cuenta eliminada')
-          }
-
-          if (!user.isActive) {
-            throw new Error('Cuenta desactivada')
-          }
+          if (!user) throw new Error('Usuario no encontrado')
+          if (user.deletedAt) throw new Error('Cuenta eliminada')
+          if (!user.isActive) throw new Error('Cuenta desactivada')
 
           if (user.lockedUntil && user.lockedUntil > new Date()) {
             const minutesLeft = Math.ceil(
@@ -243,7 +157,6 @@ export const auth = betterAuth({
 
           const authSecurity = getAuthSecurityService()
           await authSecurity.resetFailedAttempts(session.userId)
-
           return { data: session }
         },
       },

@@ -1,18 +1,5 @@
 'use client'
 
-import {
-  Bold,
-  Italic,
-  Code,
-  Link,
-  List,
-  ListOrdered,
-  Heading1,
-  Heading2,
-  Image,
-  Quote,
-  Minus,
-} from 'lucide-react'
 import { memo, useCallback, useMemo, useRef } from 'react'
 import {
   FormControl,
@@ -24,39 +11,11 @@ import {
 } from '@/components/ui/form'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Textarea } from '@/components/ui/textarea'
-import { Toggle } from '@/components/ui/toggle'
 import { sanitizeMarkdownHtml } from '@/lib/sanitize'
 import { cn } from '@/lib/utils'
+import { MarkdownToolbar, type MarkdownAction } from './markdown-toolbar'
 import type { BaseFormFieldProps } from './form-field.types'
 import type { FieldPath, FieldValues } from 'react-hook-form'
-
-interface MarkdownAction {
-  icon: React.ElementType
-  label: string
-  prefix: string
-  suffix: string
-  block?: boolean | undefined
-}
-
-const MARKDOWN_ACTIONS: MarkdownAction[] = [
-  { icon: Bold, label: 'Bold', prefix: '**', suffix: '**' },
-  { icon: Italic, label: 'Italic', prefix: '_', suffix: '_' },
-  { icon: Code, label: 'Code', prefix: '`', suffix: '`' },
-  { icon: Link, label: 'Link', prefix: '[', suffix: '](url)' },
-  { icon: Image, label: 'Image', prefix: '![alt](', suffix: ')' },
-  { icon: Heading1, label: 'H1', prefix: '# ', suffix: '', block: true },
-  { icon: Heading2, label: 'H2', prefix: '## ', suffix: '', block: true },
-  { icon: List, label: 'List', prefix: '- ', suffix: '', block: true },
-  {
-    icon: ListOrdered,
-    label: 'Numbered',
-    prefix: '1. ',
-    suffix: '',
-    block: true,
-  },
-  { icon: Quote, label: 'Quote', prefix: '> ', suffix: '', block: true },
-  { icon: Minus, label: 'Divider', prefix: '\n---\n', suffix: '', block: true },
-]
 
 export interface FormMarkdownFieldProps<
   TFieldValues extends FieldValues = FieldValues,
@@ -67,31 +26,6 @@ export interface FormMarkdownFieldProps<
   showPreview?: boolean | undefined
   showToolbar?: boolean | undefined
 }
-
-const MarkdownToolbar = memo(function MarkdownToolbar({
-  onAction,
-}: {
-  onAction: (action: MarkdownAction) => void
-}) {
-  return (
-    <div className="bg-muted/30 flex flex-wrap items-center gap-1 border-b p-1">
-      {MARKDOWN_ACTIONS.map((action, index) => {
-        const Icon = action.icon
-        return (
-          <Toggle
-            key={index}
-            size="sm"
-            aria-label={action.label}
-            onPressedChange={() => onAction(action)}
-            className="h-8 w-8 p-0"
-          >
-            <Icon className="h-4 w-4" />
-          </Toggle>
-        )
-      })}
-    </div>
-  )
-})
 
 const MarkdownPreview = memo(function MarkdownPreview({
   content,
@@ -157,14 +91,11 @@ function FormMarkdownFieldComponent<
     ) => {
       const textarea = textareaRef.current
       if (!textarea) return
-
       const start = textarea.selectionStart
       const end = textarea.selectionEnd
       const selectedText = currentValue.substring(start, end)
-
       let newText: string
       let newCursorPos: number
-
       if (action.block) {
         const lineStart = currentValue.lastIndexOf('\n', start - 1) + 1
         const beforeLine = currentValue.substring(0, lineStart)
@@ -181,9 +112,7 @@ function FormMarkdownFieldComponent<
           selectedText.length +
           action.suffix.length
       }
-
       onChange(newText)
-
       requestAnimationFrame(() => {
         textarea.focus()
         textarea.setSelectionRange(newCursorPos, newCursorPos)

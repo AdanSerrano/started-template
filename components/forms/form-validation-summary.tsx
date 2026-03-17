@@ -9,6 +9,11 @@ import {
   CollapsibleTrigger,
 } from '@/components/ui/collapsible'
 import { cn } from '@/lib/utils'
+import { ValidationErrorItem } from './validation-error-item'
+import {
+  flattenErrors,
+  DEFAULT_VALIDATION_LABELS,
+} from './validation-summary-utils'
 import type { FieldErrors, FieldValues } from 'react-hook-form'
 
 export interface FormValidationSummaryProps<
@@ -23,68 +28,9 @@ export interface FormValidationSummaryProps<
   defaultOpen?: boolean | undefined
   onErrorClick?: ((fieldName: string) => void) | undefined
   onDismiss?: (() => void) | undefined
-  labels?:
-    | {
-        title?: string | undefined
-        singleError?: string | undefined
-        multipleErrors?: string | undefined
-        showMore?: string | undefined
-        showLess?: string | undefined
-      }
-    | undefined
+  labels?: Partial<typeof DEFAULT_VALIDATION_LABELS> | undefined
   className?: string | undefined
 }
-
-interface FlatError {
-  field: string
-  message: string
-}
-
-function flattenErrors(errors: FieldErrors, prefix = ''): FlatError[] {
-  const result: FlatError[] = []
-
-  for (const [key, value] of Object.entries(errors)) {
-    const fieldPath = prefix ? `${prefix}.${key}` : key
-
-    if (value?.message && typeof value.message === 'string') {
-      result.push({ field: fieldPath, message: value.message })
-    } else if (typeof value === 'object' && value !== null) {
-      result.push(...flattenErrors(value as FieldErrors, fieldPath))
-    }
-  }
-
-  return result
-}
-
-const ErrorItem = memo(function ErrorItemComponent({
-  field,
-  message,
-  fieldLabel,
-  onClick,
-}: {
-  field: string
-  message: string
-  fieldLabel: string
-  onClick: (field: string) => void
-}) {
-  const handleClick = useCallback(() => {
-    onClick(field)
-  }, [field, onClick])
-
-  return (
-    <li className="flex items-start gap-2">
-      <span className="text-destructive mt-0.5">&bull;</span>
-      <button
-        type="button"
-        onClick={handleClick}
-        className="text-left text-sm hover:underline focus:underline focus:outline-hidden"
-      >
-        <span className="font-medium">{fieldLabel}:</span>{' '}
-        <span className="text-muted-foreground">{message}</span>
-      </button>
-    </li>
-  )
-})
 
 function FormValidationSummaryComponent<
   TFieldValues extends FieldValues = FieldValues,
@@ -101,29 +47,18 @@ function FormValidationSummaryComponent<
   labels,
   className,
 }: FormValidationSummaryProps<TFieldValues>) {
-  const mergedLabels = {
-    title: 'Please fix the following errors:',
-    singleError: 'error',
-    multipleErrors: 'errors',
-    showMore: 'Show all',
-    showLess: 'Show less',
-    ...labels,
-  }
-
+  const mergedLabels = { ...DEFAULT_VALIDATION_LABELS, ...labels }
   const flatErrors = useMemo(() => flattenErrors(errors), [errors])
-
   const visibleErrors = useMemo(
     () => flatErrors.slice(0, maxErrors),
     [flatErrors, maxErrors],
   )
-
   const hasMore = flatErrors.length > maxErrors
   const errorCount = flatErrors.length
 
   const getFieldLabel = useCallback(
-    (fieldName: string) => {
-      return fieldLabels[fieldName] ?? fieldName.split('.').pop() ?? fieldName
-    },
+    (fieldName: string) =>
+      fieldLabels[fieldName] ?? fieldName.split('.').pop() ?? fieldName,
     [fieldLabels],
   )
 
@@ -144,6 +79,9 @@ function FormValidationSummaryComponent<
 
   if (errorCount === 0) return null
 
+  const errorLabel =
+    errorCount === 1 ? mergedLabels.singleError : mergedLabels.multipleErrors
+
   if (variant === 'inline') {
     return (
       <div
@@ -154,10 +92,7 @@ function FormValidationSummaryComponent<
       >
         {showIcon && <AlertCircle className="h-4 w-4 shrink-0" />}
         <span>
-          {errorCount}{' '}
-          {errorCount === 1
-            ? mergedLabels.singleError
-            : mergedLabels.multipleErrors}
+          {errorCount} {errorLabel}
         </span>
       </div>
     )
@@ -176,10 +111,7 @@ function FormValidationSummaryComponent<
             <AlertTriangle className="text-destructive h-4 w-4 shrink-0" />
           )}
           <span className="text-sm font-medium">
-            {errorCount}{' '}
-            {errorCount === 1
-              ? mergedLabels.singleError
-              : mergedLabels.multipleErrors}
+            {errorCount} {errorLabel}
           </span>
         </div>
         {onDismiss && (
@@ -201,7 +133,7 @@ function FormValidationSummaryComponent<
     <div className="space-y-2">
       <ul className="space-y-1">
         {visibleErrors.map(({ field, message }) => (
-          <ErrorItem
+          <ValidationErrorItem
             key={field}
             field={field}
             message={message}
@@ -240,11 +172,7 @@ function FormValidationSummaryComponent<
                   {mergedLabels.title}
                 </span>
                 <span className="text-muted-foreground text-xs">
-                  ({errorCount}{' '}
-                  {errorCount === 1
-                    ? mergedLabels.singleError
-                    : mergedLabels.multipleErrors}
-                  )
+                  ({errorCount} {errorLabel})
                 </span>
               </div>
               <ChevronDown className="text-muted-foreground h-4 w-4 transition-transform duration-200 [[data-state=open]>&]:rotate-180" />
