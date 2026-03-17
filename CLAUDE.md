@@ -105,7 +105,7 @@ La **UX es prioridad #1**. Toda decision optimiza:
 
 | Regla              | Detalle                                                                           | Docs                   |
 | ------------------ | --------------------------------------------------------------------------------- | ---------------------- |
-| **Server Actions** | SIEMPRE via `createSafeAction()` — provee Zod, auth, metadata, error handling     | `docs/architecture.md` |
+| **Server Actions** | SIEMPRE via `createSafeAction()` o `createSafeFormAction()` (FormData)            | `docs/architecture.md` |
 | **Error Handling** | SIEMPRE clases tipadas de `lib/errors.ts` (NotFoundError, ForbiddenError, etc.)   | `docs/conventions.md`  |
 | **Rate Limiting**  | OBLIGATORIO en actions sensibles via `checkRateLimit()`                           | `docs/security.md`     |
 | **Soft Delete**    | SIEMPRE usar `notDeleted()` de `lib/query-helpers.ts` en reads                    | `docs/database.md`     |
@@ -172,7 +172,7 @@ z.string().refine(fn, { error: 'Required' }) // CORRECTO (Zod 4)
 | `sanitizeHtml()`, `sanitizeText()`                                                     | `@/lib/sanitize`                         |
 | `validateFile()`                                                                       | `@/lib/upload-validation`                |
 | `ac` (access control), `requireRole()`                                                 | `@/lib/permissions`, `@/lib/auth-server` |
-| `createSafeAction()`, `ActionResult<T>`                                                | `@/lib/safe-action`                      |
+| `createSafeAction()`, `createSafeFormAction()`, `ActionResult<T>`                      | `@/lib/safe-action`                      |
 | `notDeleted()`, `byId()`, `activeById()`, `withLimit()`, `withOffset()`, `countRows()` | `@/lib/query-helpers`                    |
 | `generateRequestId()`, `getRequestId()`, `withRequestContext()`                        | `@/lib/request-context`                  |
 
