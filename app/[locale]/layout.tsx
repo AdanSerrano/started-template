@@ -40,6 +40,11 @@ export async function generateMetadata({
       description: t('description'),
       url: locale === 'es' ? BASE_URL : `${BASE_URL}/${locale}`,
     },
+    twitter: {
+      card: 'summary_large_image',
+      title: t('title'),
+      description: t('description'),
+    },
     robots: {
       index: true,
       follow: true,
@@ -92,12 +97,16 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} suppressHydrationWarning>
       <head>
-        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
-        <link
-          rel="preconnect"
-          href="https://www.googletagmanager.com"
-          crossOrigin="anonymous"
-        />
+        {process.env.NEXT_PUBLIC_GA4_ID && (
+          <>
+            <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+            <link
+              rel="preconnect"
+              href="https://www.googletagmanager.com"
+              crossOrigin="anonymous"
+            />
+          </>
+        )}
         <link rel="manifest" href="/manifest.webmanifest" />
         <script
           type="application/ld+json"

@@ -35,6 +35,8 @@
 | **Recharts**                 | 3.x     | https://recharts.org/en-US/api                 | Charts — v3 cambio API de v2                                              |
 | **React Day Picker**         | 9.x     | https://daypicker.dev                          | Date picker — v9 es rewrite completo vs v8                                |
 | **input-otp**                | 1.x     | https://input-otp.rodz.dev                     | OTP input                                                                 |
+| **mapcn (MapLibre GL)**      | 5.x     | https://www.mapcn.dev/docs                     | Mapas interactivos — zero config, dark/light auto, CARTO tiles gratis     |
+| **MapLibre GL**              | 5.x     | https://maplibre.org/maplibre-gl-js/docs/      | Engine de mapas subyacente de mapcn                                       |
 
 ---
 

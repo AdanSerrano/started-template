@@ -46,6 +46,7 @@ La **UX es prioridad #1**. Toda decision optimiza:
 | `docs/api-routes.md`    | Creas o modificas endpoints en app/api/                      |
 | `docs/jobs.md`          | Implementas tareas asincronas o programadas                  |
 | `docs/caching.md`       | Implementas cache o tocas datos con alta frecuencia          |
+| `docs/lighthouse.md`    | Tocas UI, metadata, SEO, accesibilidad o performance         |
 | `docs/official-docs.md` | Usas cualquier paquete — SIEMPRE consultar primero           |
 
 ### Documentar componentes nuevos — OBLIGATORIO
@@ -118,6 +119,15 @@ La **UX es prioridad #1**. Toda decision optimiza:
 | **Imports**        | SIEMPRE `@/` path aliases. NUNCA rutas relativas                                  | `docs/conventions.md`  |
 | **Limite lineas**  | 250 max por archivo (excepto `components/ui/`, archivos auto-generados)           | `docs/conventions.md`  |
 | **Env vars**       | Clasificar en `lib/env.ts` segun categoria (critical/recommended/paired/optional) | `docs/tech-stack.md`   |
+
+### Lighthouse 100/100 — OBLIGATORIO (`docs/lighthouse.md`)
+
+| Categoria     | Regla clave                                                                    |
+| ------------- | ------------------------------------------------------------------------------ |
+| Performance   | ISR, Server Components, `<Skeleton>` (no `animate-pulse`), font `display:swap` |
+| Accessibility | `aria-hidden` en iconos decorativos, `aria-label` en icon buttons, skip link   |
+| Best Practice | Security headers, `rel="noopener noreferrer"`, no console.log en prod          |
+| SEO           | title + description + canonical + hreflang + OG + twitter card + JSON-LD       |
 
 ### Componentes y UI (`docs/performance.md`, `docs/conventions.md`)
 
@@ -227,7 +237,7 @@ starter-template/
 
 > Detalle completo: `docs/tech-stack.md`
 
-Next.js 16 · React 19.2 · TypeScript · Tailwind 4 + shadcn/ui · PostgreSQL (Neon) + Drizzle · Better Auth · Resend + React Email · Cloudflare R2 · Trigger.dev · next-intl (ES/EN/CA) · GitHub Actions + bun
+Next.js 16 · React 19.2 · TypeScript · Tailwind 4 + shadcn/ui · PostgreSQL (Neon) + Drizzle · Better Auth · Resend + React Email · Cloudflare R2 · Trigger.dev · next-intl (ES/EN/CA) · mapcn/MapLibre GL · GitHub Actions + bun
 
 ---
 
@@ -337,6 +347,15 @@ Artefactos en `docs/tasks/` son temporales por feature (en `.gitignore`).
 
 - [ ] Textos en es/en/ca.json — Links con `@/i18n/navigation`
 - [ ] Campos i18n en DB usan `lib/i18n-helpers.ts`
+
+### Lighthouse / Accesibilidad
+
+- [ ] Iconos decorativos con `aria-hidden="true"`
+- [ ] Botones icon-only con `aria-label`
+- [ ] Headings jerarquicos (h1 > h2 > h3, sin saltar)
+- [ ] Links externos con `rel="noopener noreferrer"`
+- [ ] `<Skeleton>` para loading (no `animate-pulse` manual)
+- [ ] Metadata completa: title, description, OG, twitter card, canonical
 
 ### Calidad
 

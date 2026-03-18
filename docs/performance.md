@@ -135,8 +135,9 @@ const users = await getUsers()
 
 - JSON-LD estructurado (Breadcrumb, Organization)
 - Canonical URLs + hreflang alternates (es/en/ca)
-- OG images con dimensiones
+- Twitter card metadata (`summary_large_image`)
 - `robots.ts` y `sitemap.ts` automaticos
+- Detalles completos en `docs/lighthouse.md`
 
 ---
 

@@ -12,6 +12,7 @@ import { getTranslations } from 'next-intl/server'
 import { Suspense } from 'react'
 import { LanguageSwitcher } from '@/components/language-switcher.client'
 import { ThemeSwitcher } from '@/components/theme-switcher.client'
+import { Skeleton } from '@/components/ui/skeleton'
 import { Link } from '@/i18n/navigation'
 import { getServerSession } from '@/lib/auth-server'
 
@@ -51,10 +52,13 @@ export default async function Home() {
     <div className="flex min-h-screen flex-col">
       {/* Navbar */}
       <header className="border-border/50 bg-background sticky top-0 z-50 border-b">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
+        <nav
+          aria-label={tc('appName')}
+          className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6"
+        >
           <div className="flex items-center gap-2.5">
             <div className="bg-primary flex size-9 items-center justify-center rounded-lg">
-              <Zap className="size-5 text-white" />
+              <Zap className="size-5 text-white" aria-hidden="true" />
             </div>
             <span className="text-lg font-bold tracking-tight">
               {tc('appName')}
@@ -65,13 +69,13 @@ export default async function Home() {
             <ThemeSwitcher />
             <Suspense
               fallback={
-                <span className="bg-primary/10 inline-flex h-9 w-20 animate-pulse rounded-md" />
+                <Skeleton className="inline-flex h-9 w-20 rounded-md" />
               }
             >
               <AuthCTA />
             </Suspense>
           </div>
-        </div>
+        </nav>
       </header>
 
       <main id="main" className="flex-1">
@@ -96,7 +100,7 @@ export default async function Home() {
                 className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex h-12 items-center gap-2 rounded-lg px-6 text-base font-medium transition-colors"
               >
                 {t('hero.cta')}
-                <ArrowRight className="size-4" />
+                <ArrowRight className="size-4" aria-hidden="true" />
               </Link>
               <a
                 href="https://github.com/AdanSerrano/started-template"
@@ -159,7 +163,10 @@ export default async function Home() {
                   className="bg-background rounded-xl border p-6"
                 >
                   <div className="bg-primary/10 mb-4 inline-flex rounded-lg p-2.5">
-                    <feature.icon className="text-primary size-5" />
+                    <feature.icon
+                      className="text-primary size-5"
+                      aria-hidden="true"
+                    />
                   </div>
                   <h3 className="mb-2 font-semibold">{feature.title}</h3>
                   <p className="text-muted-foreground text-sm">
@@ -210,7 +217,7 @@ export default async function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="border-border/50 border-t py-8">
+      <footer className="border-border/50 border-t py-8" role="contentinfo">
         <div className="mx-auto max-w-6xl px-4 text-center sm:px-6">
           <p className="text-muted-foreground text-sm">
             {t('footer.copyright')}
