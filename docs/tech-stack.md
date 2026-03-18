@@ -32,6 +32,7 @@
 | CSV             | papaparse                           | Parsear CSV                            |
 | PDF             | @react-pdf/renderer                 | Reportes PDF                           |
 | Iconos          | lucide-react                        | Iconos SVG tree-shakeable              |
+| Mapas           | mapcn + MapLibre GL                 | Mapas interactivos, zero config        |
 | Analytics       | Google Analytics 4                  | Tracking (via adapter)                 |
 | Rate Limiting   | In-memory sliding window            | Proteccion auth (sin Redis)            |
 | CI/CD           | GitHub Actions + bun                | type-check + lint + build              |
