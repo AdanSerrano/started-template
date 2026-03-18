@@ -39,7 +39,8 @@
     "pino-pretty",
     "postcss",
     "tailwindcss",
-    "tw-animate-css"
+    "tw-animate-css",
+    "maplibre-gl"
   ],
   "ignoreExportsUsedInFile": true,
   "exclude": ["duplicates", "exports", "types"]
