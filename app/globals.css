@@ -1,6 +1,11 @@
 /* ═══════════════════════════════════════════════════════════
    Starter Template — globals.css
    Light / Dark — Tailwind CSS 4 + shadcn/ui
+
+   FUENTE DE VERDAD: lib/theme.ts
+   Los valores de color aqui deben coincidir con lib/theme.ts.
+   Al cambiar tema: actualiza lib/theme.ts (emails/viewport se
+   actualizan auto) y sincroniza los HSL aqui.
    ═══════════════════════════════════════════════════════════ */
 
 @import 'tailwindcss';
