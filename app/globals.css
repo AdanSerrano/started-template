@@ -300,8 +300,10 @@
   }
 
   html {
+    overflow-x: hidden;
     overflow-y: scroll;
     scrollbar-gutter: stable;
+    scroll-behavior: smooth;
   }
 
   [id] {
@@ -384,4 +386,17 @@
   .maplibregl-popup-tip {
     @apply hidden!;
   }
+}
+
+/* scrollbar-gutter: stable already reserves space — prevent react-remove-scroll-bar
+   from adding redundant margin/padding compensation, overflow:hidden and position:relative
+   that breaks sticky/fixed navbars.
+   Must be OUTSIDE @layer base so Tailwind 4 does not strip the overflow override
+   and so specificity beats the library's unlayered !important styles. */
+
+html > body[data-scroll-locked] {
+  margin-right: 0 !important;
+  padding-right: 0 !important;
+  position: static !important;
+  overflow: visible !important;
 }
