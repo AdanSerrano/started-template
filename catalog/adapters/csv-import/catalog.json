@@ -1,0 +1,8 @@
+{
+  "name": "csv-import",
+  "type": "adapter",
+  "description": "Importar/parsear CSV",
+  "files": [["csv-import.ts", "lib/adapters/csv-import.ts"]],
+  "npmDeps": ["papaparse", "@types/papaparse"],
+  "notes": "Re-exporta { PapaParseCSVImportService } en lib/adapters/index.ts y wirea su provider en lib/providers-extended.ts (ver docs/architecture.md y docs/catalog.md)."
+}

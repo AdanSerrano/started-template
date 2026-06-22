@@ -1,0 +1,8 @@
+{
+  "name": "axios-http",
+  "type": "adapter",
+  "description": "Cliente HTTP con axios (alternativa a fetch-http)",
+  "files": [["axios-http.ts", "lib/adapters/axios-http.ts"]],
+  "npmDeps": ["axios"],
+  "notes": "Re-exporta { AxiosHttpClient } en lib/adapters/index.ts y wirea su provider en lib/providers-extended.ts (ver docs/architecture.md y docs/catalog.md)."
+}

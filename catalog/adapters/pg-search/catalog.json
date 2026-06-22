@@ -1,0 +1,8 @@
+{
+  "name": "pg-search",
+  "type": "adapter",
+  "description": "Full-text search con PostgreSQL pg_trgm",
+  "files": [["pg-search.ts", "lib/adapters/pg-search.ts"]],
+  "npmDeps": [],
+  "notes": "Re-exporta { PgSearchService } en lib/adapters/index.ts y wirea su provider en lib/providers-extended.ts (ver docs/architecture.md y docs/catalog.md)."
+}

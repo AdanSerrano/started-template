@@ -7,7 +7,6 @@ import {
   ResendEmailService,
   R2StorageService,
   TriggerJobsService,
-  AxiosHttpClient,
   FetchHttpClient,
   MemoryCacheService,
   InMemoryRateLimitService,
@@ -56,7 +55,7 @@ export function createHttpClient(
   baseURL: string,
   defaultHeaders?: Record<string, string>,
 ): IHttpClient {
-  return new AxiosHttpClient(baseURL, defaultHeaders)
+  return new FetchHttpClient(baseURL, defaultHeaders)
 }
 
 // ── Cache ───────────────────────────────────────────────────

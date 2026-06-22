@@ -1,0 +1,14 @@
+{
+  "name": "env-feature-flags",
+  "type": "adapter",
+  "description": "Feature flags via variables de entorno",
+  "files": [["env-feature-flags.ts", "lib/adapters/env-feature-flags.ts"]],
+  "npmDeps": [],
+  "notes": "Re-exporta { EnvFeatureFlagService } en lib/adapters/index.ts y wirea su provider en lib/providers-extended.ts (ver docs/architecture.md y docs/catalog.md).",
+  "tests": [
+    [
+      "env-feature-flags.test.ts",
+      "tests/unit/adapters/env-feature-flags.test.ts"
+    ]
+  ]
+}

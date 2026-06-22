@@ -1,0 +1,8 @@
+{
+  "name": "upstash-rate-limit",
+  "type": "adapter",
+  "description": "Rate limit distribuido con Upstash Redis",
+  "files": [["upstash-rate-limit.ts", "lib/adapters/upstash-rate-limit.ts"]],
+  "npmDeps": ["@upstash/ratelimit", "@upstash/redis"],
+  "notes": "Re-exporta { UpstashRateLimitService } en lib/adapters/index.ts y wirea su provider en lib/providers-extended.ts (ver docs/architecture.md y docs/catalog.md)."
+}

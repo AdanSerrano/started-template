@@ -1,0 +1,11 @@
+{
+  "name": "console-logger",
+  "type": "adapter",
+  "description": "Logger simple a consola (alternativa a pino)",
+  "files": [["console-logger.ts", "lib/adapters/console-logger.ts"]],
+  "npmDeps": [],
+  "notes": "Re-exporta { ConsoleLogger } en lib/adapters/index.ts y wirea su provider en lib/providers-extended.ts (ver docs/architecture.md y docs/catalog.md).",
+  "tests": [
+    ["console-logger.test.ts", "tests/unit/adapters/console-logger.test.ts"]
+  ]
+}

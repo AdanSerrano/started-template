@@ -1,0 +1,8 @@
+{
+  "name": "webhook",
+  "type": "adapter",
+  "description": "Envio de webhooks con firma HMAC + retry",
+  "files": [["webhook.ts", "lib/adapters/webhook.ts"]],
+  "npmDeps": [],
+  "notes": "Re-exporta { WebhookService } en lib/adapters/index.ts y wirea su provider en lib/providers-extended.ts (ver docs/architecture.md y docs/catalog.md)."
+}

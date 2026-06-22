@@ -1,0 +1,8 @@
+{
+  "name": "in-app-notification",
+  "type": "adapter",
+  "description": "Notificaciones in-app",
+  "files": [["in-app-notification.ts", "lib/adapters/in-app-notification.ts"]],
+  "npmDeps": [],
+  "notes": "Re-exporta { InAppNotificationService } en lib/adapters/index.ts y wirea su provider en lib/providers-extended.ts (ver docs/architecture.md y docs/catalog.md)."
+}
