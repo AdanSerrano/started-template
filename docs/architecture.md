@@ -176,36 +176,41 @@ export async function myWriteAction(data: unknown): Promise<ActionResult> {
 
 ### Interfaces disponibles
 
-| Interface                 | Adapter actual              | Alternativas futuras                         |
-| ------------------------- | --------------------------- | -------------------------------------------- |
-| `IAuthProvider`           | `BetterAuthProvider`        | AuthJSProvider, ClerkProvider, LuciaProvider |
-| `IEmailService`           | `ResendEmailService`        | SendGridEmailService, SESEmailService        |
-| `IStorageService`         | `R2StorageService`          | S3StorageService, GCSStorageService          |
-| `IHttpClient`             | `FetchHttpClient` (default) | AxiosHttpClient (via `createHttpClient`)     |
-| `ILogger`                 | `ConsoleLogger`             | PinoLogger, WinstonLogger                    |
-| `IExcelExportService`     | `XLSXExportService`         | ExcelJSExportService                         |
-| `IExcelImportService`     | `XLSXImportService`         | --                                           |
-| `ICSVImportService`       | `PapaParseCSVImportService` | --                                           |
-| `IPDFExportService`       | `ReactPDFExportService`     | PuppeteerPDF                                 |
-| `IJobsService`            | `TriggerJobsService`        | BullMQJobsService                            |
-| `IAnalyticsService`       | `GA4AnalyticsService`       | PostHog, Mixpanel                            |
-| `IErrorMonitoringService` | `ConsoleMonitoringAdapter`  | SentryMonitoringAdapter                      |
-| `IRateLimitService`       | `InMemoryRateLimitService`  | UpstashRateLimitService                      |
-| `ICache`                  | `MemoryCacheService`        | RedisCacheService                            |
-| `INotificationService`    | `InAppNotificationService`  | EmailNotificationService, PushNotification   |
-| `ISearchService`          | `PgSearchService`           | AlgoliaSearchService, MeiliSearch            |
-| `IWebhookService`         | `WebhookService`            | --                                           |
-| `IFeatureFlagService`     | `EnvFeatureFlagService`     | LaunchDarkly, Unleash                        |
-| `IGDPRService`            | `GDPRService`               | --                                           |
+> Las **interfaces** (contratos) viven todas en `lib/interfaces/` y siempre estan
+> disponibles. Lo que cambia es si su **adapter** esta wired en el core o vive en
+> el catalogo. Los de catalogo se reincorporan con `bun run add:adapter <name>`
+> (ver `docs/catalog.md`).
+
+| Interface                 | Adapter en core (wired)    | En catalogo (`add:adapter`) |
+| ------------------------- | -------------------------- | --------------------------- |
+| `IAuthProvider`           | `BetterAuthProvider`       | --                          |
+| `IEmailService`           | `ResendEmailService`       | --                          |
+| `IStorageService`         | `R2StorageService`         | --                          |
+| `IHttpClient`             | `FetchHttpClient`          | `axios-http`                |
+| `ILogger`                 | `PinoLogger`               | `console-logger`            |
+| `IJobsService`            | `TriggerJobsService`       | --                          |
+| `IRateLimitService`       | `InMemoryRateLimitService` | `upstash-rate-limit`        |
+| `ICache`                  | `MemoryCacheService`       | --                          |
+| `IGDPRService`            | `GDPRService`              | --                          |
+| `IExcelExportService`     | --                         | `xlsx-export`               |
+| `IExcelImportService`     | --                         | `xlsx-import`               |
+| `ICSVImportService`       | --                         | `csv-import`                |
+| `IPDFExportService`       | --                         | `pdf-export`                |
+| `IAnalyticsService`       | --                         | `ga4-analytics`             |
+| `IErrorMonitoringService` | --                         | `sentry-monitoring`         |
+| `INotificationService`    | --                         | `in-app-notification`       |
+| `ISearchService`          | --                         | `pg-search`                 |
+| `IWebhookService`         | --                         | `webhook`                   |
+| `IFeatureFlagService`     | --                         | `env-feature-flags`         |
 
 ### Providers — Estructura de archivos
 
 > `providers.ts` es un barrel que re-exporta de dos archivos internos:
 
-| Archivo                 | Providers                                                                                  |
-| ----------------------- | ------------------------------------------------------------------------------------------ |
-| `providers-core.ts`     | auth, email, storage, jobs, http, cache, rate-limit, logger                                |
-| `providers-extended.ts` | analytics, monitoring, notifications, search, webhooks, feature-flags, gdpr, export/import |
+| Archivo                 | Providers                                                   |
+| ----------------------- | ----------------------------------------------------------- |
+| `providers-core.ts`     | auth, email, storage, jobs, http, cache, rate-limit, logger |
+| `providers-extended.ts` | gdpr (resto se añade desde el catalogo con `add:adapter`)   |
 
 **SIEMPRE importar de `@/lib/providers`** (el barrel file). Nunca importar de `providers-core.ts` o `providers-extended.ts` directamente.
 

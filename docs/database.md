@@ -277,6 +277,10 @@ Tips:
 
 El proyecto soporta **5 dialectos** via la capa de abstraccion `db/dialect/`. Los schemas se escriben UNA vez y funcionan en cualquier dialecto.
 
+> **Dialecto activo: pg.** Solo `db/dialect/pg.ts` vive en el core. Los otros cuatro
+> estan en el catalogo (`catalog/dialects/`). Antes de cambiar de motor, traelos con
+> `bun run add:dialect <name>` (ver `docs/catalog.md`); luego sigue los pasos de abajo.
+
 ### Dialectos disponibles
 
 | Dialecto        | Archivo                     | drizzle-kit dialect | Proveedores compatibles                   |
