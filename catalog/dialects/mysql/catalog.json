@@ -1,0 +1,9 @@
+{
+  "name": "mysql",
+  "type": "dialect",
+  "description": "MySQL / MariaDB / PlanetScale / TiDB",
+  "files": [["mysql.ts", "db/dialect/mysql.ts"]],
+  "tests": [["dialect-mysql.test.ts", "tests/unit/dialect-mysql.test.ts"]],
+  "npmDeps": ["mysql2"],
+  "notes": "Cambia db/dialect/index.ts a `export * from './mysql'` y actualiza el driver en lib/db.ts. Guia completa: docs/database.md."
+}

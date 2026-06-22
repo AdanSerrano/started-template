@@ -1,0 +1,9 @@
+{
+  "name": "turso",
+  "type": "dialect",
+  "description": "Turso / libSQL (edge SQLite)",
+  "files": [["turso.ts", "db/dialect/turso.ts"]],
+  "tests": [["dialect-turso.test.ts", "tests/unit/dialect-turso.test.ts"]],
+  "npmDeps": ["@libsql/client"],
+  "notes": "Cambia db/dialect/index.ts a `export * from './turso'` y actualiza el driver en lib/db.ts. Guia completa: docs/database.md."
+}

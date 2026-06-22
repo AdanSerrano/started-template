@@ -3,6 +3,7 @@
   "entry": ["app/**/*.{ts,tsx}", "emails/*.tsx", "scripts/*.mjs"],
   "project": ["**/*.{ts,tsx,mjs}"],
   "ignore": [
+    "catalog/**",
     "components/ui/**",
     "components/forms/**",
     "components/custom-datatable/**",
