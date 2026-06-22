@@ -1,0 +1,14 @@
+{
+  "name": "tree-select",
+  "type": "field",
+  "description": "Campo de formulario: tree-select",
+  "files": [
+    [
+      "form-tree-select-field.tsx",
+      "components/forms/form-tree-select-field.tsx"
+    ],
+    ["tree-select-field", "components/forms/tree-select-field"]
+  ],
+  "npmDeps": [],
+  "notes": "Importalo donde lo uses con @/components/forms/form-tree-select-field. Depende de las deps de UI del core (no requiere npm install adicional)."
+}

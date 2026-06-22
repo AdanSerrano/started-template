@@ -1,21 +1,8 @@
-// Brand tokens
-export const BRAND = {
-  primary: '#C44D2B',
-  primaryDark: '#A33D22',
-  primaryLight: '#D4623F',
-  accent: '#E07A5A',
-  dark: '#3D1A0E',
-  text: '#1a1a1a',
-  textSecondary: '#4a5568',
-  textMuted: '#8898aa',
-  border: '#e2e8f0',
-  borderLight: '#edf2f7',
-  background: '#f7fafc',
-  white: '#ffffff',
-  warningBg: '#fffbeb',
-  warningBorder: '#fcd34d',
-  warningText: '#92400e',
-}
+import { emailBrand } from '@/lib/theme'
+
+// Brand tokens — generados desde lib/theme.ts
+// Para cambiar colores de emails, modificar la paleta en lib/theme.ts
+export const BRAND = emailBrand
 
 // Exported style tokens for email templates
 export const styles = {

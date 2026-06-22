@@ -1,0 +1,13 @@
+{
+  "name": "toggle-group",
+  "type": "field",
+  "description": "Campo de formulario: toggle-group",
+  "files": [
+    [
+      "form-toggle-group-field.tsx",
+      "components/forms/form-toggle-group-field.tsx"
+    ]
+  ],
+  "npmDeps": [],
+  "notes": "Importalo donde lo uses con @/components/forms/form-toggle-group-field. Depende de las deps de UI del core (no requiere npm install adicional)."
+}

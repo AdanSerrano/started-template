@@ -1,0 +1,15 @@
+{
+  "name": "mask",
+  "type": "field",
+  "description": "Campo de formulario: mask",
+  "files": [
+    ["form-mask-field.tsx", "components/forms/form-mask-field.tsx"],
+    ["form-mask-field.utils.ts", "components/forms/form-mask-field.utils.ts"],
+    [
+      "form-mask-field-content.tsx",
+      "components/forms/form-mask-field-content.tsx"
+    ]
+  ],
+  "npmDeps": [],
+  "notes": "Importalo donde lo uses con @/components/forms/form-mask-field. Depende de las deps de UI del core (no requiere npm install adicional)."
+}

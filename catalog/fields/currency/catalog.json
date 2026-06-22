@@ -1,0 +1,15 @@
+{
+  "name": "currency",
+  "type": "field",
+  "description": "Campo de formulario: currency",
+  "files": [
+    ["form-currency-field.tsx", "components/forms/form-currency-field.tsx"],
+    [
+      "form-currency-field.utils.ts",
+      "components/forms/form-currency-field.utils.ts"
+    ],
+    ["currency-content.tsx", "components/forms/currency-content.tsx"]
+  ],
+  "npmDeps": [],
+  "notes": "Importalo donde lo uses con @/components/forms/form-currency-field. Depende de las deps de UI del core (no requiere npm install adicional)."
+}

@@ -1,0 +1,8 @@
+{
+  "name": "pdf-export",
+  "type": "adapter",
+  "description": "Generar PDF con @react-pdf/renderer",
+  "files": [["pdf-export.ts", "lib/adapters/pdf-export.ts"]],
+  "npmDeps": ["@react-pdf/renderer"],
+  "notes": "Re-exporta { ReactPDFExportService } en lib/adapters/index.ts y wirea su provider en lib/providers-extended.ts (ver docs/architecture.md y docs/catalog.md)."
+}

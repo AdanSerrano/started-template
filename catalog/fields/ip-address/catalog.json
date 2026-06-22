@@ -1,0 +1,14 @@
+{
+  "name": "ip-address",
+  "type": "field",
+  "description": "Campo de formulario: ip-address",
+  "files": [
+    ["form-ip-address-field.tsx", "components/forms/form-ip-address-field.tsx"],
+    [
+      "form-ip-address-field.utils.ts",
+      "components/forms/form-ip-address-field.utils.ts"
+    ]
+  ],
+  "npmDeps": [],
+  "notes": "Importalo donde lo uses con @/components/forms/form-ip-address-field. Depende de las deps de UI del core (no requiere npm install adicional)."
+}

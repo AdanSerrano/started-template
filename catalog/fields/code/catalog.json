@@ -1,0 +1,8 @@
+{
+  "name": "code",
+  "type": "field",
+  "description": "Campo de formulario: code",
+  "files": [["form-code-field.tsx", "components/forms/form-code-field.tsx"]],
+  "npmDeps": [],
+  "notes": "Importalo donde lo uses con @/components/forms/form-code-field. Depende de las deps de UI del core (no requiere npm install adicional)."
+}

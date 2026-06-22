@@ -1,0 +1,11 @@
+{
+  "name": "time",
+  "type": "field",
+  "description": "Campo de formulario: time",
+  "files": [
+    ["form-time-field.tsx", "components/forms/form-time-field.tsx"],
+    ["time-field", "components/forms/time-field"]
+  ],
+  "npmDeps": [],
+  "notes": "Importalo donde lo uses con @/components/forms/form-time-field. Depende de las deps de UI del core (no requiere npm install adicional)."
+}

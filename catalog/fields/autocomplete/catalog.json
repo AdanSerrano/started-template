@@ -1,0 +1,18 @@
+{
+  "name": "autocomplete",
+  "type": "field",
+  "description": "Campo de formulario: autocomplete",
+  "files": [
+    [
+      "form-autocomplete-field.tsx",
+      "components/forms/form-autocomplete-field.tsx"
+    ],
+    [
+      "form-autocomplete-field-content.tsx",
+      "components/forms/form-autocomplete-field-content.tsx"
+    ],
+    ["use-autocomplete.ts", "components/forms/use-autocomplete.ts"]
+  ],
+  "npmDeps": [],
+  "notes": "Importalo donde lo uses con @/components/forms/form-autocomplete-field. Depende de las deps de UI del core (no requiere npm install adicional)."
+}

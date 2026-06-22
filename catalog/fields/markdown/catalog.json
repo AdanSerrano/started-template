@@ -1,0 +1,11 @@
+{
+  "name": "markdown",
+  "type": "field",
+  "description": "Campo de formulario: markdown",
+  "files": [
+    ["form-markdown-field.tsx", "components/forms/form-markdown-field.tsx"],
+    ["markdown-toolbar.tsx", "components/forms/markdown-toolbar.tsx"]
+  ],
+  "npmDeps": [],
+  "notes": "Importalo donde lo uses con @/components/forms/form-markdown-field. Depende de las deps de UI del core (no requiere npm install adicional)."
+}

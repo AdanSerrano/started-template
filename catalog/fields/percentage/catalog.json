@@ -1,0 +1,10 @@
+{
+  "name": "percentage",
+  "type": "field",
+  "description": "Campo de formulario: percentage",
+  "files": [
+    ["form-percentage-field.tsx", "components/forms/form-percentage-field.tsx"]
+  ],
+  "npmDeps": [],
+  "notes": "Importalo donde lo uses con @/components/forms/form-percentage-field. Depende de las deps de UI del core (no requiere npm install adicional)."
+}

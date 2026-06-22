@@ -1,0 +1,11 @@
+{
+  "name": "address",
+  "type": "field",
+  "description": "Campo de formulario: address",
+  "files": [
+    ["form-address-field.tsx", "components/forms/form-address-field.tsx"],
+    ["address-field", "components/forms/address-field"]
+  ],
+  "npmDeps": [],
+  "notes": "Importalo donde lo uses con @/components/forms/form-address-field. Depende de las deps de UI del core (no requiere npm install adicional)."
+}

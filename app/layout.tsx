@@ -1,10 +1,11 @@
+import { viewportTheme } from '@/lib/theme'
 import type { Viewport } from 'next'
 import './globals.css'
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#F8FAFC' },
-    { media: '(prefers-color-scheme: dark)', color: '#020617' },
+    { media: '(prefers-color-scheme: light)', color: viewportTheme.light },
+    { media: '(prefers-color-scheme: dark)', color: viewportTheme.dark },
   ],
   width: 'device-width',
   initialScale: 1,

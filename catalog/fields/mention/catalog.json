@@ -1,0 +1,11 @@
+{
+  "name": "mention",
+  "type": "field",
+  "description": "Campo de formulario: mention",
+  "files": [
+    ["form-mention-field.tsx", "components/forms/form-mention-field.tsx"],
+    ["use-mention-field.ts", "components/forms/use-mention-field.ts"]
+  ],
+  "npmDeps": [],
+  "notes": "Importalo donde lo uses con @/components/forms/form-mention-field. Depende de las deps de UI del core (no requiere npm install adicional)."
+}

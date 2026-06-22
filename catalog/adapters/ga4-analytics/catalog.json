@@ -1,0 +1,8 @@
+{
+  "name": "ga4-analytics",
+  "type": "adapter",
+  "description": "Analytics via Google Analytics 4",
+  "files": [["ga4-analytics.ts", "lib/adapters/ga4-analytics.ts"]],
+  "npmDeps": [],
+  "notes": "Re-exporta { GA4AnalyticsService } en lib/adapters/index.ts y wirea su provider en lib/providers-extended.ts (ver docs/architecture.md y docs/catalog.md)."
+}

@@ -1,0 +1,15 @@
+{
+  "name": "tag",
+  "type": "field",
+  "description": "Campo de formulario: tag",
+  "files": [
+    ["form-tag-field.tsx", "components/forms/form-tag-field.tsx"],
+    [
+      "form-tag-field-content.tsx",
+      "components/forms/form-tag-field-content.tsx"
+    ],
+    ["use-tag-field.ts", "components/forms/use-tag-field.ts"]
+  ],
+  "npmDeps": [],
+  "notes": "Importalo donde lo uses con @/components/forms/form-tag-field. Depende de las deps de UI del core (no requiere npm install adicional)."
+}

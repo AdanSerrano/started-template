@@ -1,0 +1,13 @@
+{
+  "name": "conditional",
+  "type": "field",
+  "description": "Campo de formulario: conditional",
+  "files": [
+    [
+      "form-conditional-field.tsx",
+      "components/forms/form-conditional-field.tsx"
+    ]
+  ],
+  "npmDeps": [],
+  "notes": "Importalo donde lo uses con @/components/forms/form-conditional-field. Depende de las deps de UI del core (no requiere npm install adicional)."
+}

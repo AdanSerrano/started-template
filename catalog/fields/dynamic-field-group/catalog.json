@@ -1,0 +1,15 @@
+{
+  "name": "dynamic-field-group",
+  "type": "field",
+  "description": "Campo de formulario: dynamic-field-group",
+  "files": [
+    [
+      "form-dynamic-field-group.tsx",
+      "components/forms/form-dynamic-field-group.tsx"
+    ],
+    ["dynamic-field-input.tsx", "components/forms/dynamic-field-input.tsx"],
+    ["dynamic-field-row.tsx", "components/forms/dynamic-field-row.tsx"]
+  ],
+  "npmDeps": [],
+  "notes": "Importalo donde lo uses con @/components/forms/form-dynamic-field-group-field. Depende de las deps de UI del core (no requiere npm install adicional)."
+}

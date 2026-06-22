@@ -1,0 +1,14 @@
+{
+  "name": "duration",
+  "type": "field",
+  "description": "Campo de formulario: duration",
+  "files": [
+    ["form-duration-field.tsx", "components/forms/form-duration-field.tsx"],
+    [
+      "form-duration-field.utils.ts",
+      "components/forms/form-duration-field.utils.ts"
+    ]
+  ],
+  "npmDeps": [],
+  "notes": "Importalo donde lo uses con @/components/forms/form-duration-field. Depende de las deps de UI del core (no requiere npm install adicional)."
+}

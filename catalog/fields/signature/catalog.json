@@ -1,0 +1,11 @@
+{
+  "name": "signature",
+  "type": "field",
+  "description": "Campo de formulario: signature",
+  "files": [
+    ["form-signature-field.tsx", "components/forms/form-signature-field.tsx"],
+    ["use-signature-canvas.ts", "components/forms/use-signature-canvas.ts"]
+  ],
+  "npmDeps": [],
+  "notes": "Importalo donde lo uses con @/components/forms/form-signature-field. Depende de las deps de UI del core (no requiere npm install adicional)."
+}

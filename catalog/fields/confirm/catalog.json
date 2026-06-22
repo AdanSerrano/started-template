@@ -1,0 +1,10 @@
+{
+  "name": "confirm",
+  "type": "field",
+  "description": "Campo de formulario: confirm",
+  "files": [
+    ["form-confirm-field.tsx", "components/forms/form-confirm-field.tsx"]
+  ],
+  "npmDeps": [],
+  "notes": "Importalo donde lo uses con @/components/forms/form-confirm-field. Depende de las deps de UI del core (no requiere npm install adicional)."
+}

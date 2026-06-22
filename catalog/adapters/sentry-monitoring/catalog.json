@@ -1,0 +1,8 @@
+{
+  "name": "sentry-monitoring",
+  "type": "adapter",
+  "description": "Error monitoring (stub de consola, base para Sentry)",
+  "files": [["sentry-monitoring.ts", "lib/adapters/sentry-monitoring.ts"]],
+  "npmDeps": [],
+  "notes": "Re-exporta { ConsoleMonitoringAdapter } en lib/adapters/index.ts y wirea su provider en lib/providers-extended.ts (ver docs/architecture.md y docs/catalog.md)."
+}

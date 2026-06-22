@@ -30,29 +30,11 @@ export {
 } from '@/lib/providers-core'
 
 // ── Extended Providers ──────────────────────────────────────
+// Solo GDPR esta wired por defecto. El resto se reincorpora desde el catalogo
+// (`bun run add:adapter <name>`), que tambien añade aqui su re-export.
 export {
-  getExcelExportService,
-  setExcelExportInstance,
-  getPDFExportService,
-  setPDFExportInstance,
-  getCSVImportService,
-  setCSVImportInstance,
-  getExcelImportService,
-  setExcelImportInstance,
-  getErrorMonitoring,
-  setErrorMonitoringInstance,
-  getAnalytics,
-  setAnalyticsInstance,
-  getNotificationService,
-  setNotificationService,
-  getSearchService,
-  setSearchService,
-  getWebhookService,
-  setWebhookService,
   getGDPRService,
   setGDPRService,
-  getFeatureFlagService,
-  setFeatureFlagService,
   _extendedProviders,
 } from '@/lib/providers-extended'
 

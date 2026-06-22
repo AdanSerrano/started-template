@@ -1,0 +1,12 @@
+{
+  "name": "phone",
+  "type": "field",
+  "description": "Campo de formulario: phone",
+  "files": [
+    ["form-phone-field.tsx", "components/forms/form-phone-field.tsx"],
+    ["form-phone-field.data.ts", "components/forms/form-phone-field.data.ts"],
+    ["phone-field-content.tsx", "components/forms/phone-field-content.tsx"]
+  ],
+  "npmDeps": [],
+  "notes": "Importalo donde lo uses con @/components/forms/form-phone-field. Depende de las deps de UI del core (no requiere npm install adicional)."
+}

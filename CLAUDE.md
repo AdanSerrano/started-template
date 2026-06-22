@@ -47,6 +47,7 @@ La **UX es prioridad #1**. Toda decision optimiza:
 | `docs/jobs.md`          | Implementas tareas asincronas o programadas                  |
 | `docs/caching.md`       | Implementas cache o tocas datos con alta frecuencia          |
 | `docs/lighthouse.md`    | Tocas UI, metadata, SEO, accesibilidad o performance         |
+| `docs/catalog.md`       | Necesitas un adapter/dialect/field opcional (`add:*`)        |
 | `docs/official-docs.md` | Usas cualquier paquete — SIEMPRE consultar primero           |
 
 ### Documentar componentes nuevos — OBLIGATORIO
@@ -220,8 +221,9 @@ starter-template/
 │   └── [module]/           # actions/ services/ repositories/ components/
 ├── components/             # ui/ (shadcn), forms/, custom-datatable/, sidebar/
 ├── lib/                    # Core: interfaces/, adapters/, providers, utils
-├── db/dialect/             # Abstraccion multi-DB (pg, mysql, sqlite, turso, singlestore)
+├── db/dialect/             # Dialecto activo (pg). Otros motores en catalog/
 ├── db/schema/              # 11 Drizzle schemas (importan de db/dialect/)
+├── catalog/                # Piezas opcionales on-demand (dialects/, adapters/, fields/) — ver docs/catalog.md
 ├── emails/                 # React Email templates
 ├── messages/               # i18n (es/en/ca.json)
 ├── tests/                  # unit/ integration/ components/ factories/ mocks/
@@ -230,6 +232,11 @@ starter-template/
 ├── routes.ts               # Config rutas auth/public/protected
 └── docs/                   # DOCUMENTACION COMPLETA
 ```
+
+> **Catálogo (`catalog/`):** el starter mantiene todo (5 dialectos, 23 adapters,
+> 48 form fields) pero solo el core vive en el árbol activo. Lo opcional se
+> reincorpora con `bun run add:dialect|add:adapter|add:field <name>` sin que cada
+> proyecto pague type-check/knip/bundle por lo que no usa. Ver `docs/catalog.md`.
 
 ---
 
@@ -251,6 +258,19 @@ Next.js 16 · React 19.2 · TypeScript · Tailwind 4 + shadcn/ui · PostgreSQL (
 ```bash
 bun run generate:module  # Genera estructura completa — NO crear manualmente
 ```
+
+### Catálogo on-demand (ver `docs/catalog.md`)
+
+```bash
+bun run catalog:list             # lista dialects/adapters/fields disponibles
+bun run add:dialect <name>       # mysql, sqlite, turso, singlestore
+bun run add:adapter <name>       # xlsx-export, ga4-analytics, pg-search, webhook, ...
+bun run add:field <name>         # signature, iban, rich-text, schedule, ...
+```
+
+> Antes de implementar algo que ya existe en el catálogo (un export a Excel, un
+> campo de formulario especializado, otro motor de DB), **añádelo con `add:*`** en
+> vez de reescribirlo.
 
 ---
 

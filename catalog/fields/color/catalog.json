@@ -1,0 +1,8 @@
+{
+  "name": "color",
+  "type": "field",
+  "description": "Campo de formulario: color",
+  "files": [["form-color-field.tsx", "components/forms/form-color-field.tsx"]],
+  "npmDeps": [],
+  "notes": "Importalo donde lo uses con @/components/forms/form-color-field. Depende de las deps de UI del core (no requiere npm install adicional)."
+}
