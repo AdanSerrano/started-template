@@ -1,0 +1,15 @@
+{
+  "name": "image-crop",
+  "type": "field",
+  "description": "Campo de formulario: image-crop",
+  "files": [
+    ["form-image-crop-field.tsx", "components/forms/form-image-crop-field.tsx"],
+    ["image-crop-field", "components/forms/image-crop-field"],
+    [
+      "image-upload-field.client.tsx",
+      "components/forms/image-upload-field.client.tsx"
+    ]
+  ],
+  "npmDeps": [],
+  "notes": "Importalo donde lo uses con @/components/forms/form-image-crop-field. Depende de las deps de UI del core (no requiere npm install adicional)."
+}

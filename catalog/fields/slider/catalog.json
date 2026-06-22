@@ -1,0 +1,11 @@
+{
+  "name": "slider",
+  "type": "field",
+  "description": "Campo de formulario: slider",
+  "files": [
+    ["form-slider-field.tsx", "components/forms/form-slider-field.tsx"],
+    ["slider-marks.tsx", "components/forms/slider-marks.tsx"]
+  ],
+  "npmDeps": [],
+  "notes": "Importalo donde lo uses con @/components/forms/form-slider-field. Depende de las deps de UI del core (no requiere npm install adicional)."
+}

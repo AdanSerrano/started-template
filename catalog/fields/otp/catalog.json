@@ -1,0 +1,8 @@
+{
+  "name": "otp",
+  "type": "field",
+  "description": "Campo de formulario: otp",
+  "files": [["form-otp-field.tsx", "components/forms/form-otp-field.tsx"]],
+  "npmDeps": [],
+  "notes": "Importalo donde lo uses con @/components/forms/form-otp-field. Depende de las deps de UI del core (no requiere npm install adicional)."
+}

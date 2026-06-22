@@ -1,0 +1,12 @@
+{
+  "name": "iban",
+  "type": "field",
+  "description": "Campo de formulario: iban",
+  "files": [
+    ["form-iban-field.tsx", "components/forms/form-iban-field.tsx"],
+    ["form-iban-field.utils.ts", "components/forms/form-iban-field.utils.ts"],
+    ["form-iban-field.data.ts", "components/forms/form-iban-field.data.ts"]
+  ],
+  "npmDeps": [],
+  "notes": "Importalo donde lo uses con @/components/forms/form-iban-field. Depende de las deps de UI del core (no requiere npm install adicional)."
+}

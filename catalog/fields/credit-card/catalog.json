@@ -1,0 +1,21 @@
+{
+  "name": "credit-card",
+  "type": "field",
+  "description": "Campo de formulario: credit-card",
+  "files": [
+    [
+      "form-credit-card-field.tsx",
+      "components/forms/form-credit-card-field.tsx"
+    ],
+    [
+      "form-credit-card-field.utils.ts",
+      "components/forms/form-credit-card-field.utils.ts"
+    ],
+    [
+      "form-credit-card-field-content.tsx",
+      "components/forms/form-credit-card-field-content.tsx"
+    ]
+  ],
+  "npmDeps": [],
+  "notes": "Importalo donde lo uses con @/components/forms/form-credit-card-field. Depende de las deps de UI del core (no requiere npm install adicional)."
+}

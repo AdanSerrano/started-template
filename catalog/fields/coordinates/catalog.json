@@ -1,0 +1,21 @@
+{
+  "name": "coordinates",
+  "type": "field",
+  "description": "Campo de formulario: coordinates",
+  "files": [
+    [
+      "form-coordinates-field.tsx",
+      "components/forms/form-coordinates-field.tsx"
+    ],
+    [
+      "form-coordinates-field.utils.ts",
+      "components/forms/form-coordinates-field.utils.ts"
+    ],
+    [
+      "coordinates-field-content.tsx",
+      "components/forms/coordinates-field-content.tsx"
+    ]
+  ],
+  "npmDeps": [],
+  "notes": "Importalo donde lo uses con @/components/forms/form-coordinates-field. Depende de las deps de UI del core (no requiere npm install adicional)."
+}

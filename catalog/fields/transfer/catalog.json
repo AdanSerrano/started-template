@@ -1,0 +1,11 @@
+{
+  "name": "transfer",
+  "type": "field",
+  "description": "Campo de formulario: transfer",
+  "files": [
+    ["form-transfer-field.tsx", "components/forms/form-transfer-field.tsx"],
+    ["transfer-field", "components/forms/transfer-field"]
+  ],
+  "npmDeps": [],
+  "notes": "Importalo donde lo uses con @/components/forms/form-transfer-field. Depende de las deps de UI del core (no requiere npm install adicional)."
+}

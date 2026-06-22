@@ -1,0 +1,11 @@
+{
+  "name": "social",
+  "type": "field",
+  "description": "Campo de formulario: social",
+  "files": [
+    ["form-social-field.tsx", "components/forms/form-social-field.tsx"],
+    ["form-social-field.data.ts", "components/forms/form-social-field.data.ts"]
+  ],
+  "npmDeps": [],
+  "notes": "Importalo donde lo uses con @/components/forms/form-social-field. Depende de las deps de UI del core (no requiere npm install adicional)."
+}

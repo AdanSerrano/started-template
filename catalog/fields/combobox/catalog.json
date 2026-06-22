@@ -1,0 +1,10 @@
+{
+  "name": "combobox",
+  "type": "field",
+  "description": "Campo de formulario: combobox",
+  "files": [
+    ["form-combobox-field.tsx", "components/forms/form-combobox-field.tsx"]
+  ],
+  "npmDeps": [],
+  "notes": "Importalo donde lo uses con @/components/forms/form-combobox-field. Depende de las deps de UI del core (no requiere npm install adicional)."
+}

@@ -1,0 +1,11 @@
+{
+  "name": "array",
+  "type": "field",
+  "description": "Campo de formulario: array",
+  "files": [
+    ["form-array-field.tsx", "components/forms/form-array-field.tsx"],
+    ["array-field-item.tsx", "components/forms/array-field-item.tsx"]
+  ],
+  "npmDeps": [],
+  "notes": "Importalo donde lo uses con @/components/forms/form-array-field. Depende de las deps de UI del core (no requiere npm install adicional)."
+}

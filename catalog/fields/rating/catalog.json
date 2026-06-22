@@ -1,0 +1,11 @@
+{
+  "name": "rating",
+  "type": "field",
+  "description": "Campo de formulario: rating",
+  "files": [
+    ["form-rating-field.tsx", "components/forms/form-rating-field.tsx"],
+    ["rating-display.tsx", "components/forms/rating-display.tsx"]
+  ],
+  "npmDeps": [],
+  "notes": "Importalo donde lo uses con @/components/forms/form-rating-field. Depende de las deps de UI del core (no requiere npm install adicional)."
+}

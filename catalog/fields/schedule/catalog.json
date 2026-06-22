@@ -1,0 +1,11 @@
+{
+  "name": "schedule",
+  "type": "field",
+  "description": "Campo de formulario: schedule",
+  "files": [
+    ["form-schedule-field.tsx", "components/forms/form-schedule-field.tsx"],
+    ["schedule-field", "components/forms/schedule-field"]
+  ],
+  "npmDeps": [],
+  "notes": "Importalo donde lo uses con @/components/forms/form-schedule-field. Depende de las deps de UI del core (no requiere npm install adicional)."
+}

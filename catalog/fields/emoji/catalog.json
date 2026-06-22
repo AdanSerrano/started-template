@@ -1,0 +1,11 @@
+{
+  "name": "emoji",
+  "type": "field",
+  "description": "Campo de formulario: emoji",
+  "files": [
+    ["form-emoji-field.tsx", "components/forms/form-emoji-field.tsx"],
+    ["emoji-field", "components/forms/emoji-field"]
+  ],
+  "npmDeps": [],
+  "notes": "Importalo donde lo uses con @/components/forms/form-emoji-field. Depende de las deps de UI del core (no requiere npm install adicional)."
+}

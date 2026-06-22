@@ -1,0 +1,11 @@
+{
+  "name": "rich-text",
+  "type": "field",
+  "description": "Campo de formulario: rich-text",
+  "files": [
+    ["form-rich-text-field.tsx", "components/forms/form-rich-text-field.tsx"],
+    ["rich-text-toolbar.tsx", "components/forms/rich-text-toolbar.tsx"]
+  ],
+  "npmDeps": [],
+  "notes": "Importalo donde lo uses con @/components/forms/form-rich-text-field. Depende de las deps de UI del core (no requiere npm install adicional)."
+}

@@ -1,0 +1,12 @@
+{
+  "name": "json",
+  "type": "field",
+  "description": "Campo de formulario: json",
+  "files": [
+    ["form-json-field.tsx", "components/forms/form-json-field.tsx"],
+    ["form-json-field.utils.ts", "components/forms/form-json-field.utils.ts"],
+    ["json-field-content.tsx", "components/forms/json-field-content.tsx"]
+  ],
+  "npmDeps": [],
+  "notes": "Importalo donde lo uses con @/components/forms/form-json-field. Depende de las deps de UI del core (no requiere npm install adicional)."
+}

@@ -1,0 +1,11 @@
+{
+  "name": "recurrence",
+  "type": "field",
+  "description": "Campo de formulario: recurrence",
+  "files": [
+    ["form-recurrence-field.tsx", "components/forms/form-recurrence-field.tsx"],
+    ["recurrence-field", "components/forms/recurrence-field"]
+  ],
+  "npmDeps": [],
+  "notes": "Importalo donde lo uses con @/components/forms/form-recurrence-field. Depende de las deps de UI del core (no requiere npm install adicional)."
+}
