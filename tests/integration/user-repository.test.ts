@@ -65,4 +65,33 @@ describe('userRepository.softDelete (integration)', () => {
       .where(eq(schema.sessions.userId, USER))
     expect(after).toHaveLength(0)
   })
+
+  it('restore revierte el soft-delete', async () => {
+    await repo.restore(USER)
+    const [user] = await db
+      .select()
+      .from(schema.users)
+      .where(eq(schema.users.id, USER))
+    expect(user!.deletedAt).toBeNull()
+    expect(user!.isActive).toBe(true)
+    expect(user!.deletedBy).toBeNull()
+  })
+})
+
+describe('userRepository lookups & lock counters (integration)', () => {
+  it('findIdByEmail/Username normaliza a minúsculas', async () => {
+    expect(await repo.findIdByEmail('USER@EXAMPLE.COM')).toBe(USER)
+    expect(await repo.findIdByEmail('nope@example.com')).toBeNull()
+  })
+
+  it('update/get/reset de intentos fallidos y lockedUntil', async () => {
+    const until = new Date(Date.now() + 60_000)
+    await repo.updateFailedLoginAttempts(USER, 3, until)
+    expect(await repo.getFailedLoginAttempts(USER)).toBe(3)
+    expect((await repo.getLockedUntil(USER))?.getTime()).toBe(until.getTime())
+
+    await repo.resetFailedLogin(USER)
+    expect(await repo.getFailedLoginAttempts(USER)).toBe(0)
+    expect(await repo.getLockedUntil(USER)).toBeNull()
+  })
 })
