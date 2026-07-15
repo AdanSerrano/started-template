@@ -16,9 +16,7 @@
     "hooks/**",
     "types/**",
     "modules/**/index.ts",
-    "modules/auth/actions/index.ts",
     "modules/auth/services/index.ts",
-    "lib/i18n-field.ts",
     "lib/i18n-helpers.ts",
     "tests/**"
   ],

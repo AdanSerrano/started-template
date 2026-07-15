@@ -1,6 +1,3 @@
-// Auth
-export type { IAuthProvider, AuthSessionData } from './auth.interface'
-
 // Cache
 export type { ICache } from './cache.interface'
 

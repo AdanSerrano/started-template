@@ -16,12 +16,6 @@ export { FetchHttpClient } from './fetch-http'
 // Cache
 export { MemoryCacheService } from './memory-cache'
 
-// Rate Limit
-export { InMemoryRateLimitService } from './in-memory-rate-limit'
-
-// Auth
-export { BetterAuthProvider } from './better-auth-provider'
-
 // Logger
 export { PinoLogger } from './pino-logger'
 

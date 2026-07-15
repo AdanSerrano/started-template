@@ -181,27 +181,30 @@ export async function myWriteAction(data: unknown): Promise<ActionResult> {
 > el catalogo. Los de catalogo se reincorporan con `bun run add:adapter <name>`
 > (ver `docs/catalog.md`).
 
-| Interface                 | Adapter en core (wired)    | En catalogo (`add:adapter`) |
-| ------------------------- | -------------------------- | --------------------------- |
-| `IAuthProvider`           | `BetterAuthProvider`       | --                          |
-| `IEmailService`           | `ResendEmailService`       | --                          |
-| `IStorageService`         | `R2StorageService`         | --                          |
-| `IHttpClient`             | `FetchHttpClient`          | `axios-http`                |
-| `ILogger`                 | `PinoLogger`               | `console-logger`            |
-| `IJobsService`            | `TriggerJobsService`       | --                          |
-| `IRateLimitService`       | `InMemoryRateLimitService` | `upstash-rate-limit`        |
-| `ICache`                  | `MemoryCacheService`       | --                          |
-| `IGDPRService`            | `GDPRService`              | --                          |
-| `IExcelExportService`     | --                         | `xlsx-export`               |
-| `IExcelImportService`     | --                         | `xlsx-import`               |
-| `ICSVImportService`       | --                         | `csv-import`                |
-| `IPDFExportService`       | --                         | `pdf-export`                |
-| `IAnalyticsService`       | --                         | `ga4-analytics`             |
-| `IErrorMonitoringService` | --                         | `sentry-monitoring`         |
-| `INotificationService`    | --                         | `in-app-notification`       |
-| `ISearchService`          | --                         | `pg-search`                 |
-| `IWebhookService`         | --                         | `webhook`                   |
-| `IFeatureFlagService`     | --                         | `env-feature-flags`         |
+> **Auth** no usa el patron provider: la app consume `auth` (`lib/auth`) y
+> `getServerSession` (`lib/auth-server`) directamente. **Rate limit** in-memory
+> vive en `lib/rate-limit.ts`; para multi-instancia usa `add:adapter upstash-rate-limit`.
+
+| Interface                 | Adapter en core (wired)  | En catalogo (`add:adapter`) |
+| ------------------------- | ------------------------ | --------------------------- |
+| `IEmailService`           | `ResendEmailService`     | --                          |
+| `IStorageService`         | `R2StorageService`       | --                          |
+| `IHttpClient`             | `FetchHttpClient`        | `axios-http`                |
+| `ILogger`                 | `PinoLogger`             | `console-logger`            |
+| `IJobsService`            | `TriggerJobsService`     | --                          |
+| `IRateLimitService`       | -- (`lib/rate-limit.ts`) | `upstash-rate-limit`        |
+| `ICache`                  | `MemoryCacheService`     | --                          |
+| `IGDPRService`            | `GDPRService`            | --                          |
+| `IExcelExportService`     | --                       | `xlsx-export`               |
+| `IExcelImportService`     | --                       | `xlsx-import`               |
+| `ICSVImportService`       | --                       | `csv-import`                |
+| `IPDFExportService`       | --                       | `pdf-export`                |
+| `IAnalyticsService`       | --                       | `ga4-analytics`             |
+| `IErrorMonitoringService` | --                       | `sentry-monitoring`         |
+| `INotificationService`    | --                       | `in-app-notification`       |
+| `ISearchService`          | --                       | `pg-search`                 |
+| `IWebhookService`         | --                       | `webhook`                   |
+| `IFeatureFlagService`     | --                       | `env-feature-flags`         |
 
 ### Providers — Estructura de archivos
 
