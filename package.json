@@ -37,7 +37,7 @@
     "add:dialect": "node scripts/catalog.mjs add dialect",
     "add:adapter": "node scripts/catalog.mjs add adapter",
     "add:field": "node scripts/catalog.mjs add field",
-    "db:reset": "drizzle-kit push --force && bun run db:seed",
+    "db:reset": "node scripts/db-reset-guard.mjs && drizzle-kit push --force && bun run db:seed",
     "email:preview": "email dev --dir emails --port 3001",
     "prepare": "husky"
   },
@@ -76,6 +76,7 @@
     "next-intl": "^4.8.3",
     "next-themes": "^0.4.6",
     "pino": "^10.3.1",
+    "qrcode.react": "^4.2.0",
     "radix-ui": "^1.4.3",
     "react": "19.2.4",
     "react-day-picker": "^9.14.0",
@@ -96,6 +97,7 @@
     "last 2 Edge versions"
   ],
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.4",
     "@playwright/test": "^1.58.2",
     "@tailwindcss/postcss": "^4.2.1",
     "@testing-library/jest-dom": "^6.9.1",
