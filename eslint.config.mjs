@@ -9,7 +9,13 @@ const eslintConfig = defineConfig([
 
   // Override default ignores of eslint-config-next.
   // catalog/ contiene piezas opcionales fuera del arbol activo (ver docs/catalog.md).
-  globalIgnores(['.next/**', 'out/**', 'build/**', 'next-env.d.ts', 'catalog/**']),
+  globalIgnores([
+    '.next/**',
+    'out/**',
+    'build/**',
+    'next-env.d.ts',
+    'catalog/**',
+  ]),
 
   // Accessibility — enforce stricter jsx-a11y rules (already loaded by next)
   {
