@@ -271,6 +271,52 @@ test('login flow', async ({ page }) => {
 })
 ```
 
+#### E2E autenticado (storageState)
+
+Los flujos autenticados (perfil, direcciones, 2FA) necesitan una **sesión real**.
+Better Auth firma la cookie con `BETTER_AUTH_SECRET` y exige verificación de
+email, así que NO se puede fabricar una sesión offline: hay que mintearla contra
+el stack corriendo (por eso este flujo requiere DB + app, típicamente en CI).
+
+Patrón recomendado — un **global setup** que crea el usuario vía la API de Better
+Auth, salta la verificación en la propia DB de test, inicia sesión y guarda el
+`storageState`:
+
+```ts
+// e2e/global-setup.ts (ejecutar en Node, con DATABASE_URL de test)
+import { eq } from 'drizzle-orm'
+import { auth } from '@/lib/auth'
+import { db } from '@/lib/db'
+import { users } from '@/db/schema'
+
+export default async function globalSetup() {
+  const email = `e2e+${Date.now()}@example.com`
+  const password = 'e2e-Password-123'
+
+  await auth.api.signUpEmail({
+    body: { name: 'E2E', email, password },
+  }) // crea user + credential con el hashing correcto
+
+  // Saltar la verificación de email SOLO en la DB de test (no es un bypass de app).
+  await db
+    .update(users)
+    .set({ emailVerified: true })
+    .where(eq(users.email, email))
+
+  const res = await auth.api.signInEmail({
+    body: { email, password },
+    asResponse: true,
+  })
+  const cookie = res.headers.get('set-cookie') ?? ''
+  // Guardar el storageState con esa cookie en e2e/.auth/user.json y referenciarlo
+  // en un project de playwright.config con `storageState`.
+}
+```
+
+Luego un `project` con `storageState: 'e2e/.auth/user.json'` corre los specs ya
+logueado. Mantener este flujo **gateado por env** (p.ej. `E2E_AUTH=1`) hasta
+validarlo contra tu stack, para no desestabilizar el job E2E por defecto.
+
 ---
 
 ## Factories

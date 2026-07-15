@@ -61,9 +61,10 @@ test.describe('Auth Pages', () => {
     await expect(page).toHaveURL(/\/register/)
   })
 
-  test('authenticated user is redirected away from login', async ({ page }) => {
-    // Visit login — unauthenticated users stay on login
-    await page.goto('/login')
+  test('unauthenticated user visiting a protected route is redirected to login', async ({
+    page,
+  }) => {
+    await page.goto('/account')
     await expect(page).toHaveURL(/\/login/)
   })
 })
