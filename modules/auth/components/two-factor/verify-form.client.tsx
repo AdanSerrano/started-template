@@ -2,8 +2,8 @@
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2, Copy, Check } from 'lucide-react'
-import Image from 'next/image'
 import { useTranslations } from 'next-intl'
+import { QRCodeSVG } from 'qrcode.react'
 import { memo, useCallback, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
@@ -58,13 +58,8 @@ export const TwoFactorVerifyForm = memo(function TwoFactorVerifyForm({
 
       {totpUri && (
         <div className="bg-muted flex items-center justify-center rounded-lg p-4">
-          <Image
-            src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(totpUri)}`}
-            alt={t('qrAlt')}
-            width={200}
-            height={200}
-            unoptimized
-          />
+          {/* QR generado en el cliente: el secreto TOTP nunca sale a un tercero */}
+          <QRCodeSVG value={totpUri} size={200} title={t('qrAlt')} />
         </div>
       )}
 

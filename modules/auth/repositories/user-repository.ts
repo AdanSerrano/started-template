@@ -121,6 +121,13 @@ export const userRepository: IUserRepository = {
         updatedAt: new Date(),
       })
       .where(eq(schema.users.id, userId))
+
+    // Revocar sesiones activas: sin esto el usuario borrado sigue autenticado
+    // hasta 7 días (el hook solo valida al CREAR sesión, no las existentes).
+    // Queda una ventana ≤2min por el cookieCache de Better Auth (auth.ts).
+    await client
+      .delete(schema.sessions)
+      .where(eq(schema.sessions.userId, userId))
   },
 
   async restore(userId: string, tx?: DbOrTx) {

@@ -30,17 +30,22 @@ function isOriginAllowed(origin: string | null): boolean {
 
 export function corsHeaders(requestOrigin?: string | null): HeadersInit {
   const origin = requestOrigin ?? ''
-  const allowed = isOriginAllowed(origin)
+  if (!isOriginAllowed(origin)) return {}
 
-  if (!allowed) return {}
+  // Wildcard nunca se combina con credenciales: reflejar el origin + credentials
+  // solo para orígenes explícitos (evita robo de datos cross-origin).
+  const wildcard = ALLOWED_ORIGINS.includes('*')
 
-  return {
-    'Access-Control-Allow-Origin': origin,
+  const headers: Record<string, string> = {
+    'Access-Control-Allow-Origin': wildcard ? '*' : origin,
     'Access-Control-Allow-Methods': ALLOWED_METHODS,
     'Access-Control-Allow-Headers': ALLOWED_HEADERS,
-    'Access-Control-Allow-Credentials': 'true',
     'Access-Control-Max-Age': MAX_AGE,
   }
+  if (!wildcard) {
+    headers['Access-Control-Allow-Credentials'] = 'true'
+  }
+  return headers
 }
 
 export function handleCorsPreflight(request: Request): Response {

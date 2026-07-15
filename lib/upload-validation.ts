@@ -17,12 +17,14 @@ export interface FileValidationResult {
 
 const DEFAULT_MAX_SIZE = 5 * 1024 * 1024 // 5MB
 
+// SVG queda FUERA de los defaults a propósito: un SVG puede contener <script>
+// y ser un vector de XSS almacenado. Un consumidor que lo necesite debe
+// habilitarlo explícitamente y sanear el contenido.
 const DEFAULT_ALLOWED_MIME_TYPES = [
   'image/jpeg',
   'image/png',
   'image/webp',
   'image/gif',
-  'image/svg+xml',
   'application/pdf',
   'text/csv',
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
@@ -35,19 +37,17 @@ const DEFAULT_ALLOWED_EXTENSIONS = [
   'png',
   'webp',
   'gif',
-  'svg',
   'pdf',
   'csv',
   'xlsx',
   'docx',
 ]
 
-// Magic bytes para tipos comunes
+// Magic bytes para tipos comunes. webp se valida aparte (RIFF + "WEBP" en offset 8).
 const MAGIC_BYTES: Record<string, number[]> = {
   'image/jpeg': [0xff, 0xd8, 0xff],
   'image/png': [0x89, 0x50, 0x4e, 0x47],
   'image/gif': [0x47, 0x49, 0x46],
-  'image/webp': [0x52, 0x49, 0x46, 0x46],
   'application/pdf': [0x25, 0x50, 0x44, 0x46],
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': [
     0x50, 0x4b, 0x03, 0x04,
@@ -62,13 +62,26 @@ function getExtension(filename: string): string {
   return parts.length > 1 ? parts.pop()!.toLowerCase() : ''
 }
 
+async function readBytes(file: File, length: number): Promise<Uint8Array> {
+  const buffer = await file.slice(0, length).arrayBuffer()
+  return new Uint8Array(buffer)
+}
+
 async function checkMagicBytes(file: File, mimeType: string): Promise<boolean> {
+  // webp: cabecera RIFF (0-3) + fourCC "WEBP" (8-11); RIFF solo lo comparten WAV/AVI.
+  if (mimeType === 'image/webp') {
+    const bytes = await readBytes(file, 12)
+    const riff = [0x52, 0x49, 0x46, 0x46].every((b, i) => bytes[i] === b)
+    const webp = [0x57, 0x45, 0x42, 0x50].every((b, i) => bytes[8 + i] === b)
+    return riff && webp
+  }
+
   const expected = MAGIC_BYTES[mimeType]
-  if (!expected) return true // No magic bytes defined, skip check
+  // Sin firma binaria conocida (p.ej. text/csv, o un tipo custom que el
+  // consumidor habilitó explícitamente): no hay bytes que verificar.
+  if (!expected) return true
 
-  const buffer = await file.slice(0, expected.length).arrayBuffer()
-  const bytes = new Uint8Array(buffer)
-
+  const bytes = await readBytes(file, expected.length)
   return expected.every((byte, i) => bytes[i] === byte)
 }
 
@@ -93,9 +106,9 @@ export async function validateFile(
     return { valid: false, error: `Tipo de archivo no permitido: ${file.type}` }
   }
 
-  // Verificar extension
+  // Verificar extension (obligatoria: sin extensión no se puede validar)
   const ext = getExtension(file.name)
-  if (ext && !allowedExtensions.includes(ext)) {
+  if (!ext || !allowedExtensions.includes(ext)) {
     return { valid: false, error: `Extension no permitida: .${ext}` }
   }
 

@@ -136,6 +136,26 @@ describe('AuthSecurityService', () => {
         null,
       )
     })
+
+    it('resets counter to 1 after a previous lock expired (no permanent re-lock)', async () => {
+      // Bloqueo anterior expirado + contador rancio de 5 en DB.
+      const expiredLock = new Date(Date.now() - 60_000)
+      vi.mocked(userRepository.getLockedUntil).mockResolvedValue(expiredLock)
+      vi.mocked(userRepository.getFailedLoginAttempts).mockResolvedValue(5)
+      vi.mocked(userRepository.updateFailedLoginAttempts).mockResolvedValue(
+        undefined,
+      )
+
+      const result = await service.recordFailedLogin('u1')
+
+      // Arranca de cero → 1, NO re-bloquea con un solo fallo tras expirar.
+      expect(result).toEqual({ locked: false, attempts: 1 })
+      expect(userRepository.updateFailedLoginAttempts).toHaveBeenCalledWith(
+        'u1',
+        1,
+        null,
+      )
+    })
   })
 
   describe('getFailedAttempts', () => {
