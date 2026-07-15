@@ -36,10 +36,7 @@ jobs:
       - name: Lint
         run: bun run lint
 
-      - name: Unit Tests
-        run: bun run test
-
-      - name: Test Coverage
+      - name: Tests + Coverage
         run: bun run test:coverage
 
       - name: Dead Code Check
@@ -56,6 +53,11 @@ jobs:
           BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
           NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          # Sentry: si están configurados, sube source maps. Si no, build normal.
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
       - name: Bundle Size Check
         run: |
