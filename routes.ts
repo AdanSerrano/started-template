@@ -17,6 +17,19 @@ export const authRoutes = [
 ]
 
 /**
+ * Rutas protegidas — requieren sesion activa.
+ *
+ * El middleware (proxy.ts) redirige a login como fast-path para estos
+ * prefijos, pero la garantia real de auth vive en cada layout via
+ * `requireAuth()` (defensa en profundidad). Las rutas NO listadas aqui
+ * caen a un 404 normal en vez de rebotar a /login.
+ *
+ * Al anadir una zona protegida nueva: agrega su prefijo aqui Y llama a
+ * `requireAuth()` en su layout.
+ */
+export const protectedRoutes = ['/account']
+
+/**
  * Prefijo de la API de autenticacion — Better Auth catch-all.
  * Nunca debe ser bloqueado por middleware.
  */

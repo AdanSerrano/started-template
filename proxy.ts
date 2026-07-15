@@ -5,6 +5,7 @@ import { routing } from '@/i18n/routing'
 import { generateRequestId } from '@/lib/request-context'
 import {
   authRoutes,
+  protectedRoutes,
   publicRoutes,
   DEFAULT_LOGIN_REDIRECT,
   DEFAULT_LOGOUT_REDIRECT,
@@ -50,6 +51,12 @@ function isAuthRoute(pathname: string): boolean {
   return authRoutes.some((route) => pathname.startsWith(`${route}/`))
 }
 
+function isProtectedRoute(pathname: string): boolean {
+  return protectedRoutes.some(
+    (route) => pathname === route || pathname.startsWith(`${route}/`),
+  )
+}
+
 export default function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
@@ -92,8 +99,10 @@ export default function proxy(request: NextRequest) {
     return intlMiddleware(request)
   }
 
-  // Protected routes — redirect to login if no session
-  if (!sessionCookie) {
+  // Protected routes — redirect to login if no session (fast-path).
+  // La garantia real de auth vive en el layout via requireAuth(); esto solo
+  // evita renderizar. Las rutas desconocidas NO entran aqui → caen a 404.
+  if (isProtectedRoute(realPathname) && !sessionCookie && !isServerAction) {
     return NextResponse.redirect(
       localizeUrl(DEFAULT_LOGOUT_REDIRECT, locale, request),
     )

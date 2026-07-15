@@ -1,0 +1,43 @@
+name: Dependabot bun.lock
+
+# Dependabot solo actualiza package.json — no regenera bun.lock. Sin este
+# lockfile actualizado, `bun install --frozen-lockfile` en main falla tras
+# mergear. Este workflow regenera bun.lock en el PR y lo commitea.
+#
+# Nota: el push lo hace GITHUB_TOKEN, que NO re-dispara workflows. La otra
+# mitad del fix (ci.yml usa `bun install` no-frozen para dependabot) hace que
+# el PR ya pase en verde; este commit solo garantiza que main quede consistente.
+
+on: pull_request
+
+permissions:
+  contents: write
+
+jobs:
+  update-lockfile:
+    if: github.actor == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Regenerate bun.lock
+        run: bun install
+
+      - name: Commit lockfile if changed
+        run: |
+          if git diff --quiet bun.lock; then
+            echo "bun.lock ya estaba al dia — nada que commitear"
+            exit 0
+          fi
+          git config user.name "dependabot[bot]"
+          git config user.email "49699333+dependabot[bot]@users.noreply.github.com"
+          git add bun.lock
+          git commit -m "chore(deps): regenerate bun.lock"
+          git push

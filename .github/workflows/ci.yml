@@ -25,7 +25,9 @@ jobs:
           key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock') }}
           restore-keys: ${{ runner.os }}-bun-
 
-      - run: bun install --frozen-lockfile
+      # Dependabot solo edita package.json (no regenera bun.lock) → no puede ser
+      # frozen. El workflow dependabot-lockfile.yml commitea el lock corregido.
+      - run: bun install ${{ github.actor == 'dependabot[bot]' && '' || '--frozen-lockfile' }}
 
       - name: Format Check
         run: bun run format:check
@@ -88,7 +90,9 @@ jobs:
           key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock') }}
           restore-keys: ${{ runner.os }}-bun-
 
-      - run: bun install --frozen-lockfile
+      # Dependabot solo edita package.json (no regenera bun.lock) → no puede ser
+      # frozen. El workflow dependabot-lockfile.yml commitea el lock corregido.
+      - run: bun install ${{ github.actor == 'dependabot[bot]' && '' || '--frozen-lockfile' }}
 
       - name: Install Playwright
         run: bunx playwright install --with-deps chromium firefox
