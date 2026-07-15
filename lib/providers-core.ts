@@ -44,13 +44,6 @@ const httpClient = createProvider<IHttpClient>(() => new FetchHttpClient())
 export const getHttpClient = httpClient.get
 export const setHttpClientInstance = httpClient.set
 
-export function createHttpClient(
-  baseURL: string,
-  defaultHeaders?: Record<string, string>,
-): IHttpClient {
-  return new FetchHttpClient(baseURL, defaultHeaders)
-}
-
 // ── Cache ───────────────────────────────────────────────────
 const cache = createProvider<ICache>(() => new MemoryCacheService())
 export const getCacheService = cache.get
