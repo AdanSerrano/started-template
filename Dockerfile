@@ -44,7 +44,12 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
-RUN apk update && apk upgrade --no-cache
+# tini = init PID 1: reap zombies y reenvía SIGTERM/SIGINT para graceful shutdown.
+RUN apk update && apk upgrade --no-cache && apk add --no-cache tini
+
+# Versión inyectada en build (ej: --build-arg APP_VERSION=$(git rev-parse --short HEAD)).
+ARG APP_VERSION="0.1.0"
+ENV APP_VERSION=$APP_VERSION
 
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
@@ -62,7 +67,12 @@ EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
+# Liveness (proceso vivo). La readiness con dependencias (/api/health) la usa
+# el balanceador/orquestador, no el healthcheck del contenedor (evita flapping
+# por un blip de la DB).
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:3000/api/health || exit 1
+  CMD wget --no-verbose --tries=1 --spider http://localhost:3000/api/health/live || exit 1
 
+# tini como PID 1 para señales limpias en rollouts.
+ENTRYPOINT ["/sbin/tini", "--"]
 CMD ["node", "server.js"]

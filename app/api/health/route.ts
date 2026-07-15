@@ -4,22 +4,37 @@ import { db } from '@/lib/db'
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
 
+/**
+ * Readiness check: ¿puede la app servir tráfico? Mira dependencias.
+ * - database DOWN  → unhealthy (503): sácame del balanceo.
+ * - redis DOWN o memoria alta → degraded (200): sirvo, pero avisa.
+ * Para liveness (¿el proceso está vivo?) usa /api/health/live.
+ *
+ * No se exponen mensajes de error crudos (fuga de infra): se loguean
+ * server-side y la respuesta pública solo dice 'unavailable'.
+ */
+
 interface ServiceCheck {
   status: 'up' | 'down'
   latencyMs: number
   error?: string
 }
 
-async function checkDatabase(): Promise<ServiceCheck> {
+async function timed(
+  name: string,
+  fn: () => Promise<unknown>,
+): Promise<ServiceCheck> {
   const start = performance.now()
   try {
-    await db.execute(sql`SELECT 1`)
+    await fn()
     return { status: 'up', latencyMs: Math.round(performance.now() - start) }
   } catch (err) {
+    // Log real server-side; nunca en la respuesta pública.
+    console.error(`[health] ${name} check failed:`, err)
     return {
       status: 'down',
       latencyMs: Math.round(performance.now() - start),
-      error: err instanceof Error ? err.message : 'Unknown error',
+      error: 'unavailable',
     }
   }
 }
@@ -39,40 +54,29 @@ async function getRedisClient() {
   return redisInstance
 }
 
-async function checkRedis(): Promise<ServiceCheck | null> {
-  const redis = await getRedisClient()
-  if (!redis) return null
-  const start = performance.now()
-  try {
-    await redis.ping()
-    return { status: 'up', latencyMs: Math.round(performance.now() - start) }
-  } catch (err) {
-    return {
-      status: 'down',
-      latencyMs: Math.round(performance.now() - start),
-      error: err instanceof Error ? err.message : 'Unknown error',
-    }
-  }
-}
-
 function checkMemory(): ServiceCheck {
   const start = performance.now()
   const usage = process.memoryUsage()
-  const heapUsedMB = Math.round(usage.heapUsed / 1024 / 1024)
-  const heapTotalMB = Math.round(usage.heapTotal / 1024 / 1024)
+  // heapUsed/heapTotal supera 90% de forma normal antes de un GC; solo lo
+  // reportamos como señal informativa (degraded), nunca como 503.
   const heapPercent = Math.round((usage.heapUsed / usage.heapTotal) * 100)
-
+  const high = heapPercent >= 95
   return {
-    status: heapPercent < 90 ? 'up' : 'down',
+    status: high ? 'down' : 'up',
     latencyMs: Math.round(performance.now() - start),
-    ...(heapPercent >= 90 && {
-      error: `Heap usage ${heapPercent}% (${heapUsedMB}/${heapTotalMB}MB)`,
-    }),
+    ...(high && { error: `heap ${heapPercent}%` }),
   }
 }
 
 export async function GET() {
-  const [database, redis] = await Promise.all([checkDatabase(), checkRedis()])
+  const redisClient = await getRedisClient()
+
+  const [database, redis] = await Promise.all([
+    timed('database', () => db.execute(sql`SELECT 1`)),
+    redisClient
+      ? timed('redis', () => redisClient.ping())
+      : Promise.resolve(null),
+  ])
 
   const services: Record<string, ServiceCheck> = {
     database,
@@ -80,10 +84,11 @@ export async function GET() {
   }
   if (redis) services.redis = redis
 
-  const allUp = Object.values(services).every((s) => s.status === 'up')
+  // database es crítica; redis y memoria son degradaciones tolerables.
+  const critical = database.status === 'down'
   const anyDown = Object.values(services).some((s) => s.status === 'down')
 
-  const status = allUp ? 'healthy' : anyDown ? 'unhealthy' : 'degraded'
+  const status = critical ? 'unhealthy' : anyDown ? 'degraded' : 'healthy'
 
   return Response.json(
     {
@@ -91,8 +96,8 @@ export async function GET() {
       services,
       timestamp: new Date().toISOString(),
       uptime: process.uptime(),
-      version: process.env.npm_package_version ?? '0.1.0',
+      version: process.env.APP_VERSION ?? '0.1.0',
     },
-    { status: allUp ? 200 : 503 },
+    { status: critical ? 503 : 200 },
   )
 }

@@ -16,7 +16,7 @@ export class FetchHttpClient implements IHttpClient {
   constructor(
     baseURL?: string,
     defaultHeaders?: Record<string, string>,
-    timeout = 60000,
+    timeout = 15000,
   ) {
     this.baseURL = baseURL ?? ''
     this.defaultHeaders = defaultHeaders ?? {}
@@ -39,6 +39,28 @@ export class FetchHttpClient implements IHttpClient {
   }
 
   private async request<T>(
+    url: string,
+    init: RequestInit,
+    options: HttpRequestOptions | undefined,
+    idempotent: boolean,
+  ): Promise<HttpResponse<T>> {
+    const maxRetries = options?.retries ?? (idempotent ? 2 : 0)
+
+    let attempt = 0
+    for (;;) {
+      try {
+        return await this.requestOnce<T>(url, init, options)
+      } catch (error) {
+        if (attempt >= maxRetries || !isRetryable(error)) throw error
+        // Backoff exponencial con jitter: 200ms, 400ms, 800ms… (+0-100ms).
+        const delay = 200 * 2 ** attempt + Math.floor(Math.random() * 100)
+        await new Promise((r) => setTimeout(r, delay))
+        attempt++
+      }
+    }
+  }
+
+  private async requestOnce<T>(
     url: string,
     init: RequestInit,
     options?: HttpRequestOptions,
@@ -93,7 +115,7 @@ export class FetchHttpClient implements IHttpClient {
     url: string,
     options?: HttpRequestOptions,
   ): Promise<HttpResponse<T>> {
-    return this.request<T>(url, { method: 'GET' }, options)
+    return this.request<T>(url, { method: 'GET' }, options, true)
   }
 
   async post<T>(
@@ -109,6 +131,7 @@ export class FetchHttpClient implements IHttpClient {
         body: data != null ? JSON.stringify(data) : null,
       },
       options,
+      false,
     )
   }
 
@@ -125,6 +148,7 @@ export class FetchHttpClient implements IHttpClient {
         body: data != null ? JSON.stringify(data) : null,
       },
       options,
+      false,
     )
   }
 
@@ -141,6 +165,7 @@ export class FetchHttpClient implements IHttpClient {
         body: data != null ? JSON.stringify(data) : null,
       },
       options,
+      false,
     )
   }
 
@@ -148,8 +173,22 @@ export class FetchHttpClient implements IHttpClient {
     url: string,
     options?: HttpRequestOptions,
   ): Promise<HttpResponse<T>> {
-    return this.request<T>(url, { method: 'DELETE' }, options)
+    return this.request<T>(url, { method: 'DELETE' }, options, true)
   }
+}
+
+/**
+ * Reintentable solo ante errores transitorios: red (error genérico), 429 y 5xx.
+ * NO se reintentan 4xx (salvo 429) ni timeouts (408): son deterministas o
+ * compondrían la latencia.
+ */
+function isRetryable(error: unknown): boolean {
+  if (error instanceof FetchHttpError) {
+    return error.status === 429 || error.status >= 500
+  }
+  // Error de red (fetch lanzó algo que no es FetchHttpError ni un abort).
+  if (error instanceof DOMException && error.name === 'AbortError') return false
+  return error instanceof Error
 }
 
 export class FetchHttpError extends Error {

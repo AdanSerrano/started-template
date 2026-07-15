@@ -112,4 +112,40 @@ describe('FetchHttpClient', () => {
     const [, init] = mockFetch.mock.calls[0]
     expect(init.body).toBeNull()
   })
+
+  describe('retries', () => {
+    it('retries an idempotent GET on 500 then succeeds', async () => {
+      mockFetch
+        .mockResolvedValueOnce(mockResponse({ error: 'boom' }, 500))
+        .mockResolvedValueOnce(mockResponse({ id: 1 }, 200))
+      const result = await client.get('/users/1', { retries: 1 })
+      expect(mockFetch).toHaveBeenCalledTimes(2)
+      expect(result.data).toEqual({ id: 1 })
+    })
+
+    it('does NOT retry a POST (non-idempotent) on 500', async () => {
+      mockFetch.mockResolvedValueOnce(mockResponse({ error: 'boom' }, 500))
+      await expect(client.post('/users', { a: 1 })).rejects.toThrow(
+        FetchHttpError,
+      )
+      expect(mockFetch).toHaveBeenCalledTimes(1)
+    })
+
+    it('does NOT retry a 4xx (deterministic) on GET', async () => {
+      mockFetch.mockResolvedValueOnce(mockResponse({ error: 'nope' }, 404))
+      await expect(client.get('/missing', { retries: 3 })).rejects.toThrow(
+        FetchHttpError,
+      )
+      expect(mockFetch).toHaveBeenCalledTimes(1)
+    })
+
+    it('retries on 429 (rate limited)', async () => {
+      mockFetch
+        .mockResolvedValueOnce(mockResponse({ error: 'slow down' }, 429))
+        .mockResolvedValueOnce(mockResponse({ ok: true }, 200))
+      const result = await client.get('/x', { retries: 1 })
+      expect(mockFetch).toHaveBeenCalledTimes(2)
+      expect(result.status).toBe(200)
+    })
+  })
 })
