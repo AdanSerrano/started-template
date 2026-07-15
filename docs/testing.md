@@ -134,6 +134,41 @@ it('action valida input con Zod', async () => {
 })
 ```
 
+### 2b. Repository test — Postgres real (pglite)
+
+Para repositorios y flujos de datos, testear contra un **Postgres real en memoria**
+(pglite, WASM) en vez de mockear el query builder — valida ownership, soft-delete,
+transacciones y hasta las migraciones. Requiere entorno `node` (no jsdom).
+
+```ts
+// @vitest-environment node
+import { createTestDb, type TestDb } from '../utils/test-db'
+
+// El repo crea prepared statements contra el `db` importado: se mockea con un
+// holder y se importa el repo DESPUES de fijar la instancia pglite.
+const holder = vi.hoisted(() => ({ db: null as unknown }))
+vi.mock('@/lib/db', () => ({
+  get db() {
+    return holder.db
+  },
+}))
+
+let db: TestDb
+let repo: (typeof import('@/modules/x/repositories/x-repository'))['xRepository']
+
+beforeAll(async () => {
+  const t = await createTestDb() // aplica db/migrations reales
+  db = t.db
+  holder.db = db
+  ;({ xRepository: repo } =
+    await import('@/modules/x/repositories/x-repository'))
+}, 30000) // pglite (WASM) tarda en arrancar bajo la suite completa
+```
+
+`createTestDb()` (`tests/utils/test-db.ts`) levanta pglite y aplica las
+migraciones versionadas. Ejemplos: `tests/integration/{address,user}-repository.test.ts`,
+`tests/integration/gdpr.test.ts`.
+
 ### 3. Component test — React Testing Library
 
 #### 3a. Form fields simples (sin dependencias externas)
