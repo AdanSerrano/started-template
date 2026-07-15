@@ -12,10 +12,15 @@ async function main() {
   // eslint-disable-next-line no-console
   console.log('Seeding database...')
 
+  // IDs fijos (UUID válidos) para que el seed sea idempotente. Las columnas
+  // son `uuid` en PG: un id string tipo 'seed-admin-1' hace fallar el insert.
+  const ADMIN_ID = '00000000-0000-4000-8000-000000000001'
+  const USER_ID = '00000000-0000-4000-8000-000000000002'
+
   // ── Users ────────────────────────────────────────────────
   const seedUsers = [
     {
-      id: 'seed-admin-1',
+      id: ADMIN_ID,
       name: 'Admin User',
       email: 'admin@example.com',
       emailVerified: true,
@@ -28,7 +33,7 @@ async function main() {
       updatedAt: new Date(),
     },
     {
-      id: 'seed-user-1',
+      id: USER_ID,
       name: 'Test User',
       email: 'user@example.com',
       emailVerified: true,
@@ -56,8 +61,8 @@ async function main() {
   // ── Addresses ────────────────────────────────────────────
   const seedAddresses = [
     {
-      id: 'seed-address-1',
-      userId: 'seed-user-1',
+      id: '00000000-0000-4000-8000-000000000101',
+      userId: USER_ID,
       type: 'shipping' as const,
       isDefault: true,
       firstName: 'Test',
@@ -71,8 +76,8 @@ async function main() {
       updatedAt: new Date(),
     },
     {
-      id: 'seed-address-2',
-      userId: 'seed-user-1',
+      id: '00000000-0000-4000-8000-000000000102',
+      userId: USER_ID,
       type: 'billing' as const,
       isDefault: false,
       firstName: 'Test',

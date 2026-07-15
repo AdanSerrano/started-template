@@ -16,6 +16,7 @@ export async function getRequestMetadata(): Promise<{
     headersList.get('x-real-ip') ??
     'unknown'
   const userAgent = headersList.get('user-agent') ?? 'unknown'
-  const requestId = getRequestId()
+  // Prioriza el x-request-id que inyecta el middleware (proxy.ts); cae al ALS.
+  const requestId = headersList.get('x-request-id') ?? getRequestId()
   return { ip, userAgent, ...(requestId && { requestId }) }
 }

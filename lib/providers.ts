@@ -9,8 +9,6 @@
 
 // ── Core Providers ──────────────────────────────────────────
 export {
-  getAuthProvider,
-  setAuthProvider,
   getEmailService,
   setEmailInstance,
   getStorageService,
@@ -22,8 +20,6 @@ export {
   createHttpClient,
   getCacheService,
   setCacheInstance,
-  getRateLimitService,
-  setRateLimitService,
   getLogger,
   setLoggerInstance,
   _coreProviders,

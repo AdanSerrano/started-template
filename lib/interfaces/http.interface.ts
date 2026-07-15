@@ -5,6 +5,11 @@ export interface HttpRequestOptions {
   headers?: Record<string, string>
   timeout?: number
   params?: Record<string, string | number | boolean>
+  /**
+   * Reintentos ante errores transitorios (red, 429, 5xx) con backoff+jitter.
+   * Default: 2 en métodos idempotentes (GET/DELETE), 0 en mutaciones.
+   */
+  retries?: number
 }
 
 /**

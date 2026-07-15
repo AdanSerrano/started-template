@@ -36,7 +36,14 @@ class AuthSecurityServiceImpl implements AuthSecurityService {
   async recordFailedLogin(
     userId: string,
   ): Promise<{ locked: boolean; attempts: number }> {
-    const currentAttempts = await userRepository.getFailedLoginAttempts(userId)
+    // Si el bloqueo anterior ya expiró, el contador arranca de cero: sin esto
+    // un único fallo tras la expiración re-bloquea la cuenta (contador que
+    // solo bajaba con login exitoso o unlock manual).
+    const lockedUntil = await userRepository.getLockedUntil(userId)
+    const lockExpired = lockedUntil !== null && lockedUntil <= new Date()
+    const currentAttempts = lockExpired
+      ? 0
+      : await userRepository.getFailedLoginAttempts(userId)
     const attempts = (currentAttempts ?? 0) + 1
 
     if (attempts >= LOCK_THRESHOLD) {

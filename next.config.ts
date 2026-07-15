@@ -1,3 +1,4 @@
+import { withSentryConfig } from '@sentry/nextjs'
 import createNextIntlPlugin from 'next-intl/plugin'
 import type { NextConfig } from 'next'
 
@@ -104,4 +105,20 @@ const nextConfig: NextConfig = {
   },
 }
 
-export default withNextIntl(nextConfig)
+const config = withNextIntl(nextConfig)
+
+// Sentry solo se activa si hay DSN: un proyecto sin Sentry compila igual.
+// Source maps se suben solo con SENTRY_AUTH_TOKEN (en CI).
+export default process.env.SENTRY_DSN
+  ? withSentryConfig(config, {
+      ...(process.env.SENTRY_ORG ? { org: process.env.SENTRY_ORG } : {}),
+      ...(process.env.SENTRY_PROJECT
+        ? { project: process.env.SENTRY_PROJECT }
+        : {}),
+      ...(process.env.SENTRY_AUTH_TOKEN
+        ? { authToken: process.env.SENTRY_AUTH_TOKEN }
+        : {}),
+      silent: !process.env.CI,
+      widenClientFileUpload: true,
+    })
+  : config

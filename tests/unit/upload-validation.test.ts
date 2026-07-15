@@ -92,6 +92,45 @@ describe('validateFile', () => {
       expect(result.error).toContain('no permitida')
       expect(result.error).toContain('.exe')
     })
+
+    it('rejects a file without extension', async () => {
+      const file = createMockFile('payload', 'image/jpeg', JPEG_MAGIC)
+      const result = await validateFile(file)
+      expect(result.valid).toBe(false)
+      expect(result.error).toContain('no permitida')
+    })
+  })
+
+  describe('security hardening', () => {
+    it('rejects SVG by default (stored XSS vector)', async () => {
+      const svg = new TextEncoder().encode(
+        '<svg><script>alert(1)</script></svg>',
+      )
+      const file = createMockFile('x.svg', 'image/svg+xml', svg)
+      const result = await validateFile(file)
+      expect(result.valid).toBe(false)
+      expect(result.error).toContain('no permitido')
+    })
+
+    it('rejects a fake webp with RIFF header but wrong fourCC', async () => {
+      // RIFF válido pero "WAVE" en offset 8 en vez de "WEBP" (un WAV/AVI)
+      const fake = new Uint8Array([
+        0x52, 0x49, 0x46, 0x46, 0x00, 0x00, 0x00, 0x00, 0x57, 0x41, 0x56, 0x45,
+      ])
+      const file = createMockFile('fake.webp', 'image/webp', fake)
+      const result = await validateFile(file)
+      expect(result.valid).toBe(false)
+      expect(result.error).toContain('no coincide')
+    })
+
+    it('accepts a real webp (RIFF + WEBP fourCC)', async () => {
+      const webp = new Uint8Array([
+        0x52, 0x49, 0x46, 0x46, 0x00, 0x00, 0x00, 0x00, 0x57, 0x45, 0x42, 0x50,
+      ])
+      const file = createMockFile('real.webp', 'image/webp', webp)
+      const result = await validateFile(file)
+      expect(result.valid).toBe(true)
+    })
   })
 
   describe('magic bytes', () => {

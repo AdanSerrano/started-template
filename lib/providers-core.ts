@@ -1,35 +1,28 @@
 /**
- * Core Providers — Auth, Email, Storage, Jobs, HTTP, Cache, Logger, Rate Limit.
+ * Core Providers — Email, Storage, Jobs, HTTP, Cache, Logger.
+ *
+ * Auth NO va aquí: la app usa `auth` (lib/auth) y getServerSession
+ * (lib/auth-server) directamente. Rate limit vive en lib/rate-limit.ts
+ * (in-memory) o catalog/adapters/upstash-rate-limit para multi-instancia.
  */
 
 import {
-  BetterAuthProvider,
   ResendEmailService,
   R2StorageService,
   TriggerJobsService,
   FetchHttpClient,
   MemoryCacheService,
-  InMemoryRateLimitService,
   PinoLogger,
 } from '@/lib/adapters'
 import { createProvider } from '@/lib/create-provider'
 import type {
-  IAuthProvider,
   IEmailService,
   IStorageService,
   IJobsService,
   IHttpClient,
   ICache,
-  IRateLimitService,
   ILogger,
 } from '@/lib/interfaces'
-
-// ── Auth ────────────────────────────────────────────────────
-const authProvider = createProvider<IAuthProvider>(
-  () => new BetterAuthProvider(),
-)
-export const getAuthProvider = authProvider.get
-export const setAuthProvider = authProvider.set
 
 // ── Email ───────────────────────────────────────────────────
 const email = createProvider<IEmailService>(() => new ResendEmailService())
@@ -63,26 +56,10 @@ const cache = createProvider<ICache>(() => new MemoryCacheService())
 export const getCacheService = cache.get
 export const setCacheInstance = cache.set
 
-// ── Rate Limit ──────────────────────────────────────────────
-const rateLimit = createProvider<IRateLimitService>(
-  () => new InMemoryRateLimitService(),
-)
-export const getRateLimitService = rateLimit.get
-export const setRateLimitService = rateLimit.set
-
 // ── Logger ──────────────────────────────────────────────────
 const logger = createProvider<ILogger>(() => new PinoLogger())
 export const getLogger = logger.get
 export const setLoggerInstance = logger.set
 
 // Internal references for resetProviders
-export const _coreProviders = [
-  authProvider,
-  email,
-  storage,
-  jobs,
-  httpClient,
-  cache,
-  rateLimit,
-  logger,
-]
+export const _coreProviders = [email, storage, jobs, httpClient, cache, logger]

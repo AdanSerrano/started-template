@@ -134,6 +134,41 @@ it('action valida input con Zod', async () => {
 })
 ```
 
+### 2b. Repository test — Postgres real (pglite)
+
+Para repositorios y flujos de datos, testear contra un **Postgres real en memoria**
+(pglite, WASM) en vez de mockear el query builder — valida ownership, soft-delete,
+transacciones y hasta las migraciones. Requiere entorno `node` (no jsdom).
+
+```ts
+// @vitest-environment node
+import { createTestDb, type TestDb } from '../utils/test-db'
+
+// El repo crea prepared statements contra el `db` importado: se mockea con un
+// holder y se importa el repo DESPUES de fijar la instancia pglite.
+const holder = vi.hoisted(() => ({ db: null as unknown }))
+vi.mock('@/lib/db', () => ({
+  get db() {
+    return holder.db
+  },
+}))
+
+let db: TestDb
+let repo: (typeof import('@/modules/x/repositories/x-repository'))['xRepository']
+
+beforeAll(async () => {
+  const t = await createTestDb() // aplica db/migrations reales
+  db = t.db
+  holder.db = db
+  ;({ xRepository: repo } =
+    await import('@/modules/x/repositories/x-repository'))
+}, 30000) // pglite (WASM) tarda en arrancar bajo la suite completa
+```
+
+`createTestDb()` (`tests/utils/test-db.ts`) levanta pglite y aplica las
+migraciones versionadas. Ejemplos: `tests/integration/{address,user}-repository.test.ts`,
+`tests/integration/gdpr.test.ts`.
+
 ### 3. Component test — React Testing Library
 
 #### 3a. Form fields simples (sin dependencias externas)
@@ -235,6 +270,52 @@ test('login flow', async ({ page }) => {
   await expect(page).toHaveURL('/account')
 })
 ```
+
+#### E2E autenticado (storageState)
+
+Los flujos autenticados (perfil, direcciones, 2FA) necesitan una **sesión real**.
+Better Auth firma la cookie con `BETTER_AUTH_SECRET` y exige verificación de
+email, así que NO se puede fabricar una sesión offline: hay que mintearla contra
+el stack corriendo (por eso este flujo requiere DB + app, típicamente en CI).
+
+Patrón recomendado — un **global setup** que crea el usuario vía la API de Better
+Auth, salta la verificación en la propia DB de test, inicia sesión y guarda el
+`storageState`:
+
+```ts
+// e2e/global-setup.ts (ejecutar en Node, con DATABASE_URL de test)
+import { eq } from 'drizzle-orm'
+import { auth } from '@/lib/auth'
+import { db } from '@/lib/db'
+import { users } from '@/db/schema'
+
+export default async function globalSetup() {
+  const email = `e2e+${Date.now()}@example.com`
+  const password = 'e2e-Password-123'
+
+  await auth.api.signUpEmail({
+    body: { name: 'E2E', email, password },
+  }) // crea user + credential con el hashing correcto
+
+  // Saltar la verificación de email SOLO en la DB de test (no es un bypass de app).
+  await db
+    .update(users)
+    .set({ emailVerified: true })
+    .where(eq(users.email, email))
+
+  const res = await auth.api.signInEmail({
+    body: { email, password },
+    asResponse: true,
+  })
+  const cookie = res.headers.get('set-cookie') ?? ''
+  // Guardar el storageState con esa cookie en e2e/.auth/user.json y referenciarlo
+  // en un project de playwright.config con `storageState`.
+}
+```
+
+Luego un `project` con `storageState: 'e2e/.auth/user.json'` corre los specs ya
+logueado. Mantener este flujo **gateado por env** (p.ej. `E2E_AUTH=1`) hasta
+validarlo contra tu stack, para no desestabilizar el job E2E por defecto.
 
 ---
 

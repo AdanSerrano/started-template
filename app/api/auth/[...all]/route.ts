@@ -62,8 +62,10 @@ async function handleLogin(
 
   const response = await handler(request)
 
-  // Track failed login attempts for account locking
-  if (userId && response.status >= 400 && response.status < 500) {
+  // Solo 401 = credenciales inválidas. Contar cualquier 4xx (429 rate-limit,
+  // 422 validación, 403 email sin verificar) permitiría a un tercero que
+  // conoce el email bloquear la cuenta de la víctima (DoS).
+  if (userId && response.status === 401) {
     const lockResult = await handleFailedLogin(userId)
 
     if (lockResult?.locked) {

@@ -3,7 +3,15 @@
  */
 
 import { eq } from 'drizzle-orm'
-import { users, addresses, sessions, auditLogs } from '@/db/schema'
+import {
+  users,
+  addresses,
+  sessions,
+  auditLogs,
+  accounts,
+  twoFactors,
+  verifications,
+} from '@/db/schema'
 import { db } from '@/lib/db'
 import type {
   IGDPRService,
@@ -66,9 +74,26 @@ export class GDPRService implements IGDPRService {
   }
 
   async deleteUserData(userId: string): Promise<void> {
+    // El email es la clave de las verifications (tokens pendientes).
+    const [existing] = await db
+      .select({ email: users.email })
+      .from(users)
+      .where(eq(users.id, userId))
+
     await db.transaction(async (tx) => {
       // Revocar sesiones
       await tx.delete(sessions).where(eq(sessions.userId, userId))
+
+      // Borrar credenciales: password hash + tokens OAuth (accounts) y secreto TOTP.
+      // El soft-delete conserva la fila users, así que el ON DELETE CASCADE
+      // nunca dispara; hay que borrar estas tablas explícitamente (RGPD).
+      await tx.delete(accounts).where(eq(accounts.userId, userId))
+      await tx.delete(twoFactors).where(eq(twoFactors.userId, userId))
+      if (existing?.email) {
+        await tx
+          .delete(verifications)
+          .where(eq(verifications.identifier, existing.email))
+      }
 
       // Eliminar direcciones
       await tx.delete(addresses).where(eq(addresses.userId, userId))

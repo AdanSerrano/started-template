@@ -24,9 +24,12 @@ import * as schema from '@/db/schema'
 
 neonConfig.webSocketConstructor = ws
 
+// En serverless (Vercel/Neon) CADA instancia levanta su propio pool: max alto ×
+// N instancias satura el límite de conexiones de Neon. Por eso el default es
+// pequeño; en un server de larga vida (Docker) súbelo con DATABASE_POOL_MAX.
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL!,
-  max: 10,
+  max: Number(process.env.DATABASE_POOL_MAX) || 5,
   idleTimeoutMillis: 60000,
   connectionTimeoutMillis: 15000,
 })

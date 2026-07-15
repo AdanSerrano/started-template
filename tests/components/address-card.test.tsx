@@ -2,8 +2,13 @@
  * Component tests for AddressCard — rendering, actions, default badge.
  */
 
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
+import {
+  deleteAddressAction,
+  setDefaultAddressAction,
+} from '@/modules/account/actions/account-actions'
 import { AddressCard } from '@/modules/account/components/address-card.client'
 
 vi.mock('next-intl', () => ({
@@ -112,5 +117,23 @@ describe('AddressCard', () => {
     render(<AddressCard address={{ ...baseAddress, province: null }} />)
 
     expect(screen.getByText('08001 Barcelona')).toBeInTheDocument()
+  })
+
+  describe('interactions', () => {
+    it('calls deleteAddressAction with the address id on delete', async () => {
+      render(<AddressCard address={baseAddress} />)
+      await userEvent.click(screen.getByRole('button', { name: /delete/i }))
+      await waitFor(() =>
+        expect(deleteAddressAction).toHaveBeenCalledWith('addr-1'),
+      )
+    })
+
+    it('calls setDefaultAddressAction with the address id on set-default', async () => {
+      render(<AddressCard address={baseAddress} />)
+      await userEvent.click(screen.getByRole('button', { name: /setDefault/i }))
+      await waitFor(() =>
+        expect(setDefaultAddressAction).toHaveBeenCalledWith('addr-1'),
+      )
+    })
   })
 })

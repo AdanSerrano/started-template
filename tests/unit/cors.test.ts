@@ -31,19 +31,31 @@ describe('cors', () => {
       expect(headers).toEqual({})
     })
 
-    it('returns CORS headers when wildcard is configured', async () => {
+    it('wildcard returns "*" and NEVER credentials (no cross-origin data theft)', async () => {
       process.env.CORS_ALLOWED_ORIGINS = '*'
       const { corsHeaders } = await importCors()
       const headers = corsHeaders('https://any-origin.com') as Record<
         string,
         string
       >
-      expect(headers['Access-Control-Allow-Origin']).toBe(
-        'https://any-origin.com',
-      )
+      // Con wildcard se devuelve el literal "*", no se refleja el origin,
+      // y no se emite Allow-Credentials: combinar ambos permitiría a
+      // cualquier web leer respuestas autenticadas de la víctima.
+      expect(headers['Access-Control-Allow-Origin']).toBe('*')
+      expect(headers['Access-Control-Allow-Credentials']).toBeUndefined()
       expect(headers['Access-Control-Allow-Methods']).toContain('GET')
-      expect(headers['Access-Control-Allow-Credentials']).toBe('true')
       expect(headers['Access-Control-Max-Age']).toBe('86400')
+    })
+
+    it('specific allowed origin reflects origin WITH credentials', async () => {
+      process.env.CORS_ALLOWED_ORIGINS = 'https://allowed.com'
+      const { corsHeaders } = await importCors()
+      const headers = corsHeaders('https://allowed.com') as Record<
+        string,
+        string
+      >
+      expect(headers['Access-Control-Allow-Origin']).toBe('https://allowed.com')
+      expect(headers['Access-Control-Allow-Credentials']).toBe('true')
     })
 
     it('returns CORS headers for allowed specific origin', async () => {
