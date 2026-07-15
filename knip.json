@@ -14,7 +14,6 @@
     "components/mobile-nav.client.tsx",
     "components/scroll-fade.tsx",
     "hooks/**",
-    "types/**",
     "modules/**/index.ts",
     "modules/auth/services/index.ts",
     "lib/i18n-helpers.ts",

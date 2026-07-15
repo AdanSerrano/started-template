@@ -17,7 +17,6 @@ export {
   setJobsInstance,
   getHttpClient,
   setHttpClientInstance,
-  createHttpClient,
   getCacheService,
   setCacheInstance,
   getLogger,
